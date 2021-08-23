@@ -27,7 +27,6 @@ router.beforeEach(async(to, from, next) => {
       NProgress.done()
     } else {
       const hasGetUserInfo = store.getters.name
-
       // 判断是否获取到菜单
       // if (store.getters.menus && store.getters.menus.length > 0) {
       if (hasGetUserInfo) {
@@ -42,9 +41,7 @@ router.beforeEach(async(to, from, next) => {
           //   global.antRouter = []
           //   next()
           // }
-
           const menus = filterAsyncRouter(store.getters.menus) // 1.过滤路由
-   
           console.log('2222');
 
           // router.addRoutes(menus) // 2.动态添加路由
@@ -78,21 +75,24 @@ router.afterEach(() => {
 })
 
 function filterAsyncRouter(asyncRouterMap) {
-  let newRouters = asyncRouterMap.map((r) => {
-    let routes = {
-      path: r.sysMenu.path,
-      name: r.sysMenu.name,
-      title:r.sysMenu.title,
-      component:r.sysMenu.component,
-      // component: () => import(`@/views/${r.name}`)
-    }
-    if (r.children) {
-      routes.children = filterAsyncRouter(r.children);
-    }
-
-    return routes;
-  });
-  return newRouters;
+  if(asyncRouterMap){
+    let newRouters = asyncRouterMap.map((r) => {
+      let routes = {
+        path: r.sysMenu.path,
+        name: r.sysMenu.name,
+        title:r.sysMenu.title,
+        component:r.sysMenu.component,
+        // component: () => import(`@/views/${r.name}`)
+      }
+      if (r.children) {
+        routes.children = filterAsyncRouter(r.children);
+      }
+      return routes;
+    });
+    return newRouters;
+  }else{
+    return []
+  }
   // const accessedRouters = asyncRouterMap.filter(route => {
 
   //   if (route.component) {
