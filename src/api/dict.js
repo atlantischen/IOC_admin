@@ -40,6 +40,7 @@ export function adminDictItemApi2( data, method ) {
   return request({
     url: bUrl + 'api/v1/admin/dict-item',
     method: method || 'post',
+    noQS: true,
     data: data
   })
 }

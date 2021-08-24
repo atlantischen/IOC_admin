@@ -217,6 +217,38 @@ button,input{
     height: 0;
   }
 }
+.TabelTwo{
+  background: transparent;
+  .el-table__header-wrapper{
+    background: linear-gradient(0deg, #778EA9, #AABED0), #778EA9;
+    box-shadow: 0px 1px 3px 0px rgba(26, 39, 49, 0.4), 0px 0px 7px 0px rgba(127, 151, 183, 0.48);
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  thead{
+    color: #fff;
+    th,tr{
+      height: 40px;
+      background: transparent;
+    }
+    th{
+      padding: 0;
+    }
+    tr{
+      &:nth-child(1){
+        th.is-leaf{
+          border: none;
+          background: transparent;
+        }
+      }
+    }
+  }
+  .el-table__body-wrapper{
+    background: #FFFFFF;
+    box-shadow: 0px 0px 3px 0px #98ABC2;
+    border-radius: 5px;
+  }
+}
 
 
 // scrollbar css
@@ -225,7 +257,6 @@ button,input{
 .mBar::-webkit-scrollbar {
   width: 5px;
   height: 5px;
-  overflow: auto;
 }
 
 .mBar::-webkit-scrollbar-thumb {
@@ -281,7 +312,7 @@ button,input{
 
 // page
 .pageTool{
-  padding: 20px 54px 0 0;
+  padding: 20px 0 0 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;

@@ -20,8 +20,12 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item class="count_item" label="类别名称" prop="parentCode">
-        <el-select v-model="ruleForm.parentCode" placeholder="请选择园区类型">
+      <el-form-item class="count_item" label="类别名称" prop="dictCode">
+        <el-select
+          v-model="ruleForm.dictCode"
+          :disabled="true"
+          placeholder="请选择园区类型"
+        >
           <el-option
             v-for="item in parkTypeList"
             :key="item.id"
@@ -34,13 +38,13 @@
       <el-form-item class="count_item" label="字典名称" prop="name">
         <el-input placeholder="字典名称" v-model="ruleForm.name"></el-input>
       </el-form-item>
-      <el-form-item class="count_item" label="字典选项值" prop="value">
-        <el-input placeholder="字典选项值" v-model="ruleForm.value"></el-input>
+      <el-form-item class="count_item" label="字典选项值" prop="option">
+        <el-input placeholder="字典选项值" v-model="ruleForm.option"></el-input>
       </el-form-item>
-      <el-form-item class="count_item" label="字典编码" prop="dictCode">
+      <el-form-item class="count_item" label="字典编码" prop="value">
         <el-input
           placeholder="请输入字典编码"
-          v-model="ruleForm.dictCode"
+          v-model="ruleForm.value"
         ></el-input>
       </el-form-item>
       <el-form-item class="count_item" label="排序值" prop="sort">
@@ -85,13 +89,11 @@ export default {
         sort: 0
       },
       rules: {
-        parentCode: [
+        dictCode: [
           { required: true, message: "请选择园区类型", trigger: "blur" }
         ],
         name: [{ required: true, message: "请输入字典名称", trigger: "blur" }],
-        dictCode: [
-          { required: true, message: "请输入字典编号", trigger: "blur" }
-        ]
+        value: [{ required: true, message: "请输入字典编号", trigger: "blur" }]
       }
     };
   },
@@ -121,13 +123,9 @@ export default {
     sure() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          this.ruleForm.dictCode = this.ruleForm.parentCode;
           if (this._type === "add") {
             adminDictItemApi2({
-              ...this.ruleForm,
-              deleted: 0,
-              status: 0,
-              defaulted: 0
+              ...this.ruleForm
             }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");
@@ -145,7 +143,7 @@ export default {
             });
           }
           this.close();
-          this.$emit("refresh");
+          this.$emit("refresh", this.ruleForm);
         }
       });
     }

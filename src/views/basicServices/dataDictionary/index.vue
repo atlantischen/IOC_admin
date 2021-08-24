@@ -1,5 +1,5 @@
 <template>
-  <!-- <h1>数据字典</h1> -->
+  <!-- 数据字典 -->
   <div class="all_dataD">
     <div id="dataD">
       <section class="dataD_left ">
@@ -134,44 +134,47 @@
               </div>
             </el-table-column>
           </el-table>
+          <div class="pageTool">
+            <el-pagination layout="slot">
+              <span
+                >第
+                <input
+                  class="pg_input"
+                  v-model.number="currentPage"
+                  @change="handleCurrentChange(currentPage)"/>页
+                <i style="padding: 0 10px;"></i>
+                每页<input
+                  class="pg_input"
+                  v-model.number="pageSize"
+                  @change="handleSizeChange(pageSize)"
+              /></span>
+            </el-pagination>
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-size="pageSize"
+              layout=" total, slot, prev, pager, next"
+              :total="total"
+            >
+              <button
+                class="bt_actived btn-first"
+                @click="handleCurrentChange(1)"
+              >
+                首页
+              </button>
+            </el-pagination>
+            <el-pagination layout="slot">
+              <button
+                class="bt_df"
+                @click="handleCurrentChange(Math.ceil(total / pageSize))"
+              >
+                末页
+              </button>
+            </el-pagination>
+          </div>
         </div>
       </section>
-    </div>
-    <div class="pageTool">
-      <el-pagination layout="slot">
-        <span
-          >第
-          <input
-            class="pg_input"
-            v-model.number="currentPage"
-            @change="handleCurrentChange"/>页
-          <i style="padding: 0 10px;"></i>
-          每页<input
-            class="pg_input"
-            v-model.number="pageSize"
-            @change="handleSizeChange"
-        /></span>
-      </el-pagination>
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        layout=" total, slot, prev, pager, next"
-        :total="total"
-      >
-        <button class="bt_actived btn-first" @click="handleCurrentChange(1)">
-          首页
-        </button>
-      </el-pagination>
-      <el-pagination layout="slot">
-        <button
-          class="bt_df"
-          @click="handleCurrentChange(Math.ceil(total / pageSize))"
-        >
-          末页
-        </button>
-      </el-pagination>
     </div>
     <DicType
       :_datas="editDatas"
@@ -248,7 +251,7 @@ export default {
     getChilds(r) {
       adminDictItemApi({
         limit: this.pageSize,
-        dictCode: r.code || r.parentCode,
+        dictCode: r.code || r.dictCode,
         name: "",
         page: this.currentPage,
         queryMode: "page"
@@ -328,13 +331,14 @@ export default {
       switch (type) {
         case "add":
           this.showDicItemD = true;
-          this.itemDatas = {};
+          this.itemDatas = { dictCode: this.slectCode };
+          this.editDatas.dictCode = this.slectCode;
           this.dicItemT = type;
           break;
         case "edit":
           adminDictItemApiInfo({ id: val.id }).then(r => {
             if (r.code == 200) {
-              this.itemDatas = { ...r.data, parentCode: this.slectCode };
+              this.itemDatas = r.data;
               this.dicItemT = type;
               this.showDicItemD = true;
             } else {
@@ -348,23 +352,32 @@ export default {
           this.dicItemT = null;
           break;
         case "search":
-          this.slectCode = null,
           adminDictItemApi({
             limit: this.pageSize,
-            dictCode: "",
+            dictCode: this.slectCode,
             name: this.searchContent,
             page: this.currentPage,
-            queryMode: "list"
+            queryMode: "page"
           }).then(r => {
             if (r.code == 200) {
               this.dataDItemList = r.data;
-            } else {
-              this.initD();
+              this.total = r.total;
             }
           });
           break;
         case "clear":
           this.searchContent = null;
+          adminDictItemApi({
+            limit: this.pageSize,
+            dictCode: this.slectCode,
+            name: "",
+            page: this.currentPage,
+            queryMode: "page"
+          }).then(r => {
+            if (r.code == 200) {
+              this.dataDItemList = r.data;
+            }
+          });
           break;
         default:
           this.$confirm("确认删除“" + val.name + "”字典数据项吗？")
@@ -383,11 +396,11 @@ export default {
       }
     },
     handleSizeChange(v) {
-      this.pageSize = v < 0 ? 1 : v;
+      this.pageSize = v <= 0 ? 10 : v;
       this.initD();
     },
     handleCurrentChange(v) {
-      this.currentPage = v < 0 ? 10 : v;
+      this.currentPage = v <= 0 ? 1 : v;
       this.initD();
     }
   }
@@ -399,7 +412,8 @@ export default {
 }
 #dataD {
   width: calc(100% - 102px);
-  min-height: 650px;
+  min-height: calc(100% - 55px);
+  height: 800px;
   display: flex;
   margin: 22px 54px 0 48px;
   background: #fff;
@@ -414,6 +428,7 @@ export default {
     border-bottom: 2px solid #d4d4d4;
   }
   .d_content {
+    height: calc(100% - 55px);
     padding: 34px 15px 30px 12px;
     overflow-y: scroll;
   }

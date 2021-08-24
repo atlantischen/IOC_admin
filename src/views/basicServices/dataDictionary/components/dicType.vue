@@ -32,9 +32,9 @@
           v-model="ruleForm.code"
         ></el-input>
       </el-form-item>
-      <!-- <el-form-item class="count_item" label="排序值" prop="sort">
+      <el-form-item class="count_item" label="排序值" prop="sort">
         <el-input placeholder="请输入排序值" v-model="ruleForm.sort"></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item class="count_item" label="备注" prop="remark">
         <el-input
           type="textarea"
@@ -105,17 +105,15 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           if (this._type === "add") {
-            adminDictApi2({ ...this.ruleForm, deleted: 0, status: 0 }).then(
-              r => {
-                if (r.code == 200) {
-                  this.$message.success("新增成功！");
-                  this.$emit("refresh");
-                  this.close();
-                } else {
-                  this.$message.error("新增失败！");
-                }
+            adminDictApi2({ ...this.ruleForm }).then(r => {
+              if (r.code == 200) {
+                this.$message.success("新增成功！");
+                this.$emit("refresh");
+                this.close();
+              } else {
+                this.$message.error("新增失败！");
               }
-            );
+            });
           } else {
             adminDictApi2({ ...this.ruleForm }, "put").then(r => {
               if (r.code == 200) {
