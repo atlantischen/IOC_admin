@@ -540,6 +540,17 @@ button, input {
   border-radius: 10px;
 }
 
+.dLog .header-title {
+  display: flex;
+  align-items: center;
+}
+
+.dLog .header-title .iconfont {
+  font-size: 24px;
+  margin-right: 10px;
+  color: #008aff;
+}
+
 .dLog .el-dialog {
   box-shadow: 0px 1px 9px 0px rgba(128, 143, 159, 0.95);
   border-radius: 5px;

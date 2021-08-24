@@ -413,7 +413,7 @@ export default {
 #dataD {
   width: calc(100% - 102px);
   min-height: calc(100% - 55px);
-  height: 800px;
+  height: 780px;
   display: flex;
   margin: 22px 54px 0 48px;
   background: #fff;

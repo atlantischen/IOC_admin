@@ -8,9 +8,10 @@
     :destroy-on-close="true"
   >
     <div slot="title" class="header-title">
-      <!-- <span class="svg-container">
-        <svg-icon icon-class="user" />
-      </span> -->
+      <i
+        class="iconfont"
+        :class="_type === 'add' ? 'icon-tianjia' : 'icon-shenqingguanli'"
+      ></i>
       <span>{{ _type === "add" ? "添加" : "编辑" }}字典类别</span>
     </div>
     <el-form
