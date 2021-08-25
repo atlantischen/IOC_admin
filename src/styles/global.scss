@@ -1,0 +1,48 @@
+.el-dialog {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*height:600px;*/
+    max-height: calc(100% - 200px);
+    max-width: calc(100% - 30px);
+    .el-dialog__header {
+      .header-title {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+      }
+      border-bottom: 0.5px solid #ccc;
+      .svg-container {
+        padding: 0;
+        width: 25px;
+      }
+    }
+  }
+   .svg-container {
+    position: relative;
+    padding: 6px 5px 6px 15px;
+    color: #008aff;
+    vertical-align: middle;
+    width: 30px;
+    display: inline-block;
+  }
+  .svg-container::after {
+    position: absolute;
+    content: "";
+  }
+  .title-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 46px 0;
+  }
+  .el-dialog__footer{
+    text-align: center;
+    .el-button--info{
+      // margin-left: 55px;
+    }
+}
