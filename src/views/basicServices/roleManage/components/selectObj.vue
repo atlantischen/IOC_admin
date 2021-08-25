@@ -18,9 +18,10 @@
           placeholder="名称"
           v-model="searchContent"
         ></el-input
-        ><i class="el-icon-search"></i>
+        ><i class="el-icon-search" @click="getList()"></i>
       </div>
       <el-table
+        ref="tableRef"
         class="TabelThree"
         v-loading="dLoading"
         :data="dataList"
@@ -28,15 +29,21 @@
         height="400"
         stripe
         fit
+        @selection-change="handleSelectionChange"
       >
-        <el-table-column label="No." type="index" width="60">
-          <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
+        <el-table-column type="selection" label="选择" width="55">
+          <template slot="header">
+            <span>选择</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="用户名" show-overflow-tooltip>
+        <el-table-column label="No." type="index" width="60">
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="username" label="用户名" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.username }}
           </template>
         </el-table-column>
         <el-table-column prop="phone" label="手机号" show-overflow-tooltip>
@@ -65,17 +72,17 @@
 </template>
 
 <script>
-import { adminRoleApi2 } from "@/api/role";
+import { roleUserApi } from "@/api/role";
 export default {
   name: "selectObj",
   props: {
     _show: {
       type: Boolean
     },
-    _datas: {
-      typeof: Object,
-      default: () => {}
-    },
+    // _datas: {
+    //   typeof: Object,
+    //   default: () => {}
+    // },
     _type: {
       type: String
     }
@@ -86,11 +93,12 @@ export default {
       Visible: false,
       dLoading: false,
       dataList: null,
+      selectedIds: null,
       //
-
       currentPage: 1,
       pageSize: 10,
-      total: 0
+      total: 0,
+      _datas: null
     };
   },
   watch: {
@@ -99,55 +107,89 @@ export default {
         this.Visible = n;
       },
       immediate: false
-    },
-    _datas: {
-      handler: function(n) {
-        this.ruleForm = JSON.parse(JSON.stringify(this._datas));
-      },
-      deep: true
     }
+    // _datas: {
+    //   handler: function(n) {
+    //     this.ruleForm = JSON.parse(JSON.stringify(this._datas));
+    //   },
+    //   deep: true
+    // }
   },
   methods: {
+    getList() {
+      this.dLoading = true;
+      roleUserApi({
+        limit: this.pageSize,
+        page: this.currentPage,
+        queryMode: "page",
+        roleId: this._datas.id,
+        username: this.searchContent
+      }).then(r => {
+        if (r.code == 200) {
+          this.total = r.total;
+          this.dataList = r.data;
+          this.toggleSelection(r.data);
+          this.dLoading = false;
+        }
+      });
+    },
     close() {
       this.reset();
       this.Visible = false;
       this.$emit("close", "close");
     },
     reset() {
-      this.$refs.ruleForm.resetFields();
+      this.toggleSelection();
     },
+
     sure() {
-      this.$refs.ruleForm.validate(valid => {
-        if (valid) {
-          if (this._type === "add") {
-            adminRoleApi2({ ...this.ruleForm }).then(r => {
-              if (r.code == 200) {
-                this.$message.success("新增成功！");
-                this.$emit("refresh");
-                this.close();
-              } else {
-                this.$message.error("新增失败！");
-              }
-            });
+      if (this.selectedIds && this.selectedIds.length > 0) {
+        roleUserApi(
+          {
+            roleId: this._datas.id,
+            addUserIds: this.selectedIds,
+            deleteUserIds: this.selectedIds
+          },
+          "put"
+        ).then(r => {
+          if (r.code == 200) {
+            this.$message.success("操作成功！");
+            this.$emit("refresh");
+            this.close();
           } else {
-            adminRoleApi2({ ...this.ruleForm }, "put").then(r => {
-              if (r.code == 200) {
-                this.$message.success("修改成功！");
-                this.$emit("refresh");
-                this.close();
-              } else {
-                this.$message.error("修改失败！");
-              }
+            this.$message.error("操作失败！");
+          }
+        });
+      } else {
+        this.$message.error("没有选中任何对象！");
+        this.close();
+      }
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(r => {
+          if (r.choice.toString() == "true") {
+            this.$nextTick().then(() => {
+              this.$refs.tableRef.toggleRowSelection(r);
             });
           }
-        }
-      });
+        });
+      } else {
+        console.log("222");
+        this.$refs.tableRef.clearSelection();
+      }
+    },
+    handleSelectionChange(val) {
+      this.selectedIds = val;
+      console.log(val);
     },
     sizeChange(v) {
       this.pageSize = v;
+      this.getList();
     },
     currentChange(v) {
       this.currentPage = v;
+      this.getList();
     }
   }
 };
@@ -170,6 +212,7 @@ export default {
     .el-icon-search {
       font-size: 24px;
       margin-left: 15px;
+      cursor: pointer;
     }
   }
 }

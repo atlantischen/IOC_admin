@@ -11,21 +11,6 @@
       <i class="iconfont icon-quanxianshezhi"></i>
       <span>选择角色权限</span>
     </div>
-    <!-- <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="角色说明">
-        <el-input
-          placeholder=""
-          type="textarea"
-          v-model="ruleForm.remark"
-        ></el-input>
-      </el-form-item>
-    </el-form> -->
     <div class="dLog_content ">
       <div class="radios">
         <el-radio-group
@@ -34,16 +19,19 @@
           @change="selectR"
         >
           <el-radio :label="0">菜单</el-radio>
-          <el-radio :label="1">备选项</el-radio>
         </el-radio-group>
       </div>
       <div class="radios_tree mBar">
         <el-tree
-          :data="data"
+          :data="menuDatas"
           show-checkbox
           node-key="id"
           default-expand-all
+          :expand-on-click-node="false"
+          :default-checked-keys="defaultKeys"
+          :check-strictly="checkStrictly"
           :props="defaultProps"
+          @check="handleChange"
         >
         </el-tree>
       </div>
@@ -56,7 +44,8 @@
 </template>
 
 <script>
-import { adminRoleApi2 } from "@/api/role";
+import { roleMenuApi } from "@/api/role";
+import { addLevel } from "@/utils/method";
 export default {
   name: "selectRolePower",
   props: {
@@ -69,66 +58,50 @@ export default {
     },
     _type: {
       type: String
+    },
+    roleInfo: {
+      type: Object
     }
   },
   data() {
     return {
       radioIndex: 0,
       Visible: false,
-      data: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
+      checkStrictly: false,
+      menuDatas: [
+        // {
+        //   id: 1,
+        //   label: "111",
+        //   mLevel: 1,
+        //   children: [
+        //     {
+        //       id: 2,
+        //       label: "2222",
+        //       mLevel: 2,
+        //       children: [
+        //         {
+        //           id: 3,
+        //           label: "2222",
+        //           mLevel: 3,
+        //           children: [
+        //             {
+        //               id: 4,
+        //               label: "2222",
+        //               mLevel: 4
+        //             }
+        //           ]
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // }
       ],
+      defaultKeys: [],
       defaultProps: {
         children: "children",
-        label: "label"
-      }
+        label: "name"
+      },
+      resetKeys: null
     };
   },
   watch: {
@@ -140,55 +113,62 @@ export default {
     },
     _datas: {
       handler: function(n) {
-        this.ruleForm = JSON.parse(JSON.stringify(this._datas));
+        this.defaultKeys = this._datas;
       },
       deep: true
     }
   },
+  created() {},
   methods: {
     close() {
-      this.reset();
       this.Visible = false;
       this.$emit("close", "close");
     },
     reset() {
-      // this.$refs.ruleForm.resetFields();
+      this.close();
     },
     sure() {
-      this.$refs.ruleForm.validate(valid => {
-        if (valid) {
-          if (this._type === "add") {
-            adminRoleApi2({ ...this.ruleForm }).then(r => {
+      if (this.resetKeys && this.resetKeys.length > 0) {
+        this.$confirm("确认修改“" + this.roleInfo.name + "”角色权限？")
+          .then(_ => {
+            roleMenuApi(
+              { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
+              "put"
+            ).then(r => {
               if (r.code == 200) {
-                this.$message.success("新增成功！");
-                this.$emit("refresh");
+                this.$message.success("编辑成功！");
                 this.close();
               } else {
-                this.$message.error("新增失败！");
+                this.$message.error("编辑失败！");
               }
             });
-          } else {
-            adminRoleApi2({ ...this.ruleForm }, "put").then(r => {
-              if (r.code == 200) {
-                this.$message.success("修改成功！");
-                this.$emit("refresh");
-                this.close();
-              } else {
-                this.$message.error("修改失败！");
-              }
-            });
-          }
-        }
-      });
+          })
+          .catch(_ => {});
+      } else {
+        this.$message.info("您当前没有做任何权限改变！");
+        this.close();
+      }
+    },
+    handleChange(obj, keys) {
+      // console.log(obj, keys);
+      let _a = null;
+      _a = keys.halfCheckedKeys;
+      this.checkStrictly = false;
+      let _i = _a.indexOf("all");
+      if (_i > -1) {
+        _a.splice(_i, 1);
+      }
+      this.resetKeys = keys.checkedKeys.concat(_a);
     },
     selectR(val) {
-      console.log(val);
+      // console.log(val);
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+@import "~@/assets/iconfont/iconfont.css";
 .dLog {
   ::v-deep .el-dialog__body {
     padding: 25px 20px;
@@ -216,6 +196,60 @@ export default {
     height: 300px;
     overflow-y: auto;
     padding: 10px 30px;
+    ::v-deep .el-tree {
+      .el-checkbox {
+        margin-left: 5px;
+      }
+      .el-checkbox__inner::before {
+        top: 8px;
+      }
+      .el-checkbox__inner {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        overflow: hidden;
+        &::after {
+          width: 5px;
+          height: 9px;
+          top: 2px;
+          left: 6px;
+        }
+      }
+      .el-icon-caret-right {
+        color: #000;
+        font-size: 15px;
+      }
+      .el-icon-caret-right::before {
+        content: "\e6d9";
+      }
+      .el-tree-node__expand-icon.expanded {
+        transform: rotate(180deg);
+      }
+      .is-expanded {
+        .el-icon-caret-right::before {
+          content: "\e6d8";
+        }
+      }
+      .el-tree-node__expand-icon {
+        color: #000;
+      }
+      .el-tree-node__expand-icon.is-leaf {
+        // color: #c0c4cc;
+        color: #000;
+        cursor: default;
+      }
+      .el-tree-node__children {
+        .el-tree-node__children {
+          .el-tree-node__children {
+            .el-icon-caret-right::before {
+              font-family: "iconfont" !important;
+              content: "\ea18";
+              color: #000;
+            }
+          }
+        }
+      }
+    }
   }
 }
 </style>

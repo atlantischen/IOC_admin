@@ -118,16 +118,16 @@
       @refresh="initD"
     />
     <RolePower
-      ref="addEditRef"
-      :_datas="editDatas"
+      ref="rolePowerRef"
+      :roleInfo="roleInfo"
+      :_datas="PowerIds"
       :_type="dType"
       :_show="showRolePower"
       @close="handleFun"
-      @refresh="initD"
     />
     <SelectObj
-      ref="addEditRef"
-      :_datas="editDatas"
+      ref="SelectObjRef"
+      :_datas="roleInfo"
       :_type="dType"
       :_show="showSelectObj"
       @close="handleFun"
@@ -137,7 +137,13 @@
 </template>
 
 <script>
-import { adminRoleApi, adminRoleInfoApi } from "@/api/role";
+import { getTrue, addLevel } from "@/utils/method";
+import {
+  adminRoleApi,
+  adminRoleInfoApi,
+  roleMenuApi,
+  roleUserApi
+} from "@/api/role";
 import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
@@ -156,7 +162,9 @@ export default {
       showRolePower: false,
       showSelectObj: false,
       dType: "add",
-      editDatas: {}
+      editDatas: {},
+      PowerIds: null,
+      roleInfo: null
     };
   },
   created() {
@@ -164,6 +172,7 @@ export default {
   },
   methods: {
     initD(val) {
+      this.dLoading = true;
       adminRoleApi({
         limit: "",
         name: val ? val : "",
@@ -172,6 +181,7 @@ export default {
       }).then(r => {
         if (r.code == 200) {
           this.dataList = r.data;
+          this.dLoading = false;
         }
       });
     },
@@ -185,10 +195,28 @@ export default {
         case "power":
           this.showRolePower = true;
           this.dType = t;
+          this.roleInfo = val;
+          roleMenuApi({ roleId: val.id }).then(r => {
+            if (r.code == 200) {
+              this.$refs.rolePowerRef.checkStrictly = true;
+              this.$refs.rolePowerRef.menuDatas = [
+                {
+                  name: "全部",
+                  title: "全部",
+                  id: "all",
+                  children: addLevel(r.data)
+                }
+              ];
+              console.log(this.$refs.rolePowerRef.menuDatas);
+              this.PowerIds = getTrue(r.data, "choice");
+            }
+          });
           break;
         case "obj":
-          this.showSelectObj = true;
           this.dType = t;
+          this.showSelectObj = true;
+          this.$refs.SelectObjRef._datas = val;
+          this.$refs.SelectObjRef.getList();
           break;
         case "edit":
           this.showD = true;
@@ -235,11 +263,11 @@ export default {
           break;
       }
     },
-    handleSizeChange(v) {
+    sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
       this.initD();
     },
-    handleCurrentChange(v) {
+    currentChange(v) {
       this.currentPage = v <= 0 ? 1 : v;
       this.initD();
     }
