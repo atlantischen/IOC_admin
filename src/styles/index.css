@@ -584,7 +584,7 @@ button, input {
 }
 
 .dLog .el-dialog__body {
-  padding: 30px 100px !important;
+  padding: 30px 100px;
 }
 
 .dLog .el-input, .dLog .el-select {
@@ -595,80 +595,8 @@ button, input {
   height: 30px;
 }
 
-.pageTool {
-  padding: 20px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  color: #2e2e2e;
-}
-
-.pageTool .el-pagination {
-  display: flex;
-  align-items: center;
-}
-
-.pageTool .el-pagination .el-pagination__total {
-  color: #2e2e2e;
-  font-weight: bold;
-}
-
-.pageTool .el-pagination .el-pagination__rightwrapper {
-  display: flex;
-}
-
-.pageTool .el-pagination button {
-  min-width: 60px;
-  height: 25px;
-  line-height: 25px;
-  padding: 0;
-}
-
-.pageTool .el-pagination .bt_actived {
-  display: inline-block;
-  color: #fff;
-  font-size: 12px;
-  border-radius: 3px;
-  background: linear-gradient(0deg, #0695e5, #1da6df, #0695e5);
-  box-shadow: inset 0px 0px 1px 0px #0695e5;
-}
-
-.pageTool .el-pagination .bt_df, .pageTool .el-pagination .btn-prev, .pageTool .el-pagination .btn-next {
-  display: inline-block;
-  color: #fff;
-  font-size: 12px;
-  border-radius: 3px;
-  background: linear-gradient(0deg, #69809e, #889eb6, #69809e);
-  box-shadow: inset 0px 0px 1px 0px #69809e;
-}
-
-.pageTool .el-pagination .btn-first {
-  margin: 0 15px 0 20px;
-}
-
-.pageTool .el-pagination .btn-next {
-  margin-left: 15px;
-}
-
-.pageTool .el-pagination .el-pager li {
-  min-width: 25px;
-  height: 25px;
-  background: #bbbbbb;
-  border-radius: 50%;
-  color: #fff;
-  padding: 0;
-  margin-left: 15px;
-}
-
-.pageTool .el-pagination .el-pager li.active {
-  background: #008aff;
-}
-
-.pageTool .el-pagination .pg_input {
-  width: 30px;
-  border: 1px solid #2e2e2e;
-  text-align: center;
-  border-radius: 2px;
-  padding: 2px 0;
-  margin: 0 3px;
+.dLog .dLog_content {
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  overflow: hidden;
 }

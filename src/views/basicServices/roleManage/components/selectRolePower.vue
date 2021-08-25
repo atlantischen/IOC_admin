@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    class="dLog"
+    class="dLog selectRoleP"
     title=""
     :visible.sync="Visible"
     width="40%"
@@ -11,19 +11,13 @@
       <i class="iconfont icon-quanxianshezhi"></i>
       <span>选择角色权限</span>
     </div>
-    <el-form
+    <!-- <el-form
       :model="ruleForm"
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="角色名称" prop="name">
-        <el-input
-          placeholder="请输入权限名称"
-          v-model="ruleForm.name"
-        ></el-input
-      ></el-form-item>
       <el-form-item label="角色说明">
         <el-input
           placeholder=""
@@ -31,7 +25,29 @@
           v-model="ruleForm.remark"
         ></el-input>
       </el-form-item>
-    </el-form>
+    </el-form> -->
+    <div class="dLog_content ">
+      <div class="radios">
+        <el-radio-group
+          class="radiosGroup"
+          v-model="radioIndex"
+          @change="selectR"
+        >
+          <el-radio :label="0">菜单</el-radio>
+          <el-radio :label="1">备选项</el-radio>
+        </el-radio-group>
+      </div>
+      <div class="radios_tree mBar">
+        <el-tree
+          :data="data"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          :props="defaultProps"
+        >
+        </el-tree>
+      </div>
+    </div>
     <span slot="footer" class="dialog-footer xy_c">
       <button class="max_bt_gy" @click="reset">取消</button>
       <button class="max_bt_df" @click="sure">确认</button>
@@ -42,7 +58,7 @@
 <script>
 import { adminRoleApi2 } from "@/api/role";
 export default {
-  name: "addEditDicType",
+  name: "selectRolePower",
   props: {
     _show: {
       type: Boolean
@@ -55,17 +71,63 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
+      radioIndex: 0,
       Visible: false,
-      ruleForm: {},
-      //
-      fileList: [
-        // {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
+      data: [
+        {
+          id: 1,
+          label: "一级 1",
+          children: [
+            {
+              id: 4,
+              label: "二级 1-1",
+              children: [
+                {
+                  id: 9,
+                  label: "三级 1-1-1"
+                },
+                {
+                  id: 10,
+                  label: "三级 1-1-2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: "一级 2",
+          children: [
+            {
+              id: 5,
+              label: "二级 2-1"
+            },
+            {
+              id: 6,
+              label: "二级 2-2"
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: "一级 3",
+          children: [
+            {
+              id: 7,
+              label: "二级 3-1"
+            },
+            {
+              id: 8,
+              label: "二级 3-2"
+            }
+          ]
+        }
       ],
-      rules: {
-        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }]
+      defaultProps: {
+        children: "children",
+        label: "label"
       }
     };
   },
@@ -90,7 +152,7 @@ export default {
       this.$emit("close", "close");
     },
     reset() {
-      this.$refs.ruleForm.resetFields();
+      // this.$refs.ruleForm.resetFields();
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {
@@ -119,28 +181,41 @@ export default {
         }
       });
     },
-    //
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    selectR(val) {
+      console.log(val);
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.dlog {
+.dLog {
+  ::v-deep .el-dialog__body {
+    padding: 25px 20px;
+  }
+}
+.dLog_content {
+  ::v-deep.radios {
+    padding: 15px 20px;
+    background: #f9f9f9;
+    .el-radio__input.is-checked .el-radio__inner {
+      background: transparent;
+    }
+    .el-radio__inner {
+      width: 18px;
+      height: 18px;
+      border-color: #409eff;
+    }
+    .el-radio__inner::after {
+      width: 8px;
+      height: 8px;
+      background: #409eff;
+    }
+  }
+  .radios_tree {
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px 30px;
+  }
 }
 </style>

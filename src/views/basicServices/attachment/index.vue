@@ -115,42 +115,14 @@
           </div>
         </el-table-column>
       </el-table>
-      <div class="pageTool">
-        <el-pagination layout="slot">
-          <span
-            >第
-            <input
-              class="pg_input"
-              v-model.number="currentPage"
-              @change="handleCurrentChange(currentPage)"/>页
-            <i style="padding: 0 10px;"></i>
-            每页<input
-              class="pg_input"
-              v-model.number="pageSize"
-              @change="handleSizeChange(pageSize)"
-          /></span>
-        </el-pagination>
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          layout=" total, slot, prev, pager, next"
-          :total="total"
-        >
-          <button class="bt_actived btn-first" @click="handleCurrentChange(1)">
-            首页
-          </button>
-        </el-pagination>
-        <el-pagination layout="slot">
-          <button
-            class="bt_df"
-            @click="handleCurrentChange(Math.ceil(total / pageSize))"
-          >
-            末页
-          </button>
-        </el-pagination>
-      </div>
+      <PageT
+        :between="true"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
     </div>
     <AddEdit
       ref="addEditRef"
@@ -245,11 +217,11 @@ export default {
           break;
       }
     },
-    handleSizeChange(v) {
+    sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
       this.initD();
     },
-    handleCurrentChange(v) {
+    currentChange(v) {
       this.currentPage = v <= 0 ? 1 : v;
       this.initD();
     }
@@ -266,8 +238,6 @@ export default {
   .a_content {
     width: calc(100%-110px);
     margin: 20px 53px 20px 57px;
-    :deep(.TabelTwo) {
-    }
   }
 }
 </style>

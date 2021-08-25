@@ -11,27 +11,52 @@
       <i class="iconfont icon-jiaosepeizhi"></i>
       <span>选择对象</span>
     </div>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
-      <el-form-item label="角色名称" prop="name">
+    <div class="selectObj dLog_content">
+      <div class="selectObj_h x_c">
         <el-input
-          placeholder="请输入权限名称"
-          v-model="ruleForm.name"
+          class="k_input"
+          placeholder="名称"
+          v-model="searchContent"
         ></el-input
-      ></el-form-item>
-      <el-form-item label="角色说明">
-        <el-input
-          placeholder=""
-          type="textarea"
-          v-model="ruleForm.remark"
-        ></el-input>
-      </el-form-item>
-    </el-form>
+        ><i class="el-icon-search"></i>
+      </div>
+      <el-table
+        class="TabelThree"
+        v-loading="dLoading"
+        :data="dataList"
+        element-loading-text="Loading"
+        height="400"
+        stripe
+        fit
+      >
+        <el-table-column label="No." type="index" width="60">
+          <template slot-scope="scope">
+            <span>{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="用户名" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.name }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="phone" label="手机号" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.phone }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <PageT
+        :min="true"
+        :between="true"
+        :layout="['current', 'size', 'total', 'pager']"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
+    </div>
+
     <span slot="footer" class="dialog-footer xy_c">
       <button class="max_bt_gy" @click="reset">取消</button>
       <button class="max_bt_df" @click="sure">确认</button>
@@ -42,7 +67,7 @@
 <script>
 import { adminRoleApi2 } from "@/api/role";
 export default {
-  name: "addEditDicType",
+  name: "selectObj",
   props: {
     _show: {
       type: Boolean
@@ -55,18 +80,17 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
+      searchContent: "",
       Visible: false,
-      ruleForm: {},
+      dLoading: false,
+      dataList: null,
       //
-      fileList: [
-        // {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
-      ],
-      rules: {
-        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }]
-      }
+
+      currentPage: 1,
+      pageSize: 10,
+      total: 0
     };
   },
   watch: {
@@ -119,28 +143,39 @@ export default {
         }
       });
     },
-    //
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
+    sizeChange(v) {
+      this.pageSize = v;
     },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${
-          files.length
-        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
-      );
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+    currentChange(v) {
+      this.currentPage = v;
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.dlog {
+.dLog {
+  ::v-deep .el-dialog__body {
+    padding: 25px 20px;
+  }
+}
+.selectObj {
+  .selectObj_h {
+    justify-content: flex-end;
+    padding: 5px 20px;
+    background: #f9f9f9;
+    .k_input {
+      width: 250px;
+    }
+    .el-icon-search {
+      font-size: 24px;
+      margin-left: 15px;
+    }
+  }
+}
+.TabelThree {
+}
+.pageTool {
+  padding: 20px;
 }
 </style>

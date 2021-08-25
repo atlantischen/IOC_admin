@@ -17,6 +17,10 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+
+import allC from '@/components/index' // global components
+Vue.use(allC)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

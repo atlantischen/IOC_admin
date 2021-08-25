@@ -249,6 +249,9 @@ button,input{
     border-radius: 5px;
   }
 }
+.TabelThree{
+  
+}
 
 
 // scrollbar css
@@ -306,73 +309,19 @@ button,input{
     color: #F56C6C;
   }
   // 
-    .el-dialog__body {
-      padding: 30px 100px !important;
-    }
-    .el-input,.el-select {
+  .el-dialog__body {
+      padding: 30px 100px ;
+  }
+  .el-input,.el-select {
       width: 100%;
       .el-input__inner {
         height: 30px;
       }
-    }
-}
-
-
-// page
-.pageTool{
-  padding: 20px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  color: #2e2e2e;
-  .el-pagination{
-    display: flex;
-    align-items: center;
-    .el-pagination__total{
-      color: #2e2e2e;
-      font-weight: bold;
-    }
-    .el-pagination__rightwrapper{
-      display: flex;
-    }
-    button{
-      @include w_h(60px,25px);
-      line-height: 25px;
-      padding:0;
-    }
-    .bt_actived{
-      @include btn_color(#0695e5,#1da6df);
-    }
-    .bt_df,.btn-prev,.btn-next{
-      @include btn_color(#69809e,#889eb6);
-    }
-    .btn-first{
-      margin: 0 15px 0 20px;
-    }
-    .btn-next{
-      margin-left: 15px;
-    }
-    .el-pager{
-      li{
-        min-width: 25px;
-        height: 25px;
-        background: #bbbbbb;
-        border-radius: 50%;
-        color: #fff;
-        padding: 0;
-        margin-left: 15px;
-        &.active{
-          background: #008aff;
-        }
-      }
-    }
-    .pg_input{
-      width: 30px;
-      border: 1px solid #2e2e2e;
-      text-align: center;
-      border-radius: 2px;
-      padding: 2px 0;
-      margin: 0 3px;
-    }
+  }
+  .dLog_content {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    overflow: hidden;
   }
 }
+
