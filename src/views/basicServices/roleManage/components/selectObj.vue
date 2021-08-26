@@ -23,14 +23,19 @@
       <el-table
         ref="tableRef"
         class="TabelThree"
+        rowKey="ShuBiOrderNo"
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height="400"
+        height="430"
         stripe
         fit
-        @selection-change="handleSelectionChange"
+        row-key="id"
+        @select="handChange"
+        @select-all="handallChange"
       >
+        <!-- 
+        @selection-change="handleSelectionChange" -->
         <el-table-column type="selection" label="选择" width="55">
           <template slot="header">
             <span>选择</span>
@@ -73,16 +78,13 @@
 
 <script>
 import { roleUserApi } from "@/api/role";
+import { getDiffArr, getComArr, getIds } from "@/utils/method.js";
 export default {
   name: "selectObj",
   props: {
     _show: {
       type: Boolean
     },
-    // _datas: {
-    //   typeof: Object,
-    //   default: () => {}
-    // },
     _type: {
       type: String
     }
@@ -93,30 +95,31 @@ export default {
       Visible: false,
       dLoading: false,
       dataList: null,
-      selectedIds: null,
+      defalutIds: [],
+      addIds: [],
+      delIds: [],
+      pageObjSave: null,
       //
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      _datas: null
+      _datas: null,
+      flag: false
     };
   },
   watch: {
     _show: {
       handler: function(n) {
         this.Visible = n;
-      },
-      immediate: false
+      }
     }
-    // _datas: {
-    //   handler: function(n) {
-    //     this.ruleForm = JSON.parse(JSON.stringify(this._datas));
-    //   },
-    //   deep: true
-    // }
   },
   methods: {
     getList() {
+      // this.$nextTick().then(() => {
+      //   this.$refs.tableRef.clearSelection();
+      // });
+      this.dataList = [];
       this.dLoading = true;
       roleUserApi({
         limit: this.pageSize,
@@ -126,62 +129,204 @@ export default {
         username: this.searchContent
       }).then(r => {
         if (r.code == 200) {
-          this.total = r.total;
           this.dataList = r.data;
-          this.toggleSelection(r.data);
+          this.total = r.total;
           this.dLoading = false;
+          if (!this.pageObjSave) {
+            // 自定义每页存储（add：新增，del: 已默认中需删除de，df：默认）
+            this.pageObjSave = [];
+            for (let i = 0; i < Math.ceil(this.total / this.pageSize); i++) {
+              this.pageObjSave[i] = {
+                add: [],
+                del: [],
+                df: [],
+                alls: []
+              };
+            }
+          } else {
+            //   this.flag = true;
+            //   let _a = (this.addIds = this.pageObjSave[this.currentPage - 1][
+            //     "add"
+            //   ]);
+            //   this.defalutIds = this.pageObjSave[this.currentPage - 1]["df"];
+            //   this.delIds = this.pageObjSave[this.currentPage - 1]["del"];
+            //   //
+            //   console.log(this.addIds);
+            //   if (
+            //     this.addIds.length > 0 &&
+            //     this.defalutIds.length == 0 &&
+            //     this.delIds.length == 0
+            //   ) {
+            //     // 加
+            //     console.log("//////////add");
+            //     console.log(_a.length);
+            //     _a.forEach(r => {
+            //       console.log("//////////pppppppppppppppp");
+            //       console.log(r);
+            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
+            //       this.$nextTick().then(() => {
+            //         this.$refs.tableRef.toggleRowSelection(r, true);
+            //       });
+            //       console.log("//////////pppppppppppppppp2");
+            //     });
+            //   } else if (
+            //     this.addIds.length > 0 &&
+            //     this.defalutIds.length > 0 &&
+            //     this.delIds.length == 0
+            //   ) {
+            //     console.log("//////////add+df");
+            //     let _ad = getDiffArr(this.defalutIds, this.addIds);
+            //     _ad.forEach(r => {
+            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
+            //       this.$nextTick().then(() => {
+            //         this.$refs.tableRef.toggleRowSelection(r, true);
+            //       });
+            //     });
+            //   } else if (
+            //     this.defalutIds.length >= 0 &&
+            //     this.addIds.length >= 0 &&
+            //     this.delIds.length >= 0
+            //   ) {
+            //     // 加，减，默认
+            //     console.log("///////////df");
+            //     this.defalutIds.forEach(r => {
+            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
+            //       this.$nextTick().then(() => {
+            //         this.$refs.tableRef.toggleRowSelection(r, true);
+            //       });
+            //     });
+            //   } else {
+            //     console.log("///////////------");
+            //   }
+            //   this.flag = false;
+          }
+          // 初始化每页默认复现
+          this.defalutIds = [];
+          if (
+            r.data &&
+            this.pageObjSave[this.currentPage - 1].df.length == 0 &&
+            this.pageObjSave[this.currentPage - 1].add.length == 0 &&
+            this.pageObjSave[this.currentPage - 1].del.length == 0
+          ) {
+            console.log("111111111");
+            r.data.forEach(r => {
+              if (r.choice.toString() == "true") {
+                this.defalutIds.push(r);
+                this.$nextTick().then(() => {
+                  this.$refs.tableRef.toggleRowSelection(r, true);
+                });
+              }
+            });
+            this.pageObjSave[this.currentPage - 1].df = this.defalutIds;
+            this.pageObjSave[this.currentPage - 1].alls = this.defalutIds;
+          } else {
+            console.log("22222");
+            this.dataList.forEach(_o => {
+              this.pageObjSave[this.currentPage - 1]["alls"].forEach(_t => {
+                if (_o.id == _t.id) {
+                  console.log("----", _o);
+                  this.$nextTick(() => {
+                    this.$refs.tableRef.toggleRowSelection(_o, true);
+                  });
+                }
+              });
+            });
+          }
+          console.log(this.pageObjSave);
         }
       });
     },
     close() {
       this.reset();
       this.Visible = false;
+      this.pageObjSave = null;
       this.$emit("close", "close");
     },
     reset() {
       this.toggleSelection();
+      this.pageObjSave = [];
+      for (let i = 0; i < Math.ceil(this.total / this.pageSize); i++) {
+        this.pageObjSave[i] = {
+          add: [],
+          del: [],
+          df: []
+        };
+      }
     },
 
     sure() {
-      if (this.selectedIds && this.selectedIds.length > 0) {
-        roleUserApi(
-          {
-            roleId: this._datas.id,
-            addUserIds: this.selectedIds,
-            deleteUserIds: this.selectedIds
-          },
-          "put"
-        ).then(r => {
-          if (r.code == 200) {
-            this.$message.success("操作成功！");
-            this.$emit("refresh");
-            this.close();
-          } else {
-            this.$message.error("操作失败！");
-          }
-        });
-      } else {
-        this.$message.error("没有选中任何对象！");
-        this.close();
+      console.log(this.pageObjSave);
+      let allAdds = [],
+        alldels = [];
+      for (let i = 0; i < this.pageObjSave.length; i++) {
+        console.log(this.pageObjSave[i].add);
+        allAdds.push(...this.pageObjSave[i].add);
+        alldels.push(...this.pageObjSave[i].del);
       }
+      console.log(allAdds);
+      this.$confirm("确认修改选择对象？")
+        .then(_ => {
+          roleUserApi(
+            {
+              roleId: this._datas.id,
+              addIds: `${getIds(allAdds)}`,
+              deleteIds: `${getIds(alldels)}`
+            },
+            "put"
+          ).then(r => {
+            if (r.code == 200) {
+              this.$message.success("操作成功！");
+              this.$emit("refresh");
+              this.close();
+            } else {
+              this.$message.error("操作失败！");
+            }
+          });
+        })
+        .catch(_ => {});
     },
     toggleSelection(rows) {
+      this.defalutIds = [];
       if (rows) {
         rows.forEach(r => {
           if (r.choice.toString() == "true") {
+            this.defalutIds.push(r);
             this.$nextTick().then(() => {
               this.$refs.tableRef.toggleRowSelection(r);
             });
           }
         });
       } else {
-        console.log("222");
         this.$refs.tableRef.clearSelection();
       }
     },
+    handChange(s, r) {
+      this.pageObjSave[this.currentPage - 1]["alls"] = s;
+      this.handlerSet(s);
+    },
+    handallChange(s) {
+      this.pageObjSave[this.currentPage - 1]["alls"] = s;
+      this.handlerSet(s);
+    },
+    handlerSet(_a) {
+      if (_a.length > 0) {
+        this.addIds = this.pageObjSave[this.currentPage - 1][
+          "add"
+        ] = getDiffArr(_a, this.defalutIds);
+        let _b = getComArr(_a, this.defalutIds);
+        this.delIds = this.pageObjSave[this.currentPage - 1][
+          "del"
+        ] = getDiffArr(_b, this.defalutIds);
+      } else {
+        this.addIds = this.pageObjSave[this.currentPage - 1]["add"] = [];
+        this.delIds = this.pageObjSave[this.currentPage - 1][
+          "del"
+        ] = this.defalutIds;
+      }
+      console.log("===this.pageObjSave", this.pageObjSave);
+    },
     handleSelectionChange(val) {
-      this.selectedIds = val;
-      console.log(val);
+      console.log("===all", val);
     },
     sizeChange(v) {
       this.pageSize = v;

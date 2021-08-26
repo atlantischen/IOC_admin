@@ -181,6 +181,7 @@ export default {
       }).then(r => {
         if (r.code == 200) {
           this.dataList = r.data;
+          this.total = r.total;
           this.dLoading = false;
         }
       });
@@ -216,6 +217,7 @@ export default {
           this.dType = t;
           this.showSelectObj = true;
           this.$refs.SelectObjRef._datas = val;
+          this.$refs.SelectObjRef.currentPage = 1;
           this.$refs.SelectObjRef.getList();
           break;
         case "edit":

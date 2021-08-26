@@ -22,6 +22,7 @@
       </el-pagination>
       <el-pagination layout="total" :total="total" v-if="isInclude('total')">
       </el-pagination>
+      <!-- <span v-if="isInclude('total')">共{{ total }}条</span> -->
     </div>
     <div class="xy_c">
       <el-pagination
@@ -87,20 +88,20 @@ export default {
     _currentPage: {
       handler: function(n) {
         this.currentPage = n;
-      }
-      // immediate: false
+      },
+      immediate: true
     },
     _pageSize: {
       handler: function(n) {
         this.pageSize = n;
-      }
-      // immediate: false
+      },
+      immediate: true
     },
     _total: {
       handler: function(n) {
         this.total = n;
-      }
-      // immediate: false
+      },
+      immediate: true
     }
   },
   computed: {},

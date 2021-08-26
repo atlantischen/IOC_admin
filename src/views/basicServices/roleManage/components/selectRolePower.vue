@@ -128,26 +128,26 @@ export default {
       this.close();
     },
     sure() {
-      if (this.resetKeys && this.resetKeys.length > 0) {
-        this.$confirm("确认修改“" + this.roleInfo.name + "”角色权限？")
-          .then(_ => {
-            roleMenuApi(
-              { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
-              "put"
-            ).then(r => {
-              if (r.code == 200) {
-                this.$message.success("编辑成功！");
-                this.close();
-              } else {
-                this.$message.error("编辑失败！");
-              }
-            });
-          })
-          .catch(_ => {});
-      } else {
-        this.$message.info("您当前没有做任何权限改变！");
-        this.close();
-      }
+      // if (this.resetKeys && this.resetKeys.length > 0) {
+      this.$confirm("确认修改“" + this.roleInfo.name + "”角色权限？")
+        .then(_ => {
+          roleMenuApi(
+            { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
+            "put"
+          ).then(r => {
+            if (r.code == 200) {
+              this.$message.success("编辑成功！");
+              this.close();
+            } else {
+              this.$message.error("编辑失败！");
+            }
+          });
+        })
+        .catch(_ => {});
+      // } else {
+      //   this.$message.info("您当前没有做任何权限改变！");
+      //   this.close();
+      // }
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);
