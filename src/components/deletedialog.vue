@@ -17,21 +17,35 @@
 </template>
 
 <script>
+import {deleteParkManage} from "@/api/basicServices.js";
+
 export default {
     props:{
       DeletedialogShow:{
         type:Boolean
-      }  
+      },
+      id:{
+        type:String
+
+      } 
     },
     data() {
       return {
-      
       };
     },
 
     methods: {
         handleClick(){
-            this.$emit('handleDelete',true)
+          console.log(this.id);
+          deleteParkManage({ids:this.id}).then(res=>{
+            console.log(res);
+            if(res.code=="200"){
+              this.$message({ message: res.msg, type: 'success',})
+              this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+              this.$emit('update:DeletedialogShow',false)
+
+            }
+          })
         }
     }
   

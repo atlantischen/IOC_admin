@@ -7,15 +7,13 @@ import { getToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL:process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
-
 // request interceptor
 service.interceptors.request.use(
   config => {
     if(config.method==='post' || config.method==='POST'){
-      config.data=qs.stringify(config.data)
+      config.data= config.noQS?config.data:qs.stringify(config.data)
     }
     if (store.getters.token) {
       config.headers['Authorization'] = getToken()

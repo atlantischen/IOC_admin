@@ -111,13 +111,13 @@
       </el-table>
     </div>
     <Pagination :total="paginationTotal"></Pagination>
-    <Parkmangedialog  :dialogShow.sync="dialogShow" :formData="formData"/>
-    <Deletedialog :DeletedialogShow.sync="DeletedialogShow" @handleDelete="handleDelete" ></Deletedialog>
+    <Parkmangedialog  :dialogShow.sync="dialogShow" :type="type"  :formData="formData" @init="init" />
+    <Deletedialog :DeletedialogShow.sync="DeletedialogShow" :id="id" @init="init" ></Deletedialog>
   </div>
 </template>
 
 <script>
-import { getParkManageList,getParkSelect,deleteParkManage,defaultParkManage } from "@/api/basicServices.js";
+import { getParkManageList,getParkSelect,defaultParkManage } from "@/api/basicServices.js";
 import Pagination from "@/components/pagination.vue";
 import Parkmangedialog from "@/components/parkmangedialog.vue";
 import Deletedialog from "@/components/deletedialog.vue";
@@ -133,12 +133,12 @@ export default {
           parkType:'',
           status: "",
       },
+      id:null,
+      type:'add',
       paginationTotal:null,
       dialogShow:false,
       DeletedialogShow:false,
       formData:{
-        title:'',
-        icon:'',
         name:'',
         num:'',
         type:'',
@@ -148,56 +148,29 @@ export default {
         campusStatus:'',
         latitude:'',
         remarks:''
+      },
 
-      }
+      
     };
   },
   components: { Pagination,Deletedialog,Parkmangedialog },
-
   methods: {
     // 删除
     handleDelete(row) {
       this.DeletedialogShow=!this.DeletedialogShow
-      if(!this.DeletedialogShow){
-            deleteParkManage({ids:row.id}).then(res=>{
-            console.log(res);
-      })
-      }
+      this.id= row.id
     },
     // 编辑
     handleEdit(row){
       this.dialogShow=!this.dialogShow
-       this.formData={
-           title:'编辑',
-            icon:'bianji',
-            name:'',
-            num:'',
-            type:'',
-            parentName:'',
-            campusRanks:'',
-            address:'',
-            campusStatus:'',
-            latitude:'',
-            remarks:''
-      }
+      this.type='edit'
+       this.formData={...row}
     },
     // 新增信息
     addClick(){
+      this.type='add'
       this.dialogShow=!this.dialogShow
-      this.formData={
-           title:'新增',
-            icon:'xinzeng',
-            name:'',
-            num:'',
-            type:'',
-            parentName:'',
-            campusRanks:'',
-            address:'',
-            campusStatus:'',
-            latitude:'',
-            remarks:''
-      }
-
+      this.formData={}
     },
     headerStyle({ row, rowIndex }) {
       return "header_style";

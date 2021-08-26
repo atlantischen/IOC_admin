@@ -91,12 +91,19 @@
         </el-form-item>
         <el-form-item label="验证码" prop="code">
           <el-input v-model="ruleForm.code"></el-input>
-          <el-button class="yz_btn" :disabled="disabled"  @click="sendcode">{{btntxt}}</el-button>
+          <el-button class="yz_btn" :disabled="disabled" @click="sendcode">{{
+            btntxt
+          }}</el-button>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary"  size="medium" @click="handleActivation">激 活</el-button>
-        <el-button type="info"  size="medium" @click="centerDialogVisible = false"
+        <el-button type="primary" size="medium" @click="handleActivation"
+          >激 活</el-button
+        >
+        <el-button
+          type="info"
+          size="medium"
+          @click="centerDialogVisible = false"
           >退 出</el-button
         >
       </span>
@@ -105,7 +112,7 @@
 </template>
 
 <script>
-import { getCode,getActivateAccount} from '@/api/user.js'
+import { getCode, getActivateAccount } from "@/api/user.js";
 
 export default {
   name: "Login",
@@ -130,13 +137,13 @@ export default {
         username: "17621210366", //19924919999
         password: "919999"
       },
-       disabled:false,
-        time:5,
-        btntxt:"获取验证码",
+      disabled: false,
+      time: 5,
+      btntxt: "获取验证码",
       ruleForm: {
         name: "",
         phone: "",
-        code: "",
+        code: ""
       },
       loginRules: {
         username: [
@@ -147,18 +154,9 @@ export default {
         ]
       },
       rules: {
-        name: [
-          { required: true, message: "请输入姓名", trigger: "blur" },
-         
-        ],
-         phone: [
-          { required: true, message: "请输入手机号", trigger: "blur" },
-         
-        ],
-         code: [
-          { required: true, message: "请输入验证码", trigger: "blur" },
-         
-        ]
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
+        phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
+        code: [{ required: true, message: "请输入验证码", trigger: "blur" }]
       },
       loading: false,
       passwordType: "password",
@@ -191,15 +189,14 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(res => {
-              console.log(res,'res');
+              console.log(res, "res");
               switch (res.code) {
-                case 'A0203':
+                case "A0203":
                   this.centerDialogVisible = true;
                   console.log("未激活");
                   break;
                 default:
                   this.$router.push({ path: "/" });
-
                   break;
               }
               this.loading = false;
@@ -213,67 +210,63 @@ export default {
         }
       });
     },
-     sendcode(){
-        this.time=5;
-        if(this.ruleForm.phone !=''){
-          this.timer(); 
-          getCode({phone:this.ruleForm.phone}).then(res=>{
-          console.log(res,'res');
-          if(res.code ==='200'){
-              this.$message({
-                message: res.data,
-                type: 'success',
-                duration: 1 * 1000
-              })
-          }
-            
-          })
-        }
-    
-        },
-        //发送手机验证码倒计时
-      timer() {
-        if (this.time > 0) {
-          this.disabled=true;
-          this.time--;
-          this.btntxt=this.time+"秒";
-          setTimeout(this.timer, 1000);
-        } else{
-          this.time=0;
-          this.btntxt="获取验证码";
-          this.disabled=false;
-        }
-        },
-    handleActivation(){
-      this.$refs.ruleForm.validate((valid) => {
-          if (valid) {
-            const {phone,code} = this.ruleForm
-            console.log(phone,code);
-            getActivateAccount({phone:phone,vCode:code}).then(res=>{
-              if(res.code=='200'){
-                this.$message({
-                message: res.msg,
-                type: 'success',
-                duration: 1 * 1000
-              })
-                this.$router.push({ path: "/" });
-
-              }
-            })
-          } else {
-            console.log('error submit!!');
-            return false;
+    sendcode() {
+      this.time = 5;
+      if (this.ruleForm.phone != "") {
+        this.timer();
+        getCode({ phone: this.ruleForm.phone }).then(res => {
+          console.log(res, "res");
+          if (res.code === "200") {
+            this.$message({
+              message: res.data,
+              type: "success",
+              duration: 1 * 1000
+            });
           }
         });
+      }
+    },
+    //发送手机验证码倒计时
+    timer() {
+      if (this.time > 0) {
+        this.disabled = true;
+        this.time--;
+        this.btntxt = this.time + "秒";
+        setTimeout(this.timer, 1000);
+      } else {
+        this.time = 0;
+        this.btntxt = "获取验证码";
+        this.disabled = false;
+      }
+    },
+    handleActivation() {
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          const { phone, code } = this.ruleForm;
+          console.log(phone, code);
+          getActivateAccount({ phone: phone, vCode: code }).then(res => {
+            if (res.code == "200") {
+              this.$message({
+                message: res.msg,
+                type: "success",
+                duration: 1 * 1000
+              });
+              this.$router.push({ path: "/" });
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
 
-      handleClose(){
-        this.$refs.ruleForm.resetFields();
-
-      }
+    handleClose() {
+      this.$refs.ruleForm.resetFields();
+    }
   },
-  beforeDestroy(){
-    clearTimeout(this.timer)
+  beforeDestroy() {
+    clearTimeout(this.timer);
   }
 };
 </script>
@@ -287,13 +280,11 @@ $light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container
-  .login-form{
-      .el-input input {
-    color: $cursor;
+  .login-container .login-form {
+    .el-input input {
+      color: $cursor;
+    }
   }
-  }
- 
 }
 
 /* reset element-ui css */
@@ -363,16 +354,16 @@ $cursor: #fff;
     flex: 1;
     overflow: auto;
   }
-  .demo-ruleForm{
-    .el-input{
+  .demo-ruleForm {
+    .el-input {
       color: #000 !important;
       width: 65%;
     }
-    .el-form-item__content{
+    .el-form-item__content {
       display: flex;
     }
-  
-    .yz_btn{
+
+    .yz_btn {
       margin-left: 20px;
     }
   }
