@@ -275,7 +275,9 @@ export default {
               return r;
             }
           })[0];
-          this.$confirm("确认删除“" + a.name + "”字典项吗？")
+          this.$confirm("确认删除“" + a.name + "”字典项吗？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               if (this.dataDItemList.length == 0) {
                 adminDictApi({ ids: a.id }, "delete").then(r => {
@@ -348,7 +350,13 @@ export default {
           });
           break;
         default:
-          this.$confirm("确认删除“" + val.name + "”字典数据项吗？")
+          this.$confirm(
+            "确认删除“" + val.name + "”字典数据项吗？",
+            "操作确认",
+            {
+              type: "warning"
+            }
+          )
             .then(_ => {
               adminDictItemApi({ ids: val.id }, "delete").then(r => {
                 if (r.code == 200) {

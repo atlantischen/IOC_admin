@@ -266,7 +266,9 @@ export default {
         alldels.push(...this.pageObjSave[i].del);
       }
       console.log(allAdds);
-      this.$confirm("确认修改选择角色？")
+      this.$confirm("确认修改选择角色？", "操作确认", {
+        type: "warning"
+      })
         .then(_ => {
           userRoleApi(
             {

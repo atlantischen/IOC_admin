@@ -210,7 +210,9 @@ export default {
           this.dType = t;
           break;
         default:
-          this.$confirm("确认删除该附件？")
+          this.$confirm("确认删除该附件？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               // this.$message.success("删除成功！");
             })

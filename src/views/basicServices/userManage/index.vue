@@ -236,7 +236,6 @@
 </template>
 
 <script>
-import { getTrue, addLevel } from "@/utils/method";
 import { adminUserApi, cgStatusApi, userDetailApi } from "@/api/userMgt";
 import AddEdit from "./components/addEditUser.vue";
 import SelectRole from "./components/selectRole.vue";
@@ -323,7 +322,11 @@ export default {
           break;
         case "noUse":
           this.$confirm(
-            "确认" + (val.status == 1 ? "禁" : "启") + "用该用户吗？"
+            "确认" + (val.status == 1 ? "禁" : "启") + "用该用户吗？",
+            "操作确认",
+            {
+              type: "warning"
+            }
           )
             .then(_ => {
               cgStatusApi({ id: val.id }).then(r => {
@@ -352,7 +355,9 @@ export default {
           });
           break;
         case "del":
-          this.$confirm("确认删除“" + val.username + "”用户吗？")
+          this.$confirm("确认删除“" + val.username + "”用户吗？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               adminUserApi({ id: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {

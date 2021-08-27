@@ -178,7 +178,9 @@ export default {
       );
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
+      return this.$confirm(`确定移除 ${file.name}？`, "操作确认", {
+        type: "warning"
+      });
     }
   }
 };

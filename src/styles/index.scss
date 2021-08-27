@@ -288,15 +288,10 @@ button,input{
     }
   }
   .table-actived{
-    background: #0ff;
+    background: #00FFD8;
   }
   tbody{
     tr{
-      // &.actived{
-      //   th.is-leaf{
-      //     background: #0ff;
-      //   }
-      // }
       &:nth-last-child(1){
         td{
           border-bottom:none;
@@ -417,3 +412,53 @@ button,input{
   }
 }
 
+
+
+// .el-message  css
+.el-message-box{
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(101, 114, 125, 0.76);
+  box-shadow: 0px 1px 6px 0px rgba(50, 60, 70, 0.95);
+  border-radius: 5px 5px 5px 5px;
+  .el-message-box__message{
+    font-size: 22px;
+  }
+  .el-message-box__header{
+    font-size: 16px;
+    color: #252525;
+    padding: 15px;
+  }
+  .el-message-box__content{
+    border-top: 2px solid rgba(174, 172, 172, 0.2);
+    border-bottom: 2px solid rgba(174, 172, 172, 0.2);
+    padding: 50px 0;
+  }
+  .el-message-box__container{
+    margin: 0 60px;
+  }
+  .el-message-box__status.el-icon-warning{
+    font-size: 30px !important;
+    color: #FFA800;
+  }
+  .el-message-box__status+.el-message-box__message{
+    padding-left: 45px;
+  }
+  .el-message-box__btns{
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 10px;
+    button{
+      margin: 0 30px;
+      border: 0;
+      padding:0;
+    }
+  }
+  .el-button--default{
+    @include w_h(80px,25px);
+    @include btn_color(#69809e,#889eb6);
+  }
+  .el-button--primary{
+    @include w_h(80px,25px);
+    @include btn_color(#0695e5,#1da6df);
+  }
+}

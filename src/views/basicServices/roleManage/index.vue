@@ -238,7 +238,10 @@ export default {
           this.showSelectObj = false;
           break;
         default:
-          this.$confirm("确认删除“" + val.name + "”角色吗？")
+          // val.name
+          this.$confirm("确认删除该角色吗？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               adminRoleApi({ ids: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {

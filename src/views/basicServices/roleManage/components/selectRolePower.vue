@@ -129,7 +129,13 @@ export default {
     },
     sure() {
       // if (this.resetKeys && this.resetKeys.length > 0) {
-      this.$confirm("确认修改“" + this.roleInfo.name + "”角色权限？")
+      this.$confirm(
+        "确认修改“" + this.roleInfo.name + "”角色权限？",
+        "操作确认",
+        {
+          type: "warning"
+        }
+      )
         .then(_ => {
           roleMenuApi(
             { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
