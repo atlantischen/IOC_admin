@@ -1,7 +1,8 @@
 <template>
   <!-- 附件管理 -->
-  <div id="attachment">
+  <div id="attachment" class="comStyles">
     <div class="header_btns x_c">
+      <div class="hb_left"></div>
       <button class="md_bt_df" @click="handleFun('add')">
         <i class="el-icon-plus"></i> 新增
       </button>
@@ -231,13 +232,5 @@ export default {
 
 <style lang="scss" scoped>
 #attachment {
-  .header_btns {
-    justify-content: flex-end;
-    margin: 20px 53px 20px 57px;
-  }
-  .a_content {
-    width: calc(100%-110px);
-    margin: 20px 53px 20px 57px;
-  }
 }
 </style>

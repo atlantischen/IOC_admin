@@ -1,18 +1,22 @@
 <template>
   <!-- 角色管理 -->
-  <div id="roleManage">
+  <div id="roleManage" class="comStyles">
     <div class="header_btns x_c">
-      <div class="">
-        机构名称 <i></i>
-        <el-input
-          class="k_input"
-          placeholder="请输入机构名称"
-          v-model="searchContent"
-        ></el-input
-        ><i></i>
-        <button class="md_bt_gy" @click="initD(searchContent)">
-          查询
-        </button>
+      <div class="hb_left">
+        <div>
+          <span>
+            机构名称 <i></i>
+            <el-input
+              class="k_input"
+              placeholder="请输入机构名称"
+              v-model="searchContent"
+            ></el-input
+            ><i></i>
+            <button class="md_bt_gy" @click="initD(searchContent)">
+              查询
+            </button>
+          </span>
+        </div>
       </div>
       <button class="md_bt_df" @click="handleFun('add')">
         <i class="el-icon-plus"></i> 新增
@@ -229,7 +233,12 @@ export default {
             }
           });
           break;
-        case "del":
+        case "close":
+          this.showD = false;
+          this.showRolePower = false;
+          this.showSelectObj = false;
+          break;
+        default:
           this.$confirm("确认删除“" + val.name + "”角色吗？")
             .then(_ => {
               adminRoleApi({ ids: val.id }, "DELETE").then(r => {
@@ -238,28 +247,6 @@ export default {
                   this.$message.success("删除成功！");
                 }
               });
-            })
-            .catch(_ => {});
-          break;
-        case "close":
-          this.showD = false;
-          this.showRolePower = false;
-          this.showSelectObj = false;
-          break;
-        case "look":
-          if (val.type === "jpg") {
-            window.open(
-              "https://img0.baidu.com/it/u=103721101,4076571305&fm=26&fmt=auto&gp=0.jpg"
-            );
-          } else {
-            // 除图片，其它实现下载
-          }
-          this.dType = t;
-          break;
-        default:
-          this.$confirm("确认删除该附件？")
-            .then(_ => {
-              // this.$message.success("删除成功！");
             })
             .catch(_ => {});
           break;
@@ -279,16 +266,5 @@ export default {
 
 <style lang="scss" scoped>
 #roleManage {
-  .header_btns {
-    justify-content: space-between;
-    margin: 20px 53px 20px 57px;
-    i {
-      padding: 0 5px;
-    }
-  }
-  .a_content {
-    width: calc(100%-110px);
-    margin: 20px 53px 20px 57px;
-  }
 }
 </style>

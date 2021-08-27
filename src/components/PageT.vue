@@ -111,11 +111,11 @@ export default {
     },
     handleSizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
-      this.$emit("size", v);
+      this.$emit("size", this.pageSize);
     },
     handleCurrentChange(v) {
       this.currentPage = v <= 0 ? 1 : v;
-      this.$emit("current", v);
+      this.$emit("current", this.currentPage);
     }
   }
 };

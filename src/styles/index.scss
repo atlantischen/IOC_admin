@@ -3,6 +3,7 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+@import '~@/assets/iconfont/iconfont.css';
 
 body {
   height: 100%;
@@ -99,6 +100,12 @@ div:focus {
 ._red{
   color: #fa3a15;
 }
+._yg{
+  color: #40dd21;
+}
+._grey{
+  color: #aaa;
+}
 
 
 
@@ -129,6 +136,7 @@ button,input{
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
   background: transparent;
+  white-space: nowrap;
 }
 
 @mixin btn_com{
@@ -172,6 +180,90 @@ button,input{
   @include w_h(100px,32px);
   font-size: 14px;
 }
+
+
+// comStyles
+.comStyles{
+  .header_btns {
+    font-size: 14px;
+    justify-content: space-between;
+    margin: 20px 53px 20px 57px;
+    .hb_left {
+      & >div{
+        padding: 5px 0;
+      }
+      & >div> span {
+        display: inline-block;
+        padding-right: 40px;
+        ._n{
+          font-weight: 500;
+          padding-right: 15px;
+        }
+      }
+    }
+    i {
+      padding: 0 5px;
+    }
+    .w_160{
+      width: 160px;
+    }
+    .w_200{
+      width: 200px;
+    }
+    .el-date-editor{
+      height:30px;
+      .el-input__prefix, .el-input__suffix{
+        left: 82%;
+      }
+      .el-input__prefix{
+        .el-icon-time{
+          font-size: 16px;
+          color: #000;
+          font-family: "iconfont" !important;
+        }
+        .el-icon-time:before{
+          content: "\e63c" ;
+        }
+      }
+      .el-input__suffix{
+        color: transparent;
+      }
+      .el-icon-circle-close{
+        font-size: 24px;
+        padding: 0;
+      }
+    }
+    .el-select {
+      height: 30px;
+      .el-input {
+        height: 100%;
+      }
+      .el-input__suffix{
+        top: 3px;
+        height: 24px;
+        background: linear-gradient(0deg, #AABED0, #778EA9);
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 2px;
+        .el-select__caret{
+          color: #fff;
+          line-height: 22px;
+        }
+      }
+    }
+    .el-input__icon{
+      line-height: 30px;
+    }
+    .el-input__inner {
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .a_content {
+    width: calc(100%-110px);
+    margin: 20px 53px 20px 57px;
+  }
+}
+
 
 // table css
 .TabelOne{
