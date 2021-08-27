@@ -19,7 +19,9 @@
       class="demo-ruleForm"
     >
       <el-form-item label="姓名:">
-        <span>{{ _datas.username }}({{ _datas.phone || "-" }})</span>
+        <span v-if="_datas"
+          >{{ _datas.username }}({{ _datas.phone || "-" }})</span
+        >
       </el-form-item>
       <el-form-item label="新密码" prop="password">
         <el-input
@@ -45,13 +47,16 @@ export default {
     },
     _type: {
       type: String
+    },
+    _datas: {
+      typeof: Object,
+      default: () => {}
     }
   },
   data() {
     return {
       Visible: false,
       ruleForm: {},
-      _datas: {},
       rules: {
         password: [{ required: true, message: "请输入新密码", trigger: "blur" }]
       }

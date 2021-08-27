@@ -219,7 +219,6 @@
     />
     <SelectRole
       ref="selectRoleRef"
-      :roleInfo="roleInfo"
       :_datas="PowerIds"
       :_type="dType"
       :_show="showSelectRole"
@@ -227,8 +226,8 @@
     />
     <ResetPW
       ref="restPwRef"
-      :_datas="roleInfo"
       :_type="dType"
+      :_datas="userInfo"
       :_show="showRestPw"
       @close="handleFun"
       @refresh="initD"
@@ -277,7 +276,7 @@ export default {
       dType: "add",
       editDatas: {},
       PowerIds: null,
-      roleInfo: null
+      userInfo: null
     };
   },
   created() {
@@ -313,7 +312,7 @@ export default {
         case "resetPW":
           this.dType = t;
           this.showRestPw = true;
-          this.$refs.restPwRef._datas = val;
+          this.userInfo = val;
           break;
         case "role":
           this.dType = t;

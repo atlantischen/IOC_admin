@@ -45,7 +45,6 @@
 
 <script>
 import { roleMenuApi } from "@/api/role";
-import { addLevel } from "@/utils/method";
 export default {
   name: "selectRolePower",
   props: {
@@ -112,7 +111,8 @@ export default {
       immediate: false
     },
     _datas: {
-      handler: function(n) {
+      handler: function(n, o) {
+        this.defaultKeys = [];
         this.defaultKeys = this._datas;
       },
       deep: true
@@ -151,8 +151,8 @@ export default {
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);
-      let _a = null;
-      _a = keys.halfCheckedKeys;
+      console.log("111111");
+      let _a = keys.halfCheckedKeys;
       this.checkStrictly = false;
       let _i = _a.indexOf("all");
       if (_i > -1) {
@@ -204,13 +204,13 @@ export default {
         top: 8px;
       }
       .el-checkbox__inner {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         border-radius: 3px;
         overflow: hidden;
         &::after {
-          width: 5px;
-          height: 9px;
+          width: 4px;
+          height: 8px;
           top: 2px;
           left: 6px;
         }
@@ -234,17 +234,18 @@ export default {
         color: #000;
       }
       .el-tree-node__expand-icon.is-leaf {
-        // color: #c0c4cc;
         color: #000;
         cursor: default;
       }
       .el-tree-node__children {
         .el-tree-node__children {
           .el-tree-node__children {
-            .el-icon-caret-right::before {
-              font-family: "iconfont" !important;
-              content: "\ea18";
-              color: #000;
+            .el-tree-node__children {
+              .el-icon-caret-right::before {
+                font-family: "iconfont" !important;
+                content: "\ea18";
+                color: #000;
+              }
             }
           }
         }

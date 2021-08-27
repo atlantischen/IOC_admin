@@ -61,8 +61,11 @@
           <el-input placeholder="" v-model="ruleForm.name"></el-input
         ></el-form-item>
         <el-form-item label="附件路径" prop="from">
-          <el-input placeholder="" disabled:
-          disabled="true" v-model="ruleForm.from"></el-input>
+          <el-input
+            placeholder=""
+            :disabled="true"
+            v-model="ruleForm.from"
+          ></el-input>
         </el-form-item>
         <el-form-item label="附件备注" prop="remark">
           <el-input
@@ -100,10 +103,11 @@ export default {
     return {
       Visible: false,
       ruleForm: {},
+      allTypes: [],
       //
       fileList: [
         // {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
-        ],
+      ],
       rules: {
         file: [{ required: true, message: "请选择文件", trigger: "blur" }]
       }
@@ -167,10 +171,14 @@ export default {
       console.log(file);
     },
     handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+      this.$message.warning(
+        `当前限制选择 3 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
     },
     beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+      return this.$confirm(`确定移除 ${file.name}？`);
     }
   }
 };

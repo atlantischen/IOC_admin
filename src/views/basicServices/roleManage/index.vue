@@ -201,9 +201,9 @@ export default {
           this.showRolePower = true;
           this.dType = t;
           this.roleInfo = val;
+          this.$refs.rolePowerRef.checkStrictly = true;
           roleMenuApi({ roleId: val.id }).then(r => {
             if (r.code == 200) {
-              this.$refs.rolePowerRef.checkStrictly = true;
               this.$refs.rolePowerRef.menuDatas = [
                 {
                   name: "全部",
@@ -212,7 +212,6 @@ export default {
                   children: addLevel(r.data)
                 }
               ];
-              console.log(this.$refs.rolePowerRef.menuDatas);
               this.PowerIds = getTrue(r.data, "choice");
             }
           });
