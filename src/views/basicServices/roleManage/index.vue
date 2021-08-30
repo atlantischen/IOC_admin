@@ -12,7 +12,7 @@
               v-model="searchContent"
             ></el-input
             ><i></i>
-            <button class="md_bt_gy" @click="initD(searchContent)">
+            <button class="md_bt_gy" @click="initD('search')">
               查询
             </button>
           </span>
@@ -142,12 +142,7 @@
 
 <script>
 import { getTrue, addLevel } from "@/utils/method";
-import {
-  adminRoleApi,
-  adminRoleInfoApi,
-  roleMenuApi,
-  roleUserApi
-} from "@/api/role";
+import { adminRoleApi, adminRoleInfoApi, roleMenuApi } from "@/api/role";
 import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
@@ -175,12 +170,12 @@ export default {
     this.initD();
   },
   methods: {
-    initD(val) {
+    initD() {
       this.dLoading = true;
       adminRoleApi({
-        limit: "",
-        name: val ? val : "",
-        page: "",
+        limit: this.pageSize,
+        name: this.searchContent,
+        page: this.currentPage,
         queryMode: "page"
       }).then(r => {
         if (r.code == 200) {
@@ -237,6 +232,11 @@ export default {
           this.showRolePower = false;
           this.showSelectObj = false;
           break;
+        case "search":
+          this.pageSize = 10;
+          this.currentPage = 1;
+          this.initD();
+          break;
         default:
           // val.name
           this.$confirm("确认删除该角色吗？", "操作确认", {
@@ -255,11 +255,11 @@ export default {
       }
     },
     sizeChange(v) {
-      this.pageSize = v <= 0 ? 10 : v;
+      this.pageSize = v;
       this.initD();
     },
     currentChange(v) {
-      this.currentPage = v <= 0 ? 1 : v;
+      this.currentPage = v;
       this.initD();
     }
   }

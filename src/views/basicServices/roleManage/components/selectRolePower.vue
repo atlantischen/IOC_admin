@@ -80,13 +80,20 @@ export default {
         //       children: [
         //         {
         //           id: 3,
-        //           label: "2222",
+        //           label: "3333",
         //           mLevel: 3,
         //           children: [
         //             {
         //               id: 4,
-        //               label: "2222",
-        //               mLevel: 4
+        //               label: "44444",
+        //               mLevel: 4,
+        //               children: [
+        //                 {
+        //                   id: 5,
+        //                   label: "55555",
+        //                   mLevel: 5
+        //                 }
+        //               ]
         //             }
         //           ]
         //         }
@@ -128,7 +135,6 @@ export default {
       this.close();
     },
     sure() {
-      // if (this.resetKeys && this.resetKeys.length > 0) {
       this.$confirm(
         "确认修改“" + this.roleInfo.name + "”角色权限？",
         "操作确认",
@@ -150,10 +156,6 @@ export default {
           });
         })
         .catch(_ => {});
-      // } else {
-      //   this.$message.info("您当前没有做任何权限改变！");
-      //   this.close();
-      // }
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);

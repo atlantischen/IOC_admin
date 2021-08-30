@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import { checkPhone } from "@/utils/validate";
 import { adminUserApi2 } from "@/api/userMgt";
 export default {
   name: "addEditDicType",
@@ -99,7 +100,15 @@ export default {
         }
       ],
       rules: {
-        phone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+        phone: [
+          { required: true, message: "请输入联系电话", trigger: "blur" },
+          {
+            type: "number",
+            validator: checkPhone,
+            message: "请输入有效手机号号码",
+            trigger: ["blur", "change"]
+          }
+        ],
         username: [
           { required: true, message: "请输入用户姓名", trigger: "blur" }
         ]
