@@ -54,6 +54,24 @@
     // margin-left: 55px;
   }
 }
+// 时间选择器
+.my_datePicker{
+  width: 190px !important;
+  .el-input__prefix{
+    left: 82%;
+
+    .el-icon-time{
+      font-size: 16px;
+      color: #000;
+      font-family: "iconfont" !important;
+    }
+    .el-icon-time:before{
+      content: "\e63c" ;
+      position: absolute;
+      right: 0;
+    }
+  }
+}
 .my_dialog{
   .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
    content: '';

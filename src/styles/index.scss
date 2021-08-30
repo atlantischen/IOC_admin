@@ -3,6 +3,7 @@
 @import './transition.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
+@import '~@/assets/iconfont/iconfont.css';
 
 body {
   height: 100%;
@@ -99,6 +100,12 @@ div:focus {
 ._red{
   color: #fa3a15;
 }
+._yg{
+  color: #40dd21;
+}
+._grey{
+  color: #aaa;
+}
 
 
 
@@ -129,6 +136,7 @@ button,input{
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   cursor: pointer;
   background: transparent;
+  white-space: nowrap;
 }
 
 @mixin btn_com{
@@ -173,6 +181,90 @@ button,input{
   font-size: 14px;
 }
 
+
+// comStyles
+.comStyles{
+  .header_btns {
+    font-size: 14px;
+    justify-content: space-between;
+    margin: 20px 53px 20px 57px;
+    .hb_left {
+      & >div{
+        padding: 5px 0;
+      }
+      & >div> span {
+        display: inline-block;
+        padding-right: 40px;
+        ._n{
+          font-weight: 500;
+          padding-right: 15px;
+        }
+      }
+    }
+    i {
+      padding: 0 5px;
+    }
+    .w_160{
+      width: 160px;
+    }
+    .w_200{
+      width: 200px;
+    }
+    .el-date-editor{
+      height:30px;
+      .el-input__prefix, .el-input__suffix{
+        left: 82%;
+      }
+      .el-input__prefix{
+        .el-icon-time{
+          font-size: 16px;
+          color: #000;
+          font-family: "iconfont" !important;
+        }
+        .el-icon-time:before{
+          content: "\e63c" ;
+        }
+      }
+      .el-input__suffix{
+        color: transparent;
+      }
+      .el-icon-circle-close{
+        font-size: 24px;
+        padding: 0;
+      }
+    }
+    .el-select {
+      height: 30px;
+      .el-input {
+        height: 100%;
+      }
+      .el-input__suffix{
+        top: 3px;
+        height: 24px;
+        background: linear-gradient(0deg, #AABED0, #778EA9);
+        border: 1px solid rgba(255, 255, 255, 0.26);
+        border-radius: 2px;
+        .el-select__caret{
+          color: #fff;
+          line-height: 22px;
+        }
+      }
+    }
+    .el-input__icon{
+      line-height: 30px;
+    }
+    .el-input__inner {
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .a_content {
+    width: calc(100%-110px);
+    margin: 20px 53px 20px 57px;
+  }
+}
+
+
 // table css
 .TabelOne{
   background: transparent;
@@ -196,15 +288,10 @@ button,input{
     }
   }
   .table-actived{
-    background: #0ff;
+    background: #00FFD8;
   }
   tbody{
     tr{
-      // &.actived{
-      //   th.is-leaf{
-      //     background: #0ff;
-      //   }
-      // }
       &:nth-last-child(1){
         td{
           border-bottom:none;
@@ -248,6 +335,9 @@ button,input{
     box-shadow: 0px 0px 3px 0px #98ABC2;
     border-radius: 5px;
   }
+}
+.TabelThree{
+  
 }
 
 
@@ -306,73 +396,69 @@ button,input{
     color: #F56C6C;
   }
   // 
-    .el-dialog__body {
-      padding: 30px 100px !important;
-    }
-    .el-input,.el-select {
+  .el-dialog__body {
+      padding: 30px 100px ;
+  }
+  .el-input,.el-select {
       width: 100%;
       .el-input__inner {
         height: 30px;
       }
-    }
+  }
+  .dLog_content {
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    overflow: hidden;
+  }
 }
 
 
-// page
-.pageTool{
-  padding: 20px 0 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  color: #2e2e2e;
-  .el-pagination{
+
+// .el-message  css
+.el-message-box{
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(101, 114, 125, 0.76);
+  box-shadow: 0px 1px 6px 0px rgba(50, 60, 70, 0.95);
+  border-radius: 5px 5px 5px 5px;
+  .el-message-box__message{
+    font-size: 22px;
+  }
+  .el-message-box__header{
+    font-size: 16px;
+    color: #252525;
+    padding: 15px;
+  }
+  .el-message-box__content{
+    border-top: 2px solid rgba(174, 172, 172, 0.2);
+    border-bottom: 2px solid rgba(174, 172, 172, 0.2);
+    padding: 50px 0;
+  }
+  .el-message-box__container{
+    margin: 0 60px;
+  }
+  .el-message-box__status.el-icon-warning{
+    font-size: 30px !important;
+    color: #FFA800;
+  }
+  .el-message-box__status+.el-message-box__message{
+    padding-left: 45px;
+  }
+  .el-message-box__btns{
     display: flex;
-    align-items: center;
-    .el-pagination__total{
-      color: #2e2e2e;
-      font-weight: bold;
-    }
-    .el-pagination__rightwrapper{
-      display: flex;
-    }
+    justify-content: center;
+    padding: 20px 0 10px;
     button{
-      @include w_h(60px,25px);
-      line-height: 25px;
+      margin: 0 30px;
+      border: 0;
       padding:0;
     }
-    .bt_actived{
-      @include btn_color(#0695e5,#1da6df);
-    }
-    .bt_df,.btn-prev,.btn-next{
-      @include btn_color(#69809e,#889eb6);
-    }
-    .btn-first{
-      margin: 0 15px 0 20px;
-    }
-    .btn-next{
-      margin-left: 15px;
-    }
-    .el-pager{
-      li{
-        min-width: 25px;
-        height: 25px;
-        background: #bbbbbb;
-        border-radius: 50%;
-        color: #fff;
-        padding: 0;
-        margin-left: 15px;
-        &.active{
-          background: #008aff;
-        }
-      }
-    }
-    .pg_input{
-      width: 30px;
-      border: 1px solid #2e2e2e;
-      text-align: center;
-      border-radius: 2px;
-      padding: 2px 0;
-      margin: 0 3px;
-    }
+  }
+  .el-button--default{
+    @include w_h(80px,25px);
+    @include btn_color(#69809e,#889eb6);
+  }
+  .el-button--primary{
+    @include w_h(80px,25px);
+    @include btn_color(#0695e5,#1da6df);
   }
 }

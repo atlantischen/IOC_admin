@@ -9,7 +9,7 @@
   >
     <div slot="title" class="header-title">
       <i class="iconfont icon-jiaosepeizhi"></i>
-      <span>选择对象</span>
+      <span>选择角色</span>
     </div>
     <div class="selectObj dLog_content">
       <div class="selectObj_h x_c">
@@ -46,14 +46,19 @@
             <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="username" label="用户名" show-overflow-tooltip>
+        <el-table-column prop="name" label="角色名称" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.username }}
+            {{ scope.row.name }}
           </template>
         </el-table-column>
-        <el-table-column prop="phone" label="手机号" show-overflow-tooltip>
+        <el-table-column prop="code" label="角色编码" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.code }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="remark" label="备注" show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{ scope.row.remark }}
           </template>
         </el-table-column>
       </el-table>
@@ -77,7 +82,7 @@
 </template>
 
 <script>
-import { roleUserApi } from "@/api/role";
+import { userRoleApi } from "@/api/userMgt";
 import { getDiffArr, getComArr, getIds } from "@/utils/method.js";
 export default {
   name: "selectObj",
@@ -116,22 +121,18 @@ export default {
   },
   methods: {
     getList() {
-      // this.$nextTick().then(() => {
-      //   this.$refs.tableRef.clearSelection();
-      // });
       this.dataList = [];
       this.dLoading = true;
-      roleUserApi({
+      userRoleApi({
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
-        roleId: this._datas.id,
-        username: this.searchContent
+        userId: this._datas.id,
+        name: this.searchContent
       }).then(r => {
         if (r.code == 200) {
           this.dataList = r.data;
           this.total = r.total;
-          this.dLoading = false;
           if (!this.pageObjSave) {
             // 自定义每页存储（add：新增，del: 已默认中需删除de，df：默认）
             this.pageObjSave = [];
@@ -234,6 +235,7 @@ export default {
           }
           console.log(this.pageObjSave);
         }
+        this.dLoading = false;
       });
     },
     close() {
@@ -264,15 +266,15 @@ export default {
         alldels.push(...this.pageObjSave[i].del);
       }
       console.log(allAdds);
-      this.$confirm("确认修改选择对象？", "操作确认", {
+      this.$confirm("确认修改选择角色？", "操作确认", {
         type: "warning"
       })
         .then(_ => {
-          roleUserApi(
+          userRoleApi(
             {
-              roleId: this._datas.id,
-              addIds: `${getIds(allAdds)}`,
-              deleteIds: `${getIds(alldels)}`
+              userId: this._datas.id,
+              addRoleIds: `${getIds(allAdds)}`,
+              deleteRoleIds: `${getIds(alldels)}`
             },
             "put"
           ).then(r => {

@@ -134,45 +134,13 @@
               </div>
             </el-table-column>
           </el-table>
-          <div class="pageTool">
-            <el-pagination layout="slot">
-              <span
-                >第
-                <input
-                  class="pg_input"
-                  v-model.number="currentPage"
-                  @change="handleCurrentChange(currentPage)"/>页
-                <i style="padding: 0 10px;"></i>
-                每页<input
-                  class="pg_input"
-                  v-model.number="pageSize"
-                  @change="handleSizeChange(pageSize)"
-              /></span>
-            </el-pagination>
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-size="pageSize"
-              layout=" total, slot, prev, pager, next"
-              :total="total"
-            >
-              <button
-                class="bt_actived btn-first"
-                @click="handleCurrentChange(1)"
-              >
-                首页
-              </button>
-            </el-pagination>
-            <el-pagination layout="slot">
-              <button
-                class="bt_df"
-                @click="handleCurrentChange(Math.ceil(total / pageSize))"
-              >
-                末页
-              </button>
-            </el-pagination>
-          </div>
+          <PageT
+            :_currentPage="currentPage"
+            :_pageSize="pageSize"
+            :_total="total"
+            @size="sizeChange"
+            @current="currentChange"
+          />
         </div>
       </section>
     </div>
@@ -307,7 +275,9 @@ export default {
               return r;
             }
           })[0];
-          this.$confirm("确认删除“" + a.name + "”字典项吗？")
+          this.$confirm("确认删除“" + a.name + "”字典项吗？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               if (this.dataDItemList.length == 0) {
                 adminDictApi({ ids: a.id }, "delete").then(r => {
@@ -380,7 +350,13 @@ export default {
           });
           break;
         default:
-          this.$confirm("确认删除“" + val.name + "”字典数据项吗？")
+          this.$confirm(
+            "确认删除“" + val.name + "”字典数据项吗？",
+            "操作确认",
+            {
+              type: "warning"
+            }
+          )
             .then(_ => {
               adminDictItemApi({ ids: val.id }, "delete").then(r => {
                 if (r.code == 200) {
@@ -395,12 +371,12 @@ export default {
           break;
       }
     },
-    handleSizeChange(v) {
-      this.pageSize = v <= 0 ? 10 : v;
+    sizeChange(v) {
+      this.pageSize = v;
       this.initD();
     },
-    handleCurrentChange(v) {
-      this.currentPage = v <= 0 ? 1 : v;
+    currentChange(v) {
+      this.currentPage = v;
       this.initD();
     }
   }

@@ -3,15 +3,28 @@
     <div class="header">
       <div class="timer">
         <span class="title">创建时间</span>
-        <el-date-picker
-          v-model="searchData.value"
-          type="datetimerange"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-        >
-        </el-date-picker>
+       <el-date-picker
+             class="my_datePicker"
+              v-model="searchData.startTime"
+              type="datetime"
+              :clearable="false"
+              format="yyyy-MM-dd hh:mm"
+              value-format="yyyy-MM-dd hh:mm:ss"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
+            <i></i> 至 <i></i>
+            <el-date-picker
+             class="my_datePicker"
+              v-model="searchData.endTime"
+              type="datetime"
+              :clearable="false"
+
+              format="yyyy-MM-dd hh:mm"
+              value-format="yyyy-MM-dd hh:mm:ss"
+              placeholder="选择日期时间"
+            >
+            </el-date-picker>
       </div>
       <el-input
         class="input "
@@ -158,7 +171,8 @@ export default {
       tableData: [],
       typeOptions: [],
       searchData: {
-        value: [],
+        startTime:'',
+        endTime:'',
         input: "",
         parkType: "",
         status: ""
@@ -250,13 +264,13 @@ export default {
       );
     },
     queryClick() {
-      if (this.searchData.value) {
+      if (this.searchData.startTime && this.searchData.endTime) {
         this.init({
           limit: "10",
           page: "1",
           queryMode: "page",
-          startTime: this.searchData.value[0],
-          endTime: this.searchData.value[1],
+          startTime: this.searchData.startTime,
+          endTime: this.searchData.endTime,
           campusName: this.searchData.input
         });
       } else {

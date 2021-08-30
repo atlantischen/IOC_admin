@@ -1,18 +1,22 @@
 <template>
   <!-- 角色管理 -->
-  <div id="roleManage">
+  <div id="roleManage" class="comStyles">
     <div class="header_btns x_c">
-      <div class="">
-        机构名称 <i></i>
-        <el-input
-          class="k_input"
-          placeholder="请输入机构名称"
-          v-model="searchContent"
-        ></el-input
-        ><i></i>
-        <button class="md_bt_gy" @click="initD(searchContent)">
-          查询
-        </button>
+      <div class="hb_left">
+        <div>
+          <span>
+            机构名称 <i></i>
+            <el-input
+              class="k_input"
+              placeholder="请输入机构名称"
+              v-model="searchContent"
+            ></el-input
+            ><i></i>
+            <button class="md_bt_gy" @click="initD(searchContent)">
+              查询
+            </button>
+          </span>
+        </div>
       </div>
       <button class="md_bt_df" @click="handleFun('add')">
         <i class="el-icon-plus"></i> 新增
@@ -100,42 +104,14 @@
           </div>
         </el-table-column>
       </el-table>
-      <div class="pageTool">
-        <el-pagination layout="slot">
-          <span
-            >第
-            <input
-              class="pg_input"
-              v-model.number="currentPage"
-              @change="handleCurrentChange(currentPage)"/>页
-            <i style="padding: 0 10px;"></i>
-            每页<input
-              class="pg_input"
-              v-model.number="pageSize"
-              @change="handleSizeChange(pageSize)"
-          /></span>
-        </el-pagination>
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="pageSize"
-          layout=" total, slot, prev, pager, next"
-          :total="total"
-        >
-          <button class="bt_actived btn-first" @click="handleCurrentChange(1)">
-            首页
-          </button>
-        </el-pagination>
-        <el-pagination layout="slot">
-          <button
-            class="bt_df"
-            @click="handleCurrentChange(Math.ceil(total / pageSize))"
-          >
-            末页
-          </button>
-        </el-pagination>
-      </div>
+      <PageT
+        :between="true"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
     </div>
     <AddEdit
       ref="addEditRef"
@@ -146,16 +122,16 @@
       @refresh="initD"
     />
     <RolePower
-      ref="addEditRef"
-      :_datas="editDatas"
+      ref="rolePowerRef"
+      :roleInfo="roleInfo"
+      :_datas="PowerIds"
       :_type="dType"
       :_show="showRolePower"
       @close="handleFun"
-      @refresh="initD"
     />
     <SelectObj
-      ref="addEditRef"
-      :_datas="editDatas"
+      ref="SelectObjRef"
+      :_datas="roleInfo"
       :_type="dType"
       :_show="showSelectObj"
       @close="handleFun"
@@ -165,7 +141,13 @@
 </template>
 
 <script>
-import { adminRoleApi, adminRoleInfoApi } from "@/api/role";
+import { getTrue, addLevel } from "@/utils/method";
+import {
+  adminRoleApi,
+  adminRoleInfoApi,
+  roleMenuApi,
+  roleUserApi
+} from "@/api/role";
 import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
@@ -184,7 +166,9 @@ export default {
       showRolePower: false,
       showSelectObj: false,
       dType: "add",
-      editDatas: {}
+      editDatas: {},
+      PowerIds: null,
+      roleInfo: null
     };
   },
   created() {
@@ -192,6 +176,7 @@ export default {
   },
   methods: {
     initD(val) {
+      this.dLoading = true;
       adminRoleApi({
         limit: "",
         name: val ? val : "",
@@ -200,6 +185,8 @@ export default {
       }).then(r => {
         if (r.code == 200) {
           this.dataList = r.data;
+          this.total = r.total;
+          this.dLoading = false;
         }
       });
     },
@@ -213,10 +200,28 @@ export default {
         case "power":
           this.showRolePower = true;
           this.dType = t;
+          this.roleInfo = val;
+          this.$refs.rolePowerRef.checkStrictly = true;
+          roleMenuApi({ roleId: val.id }).then(r => {
+            if (r.code == 200) {
+              this.$refs.rolePowerRef.menuDatas = [
+                {
+                  name: "全部",
+                  title: "全部",
+                  id: "all",
+                  children: addLevel(r.data)
+                }
+              ];
+              this.PowerIds = getTrue(r.data, "choice");
+            }
+          });
           break;
         case "obj":
-          this.showSelectObj = true;
           this.dType = t;
+          this.showSelectObj = true;
+          this.$refs.SelectObjRef._datas = val;
+          this.$refs.SelectObjRef.currentPage = 1;
+          this.$refs.SelectObjRef.getList();
           break;
         case "edit":
           this.showD = true;
@@ -227,8 +232,16 @@ export default {
             }
           });
           break;
-        case "del":
-          this.$confirm("确认删除“" + val.name + "”角色吗？")
+        case "close":
+          this.showD = false;
+          this.showRolePower = false;
+          this.showSelectObj = false;
+          break;
+        default:
+          // val.name
+          this.$confirm("确认删除该角色吗？", "操作确认", {
+            type: "warning"
+          })
             .then(_ => {
               adminRoleApi({ ids: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {
@@ -239,33 +252,13 @@ export default {
             })
             .catch(_ => {});
           break;
-        case "close":
-          this.showD = false;
-          break;
-        case "look":
-          if (val.type === "jpg") {
-            window.open(
-              "https://img0.baidu.com/it/u=103721101,4076571305&fm=26&fmt=auto&gp=0.jpg"
-            );
-          } else {
-            // 除图片，其它实现下载
-          }
-          this.dType = t;
-          break;
-        default:
-          this.$confirm("确认删除该附件？")
-            .then(_ => {
-              // this.$message.success("删除成功！");
-            })
-            .catch(_ => {});
-          break;
       }
     },
-    handleSizeChange(v) {
+    sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
       this.initD();
     },
-    handleCurrentChange(v) {
+    currentChange(v) {
       this.currentPage = v <= 0 ? 1 : v;
       this.initD();
     }
@@ -275,18 +268,5 @@ export default {
 
 <style lang="scss" scoped>
 #roleManage {
-  .header_btns {
-    justify-content: space-between;
-    margin: 20px 53px 20px 57px;
-    i {
-      padding: 0 5px;
-    }
-  }
-  .a_content {
-    width: calc(100%-110px);
-    margin: 20px 53px 20px 57px;
-    :deep(.TabelTwo) {
-    }
-  }
 }
 </style>

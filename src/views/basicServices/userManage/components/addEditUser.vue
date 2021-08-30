@@ -12,7 +12,7 @@
         class="iconfont"
         :class="_type === 'add' ? 'icon-xinzeng' : 'icon-shenqingguanli'"
       ></i>
-      <span>{{ _type === "add" ? "新增" : "修改" }}角色</span>
+      <span>{{ _type === "add" ? "新增" : "修改" }}</span>
     </div>
     <el-form
       :model="ruleForm"
@@ -21,17 +21,39 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="角色名称" prop="name">
+      <el-form-item label="手机号" prop="phone">
         <el-input
-          placeholder="请输入权限名称"
-          v-model="ruleForm.name"
+          placeholder="请输入联系电话"
+          v-model="ruleForm.phone"
         ></el-input
       ></el-form-item>
-      <el-form-item label="角色说明">
+      <el-form-item label="姓名" prop="username">
         <el-input
-          placeholder=""
-          type="textarea"
-          v-model="ruleForm.remark"
+          placeholder="请输入用户姓名"
+          v-model="ruleForm.username"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="性别">
+        <el-select v-model="ruleForm.gender" placeholder="请选择性别">
+          <el-option
+            v-for="item in genderList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门">
+        <el-input
+          placeholder="请输入部门名称"
+          v-model="ruleForm.dept"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="职位">
+        <el-input
+          placeholder="请输入职位名称"
+          v-model="ruleForm.position"
         ></el-input>
       </el-form-item>
     </el-form>
@@ -43,7 +65,7 @@
 </template>
 
 <script>
-import { adminRoleApi2 } from "@/api/role";
+import { adminUserApi2 } from "@/api/userMgt";
 export default {
   name: "addEditDicType",
   props: {
@@ -58,14 +80,29 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
       Visible: false,
       ruleForm: {},
-      //
+      genderList: [
+        {
+          name: "保密",
+          value: ""
+        },
+        {
+          name: "男",
+          value: "0"
+        },
+        {
+          name: "女",
+          value: "1"
+        }
+      ],
       rules: {
-        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }]
+        phone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+        username: [
+          { required: true, message: "请输入用户姓名", trigger: "blur" }
+        ]
       }
     };
   },
@@ -96,7 +133,8 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           if (this._type === "add") {
-            adminRoleApi2({ ...this.ruleForm }).then(r => {
+            this.ruleForm.password = this.ruleForm.phone;
+            adminUserApi2({ ...this.ruleForm }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");
                 this.$emit("refresh");
@@ -106,7 +144,7 @@ export default {
               }
             });
           } else {
-            adminRoleApi2({ ...this.ruleForm }, "put").then(r => {
+            adminUserApi2({ ...this.ruleForm }, "put").then(r => {
               if (r.code == 200) {
                 this.$message.success("修改成功！");
                 this.$emit("refresh");
