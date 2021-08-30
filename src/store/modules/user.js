@@ -69,7 +69,7 @@ const actions = {
            const { data } = response
             commit('SET_TOKEN', data.token)
             setToken(data.token)
-            console.log(getToken());
+        
         }
         resolve(response)
         
@@ -100,7 +100,7 @@ const actions = {
           avatar,
           router
         } = data
-        console.log(data);
+        // console.log(data);
         commit('SET_USERINFO',data)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)

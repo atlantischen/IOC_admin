@@ -130,7 +130,7 @@
             >
             <el-button
               size="mini"
-              @click="handleDetails(scope.$index, scope.row)"
+              @click="handleDetails(scope.row)"
             >
               详情</el-button
             >
@@ -138,7 +138,15 @@
         </el-table-column>
       </el-table>
     </div>
-    <Pagination :total="paginationTotal"></Pagination>
+    <PageT
+        :between="true"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
+    <!-- <Pagination :total="paginationTotal"></Pagination> -->
     <Parkmangedialog
       :dialogShow.sync="dialogShow"
       :type="type"
@@ -179,7 +187,6 @@ export default {
       },
       id: null,
       type: "add",
-      paginationTotal: null,
       dialogShow: false,
       DeletedialogShow: false,
       permissionShow: false,
@@ -193,7 +200,10 @@ export default {
         campusStatus: "",
         latitude: "",
         remarks: ""
-      }
+      },
+      currentPage: 1,
+      pageSize:10,
+      total: 0,
     };
   },
   components: { Pagination, Deletedialog, Parkmangedialog, Permission },
@@ -247,7 +257,7 @@ export default {
       }).then(res => {
         if (res.code === "200") {
           this.tableData = res.data;
-          this.paginationTotal = res.total;
+          this.total = res.total;
         }
       });
     },
@@ -266,8 +276,8 @@ export default {
     queryClick() {
       if (this.searchData.startTime && this.searchData.endTime) {
         this.init({
-          limit: "10",
-          page: "1",
+          limit: this.pageSize,
+          page: this.currentPage,
           queryMode: "page",
           startTime: this.searchData.startTime,
           endTime: this.searchData.endTime,
@@ -275,8 +285,8 @@ export default {
         });
       } else {
         this.init({
-          limit: "10",
-          page: "1",
+           limit: this.pageSize,
+          page: this.currentPage,
           queryMode: "page",
           campusName: this.searchData.input
         });
@@ -284,28 +294,30 @@ export default {
     },
     setParkType() {
       this.init({
-        limit: "10",
-        page: "1",
+         limit: this.pageSize,
+          page: this.currentPage,
         queryMode: "page",
         campusType: this.searchData.parkType
       });
     },
     setParkStatus() {
       this.init({
-        limit: "10",
-        page: "1",
+        limit: this.pageSize,
+          page: this.currentPage,
         queryMode: "page",
         campusStatus: this.searchData.status
       });
     },
     Reset() {
       this.searchData = {};
-      this.init({ limit: "10", page: "1", queryMode: "page" });
+      this.init({  limit: this.pageSize,
+          page: this.currentPage, queryMode: "page" });
     },
     handleDefault(id) {
       defaultParkManage({ id: id }).then(res => {
         if (res.code === "200") {
-          this.init({ limit: "10", page: "1", queryMode: "page" });
+          this.init({  limit: this.pageSize,
+          page: this.currentPage, queryMode: "page" });
         }
       });
     },
@@ -313,12 +325,25 @@ export default {
       this.DeletedialogShow = val;
     },
     // 列表详情
-    handleDetails() {
-      this.$router.push("/parkManage/listdetails");
+    handleDetails(row) {
+      console.log(row.id);
+      this.$router.push({  path: '/parkManage/listdetails',  query: {id: row.id }});
+    },
+       sizeChange(v) {
+      this.pageSize = v <= 0 ? 10 : v;
+      console.log(this.pageSize);
+      this.init({  limit: this.pageSize,
+          page: this.currentPage, queryMode: "page" });
+    },
+    currentChange(v) {
+      this.currentPage = v <= 0 ? 1 : v;
+      this.init({  limit: this.pageSize,
+          page: this.currentPage, queryMode: "page" });
     }
   },
   created() {
-    this.init({ limit: "10", page: "1", queryMode: "page" });
+    this.init({  limit: this.pageSize,
+          page: this.currentPage, queryMode: "page" });
     this.getParkType();
   }
 };

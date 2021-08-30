@@ -91,9 +91,7 @@
 
 <script>
 import {
-  getParkManageList,
-  getParkSelect,
-  defaultParkManage
+ getAppUser
 } from "@/api/basicServices.js";
 
 export default {
@@ -129,6 +127,9 @@ export default {
   },
 
   methods: {
+    init(){
+      getAppUser()
+    },
     // 删除
     handleDelete(row) {
       this.DeletedialogShow = !this.DeletedialogShow;

@@ -21,6 +21,9 @@ import '@/permission' // permission control
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
+import allC from '@/components/index' // global components
+Vue.use(allC)
+
 Vue.use(ElementUI)
 Vue.prototype.$message = Message
 Vue.config.productionTip = false

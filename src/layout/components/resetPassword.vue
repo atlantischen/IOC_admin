@@ -47,7 +47,7 @@ export default {
       },
      data() {
       var validatePass = (rule, value, callback) => {
-        console.log(value);
+   
         if (value === '') {
           callback(new Error('请输入确认密码!'));
         } else if (value !== this.form.newPassword) {

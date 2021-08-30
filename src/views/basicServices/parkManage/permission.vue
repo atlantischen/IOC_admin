@@ -30,10 +30,9 @@
             </el-tree>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="info" @click="$emit('update:permissionShow', false)"
-          >取 消</el-button
-        >
-        <el-button type="primary" >确 定</el-button>
+          <button class="max_bt_gy"  @click="$emit('update:permissionShow', false)">取消</button>
+      <button class="max_bt_df" >确认</button>
+  
       </span>
     </el-dialog>
   </div>

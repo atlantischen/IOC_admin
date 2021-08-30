@@ -36,7 +36,6 @@ export function defaultParkManage(data) {
   return request({
     url: '/campus-admin/api/v1/admin/campus/default-campus',
     method: 'post',
-
     data
   })
 }
@@ -62,5 +61,21 @@ export function addParkManage(data) {
       },
     noQS: true,
     data
+  })
+}
+// app用户
+export function getAppUser(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/campus-user/list',
+    method: 'get',
+    params
+  })
+}
+// 机构列表
+export function getMechanismList(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/organization/list',
+    method: 'get',
+    params
   })
 }

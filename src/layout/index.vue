@@ -3,6 +3,10 @@
     <div class="header">
       <span >奇信物联网平台开发者平台</span>
       <div class="outer_box">
+        <el-badge is-dot class="item" style="margin-right:20px">
+            <svg-icon style="font-size:24px" icon-class="tishi" />
+          <!-- <el-button class="share-button" icon="el-icon-share" type="primary"></el-button> -->
+        </el-badge>
          <div class="right-menu">
         <el-dropdown class="avatar-container" trigger="click" >
           <div class="avatar-wrapper">
@@ -116,7 +120,14 @@ export default {
   }
 };
 </script>
-
+<style lang="scss">
+  .el-badge__content.is-fixed.is-dot{
+    right: 10px;
+    top: 5px;
+    height: 10px;
+    width: 10px;
+  }
+</style>
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
 @import "~@/styles/variables.scss";

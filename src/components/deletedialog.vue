@@ -36,9 +36,9 @@ export default {
 
     methods: {
         handleClick(){
-          console.log(this.id);
+      
           deleteParkManage({ids:this.id}).then(res=>{
-            console.log(res);
+     
             if(res.code=="200"){
               this.$message({ message: res.msg, type: 'success',})
               this.$emit('init',{limit:'10',page:'1',queryMode:'page'})

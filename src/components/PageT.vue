@@ -87,6 +87,7 @@ export default {
   watch: {
     _currentPage: {
       handler: function(n) {
+
         this.currentPage = n;
       },
       immediate: true
@@ -110,7 +111,9 @@ export default {
       return this.layout.includes(v);
     },
     handleSizeChange(v) {
+
       this.pageSize = v <= 0 ? 10 : v;
+      this.pageSize
       this.$emit("size", this.pageSize);
     },
     handleCurrentChange(v) {

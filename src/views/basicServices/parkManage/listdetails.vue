@@ -7,7 +7,9 @@
         @tab-click="handleClick"
         ref="tabs"
       >
-        <el-tab-pane label="机构列表" name="first">机构列表</el-tab-pane>
+        <el-tab-pane label="机构列表" name="first">
+          <MechanismList></MechanismList>
+          </el-tab-pane>
         <el-tab-pane label="用户列表" name="second">用户列表</el-tab-pane>
         <el-tab-pane label="角色列表" name="third">角色列表</el-tab-pane>
       </el-tabs>
@@ -16,12 +18,14 @@
 </template>
 
 <script>
+import MechanismList from './components/mechanismList.vue'
 export default {
   data() {
     return {
       activeName: "first"
     };
   },
+  components:{MechanismList},
   watch: {
     activeName() {
       this.resetTabActivePosition(this.$refs.tabs.$el);
@@ -39,7 +43,6 @@ export default {
         const pl = style.paddingLeft.match(/\d+/)[0] * 1;
         const pr = style.paddingRight.match(/\d+/)[0] * 1;
         const w = style.width.match(/\d+/)[0] * 1;
-        console.log(activeEl.offsetLeft);
         lineEl.style.transform =
           "translateX(" + (activeEl.offsetLeft + pl) + "px)";
         lineEl.style.width = w - pl - pr + "px";

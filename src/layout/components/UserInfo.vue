@@ -111,9 +111,9 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.form,this.multipartFile);
+    
             setUserInfo({userVO:this.form,multipartFile:this.multipartFile}).then(res=>{
-              console.log(res);
+             
             })
           } else {
             console.log('error submit!!');

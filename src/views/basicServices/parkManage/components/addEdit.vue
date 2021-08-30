@@ -2,11 +2,11 @@
   <div class="container">
     <el-dialog
       title="提示"
-      :visible="dialogShow"
+      :visible="addDialogShow"
       width="60%"
       :destroy-on-close="true"
-      @close="$emit('update:dialogShow', false)"
-      custom-class="my_dialog"
+      @close="$emit('update:addDialogShow', false)"
+      custom-class="my_dialog my_footer"
     >
       <div slot="title" class="header-title">
         <span class="svg-container">
@@ -22,13 +22,10 @@
         label-width="80px"
         label-position="left"
       >
-        <el-form-item label="园区名称" prop="campusName">
-          <el-input v-model="formData.campusName"></el-input>
-        </el-form-item>
-        <el-form-item label="编号">
-          <el-input v-model="formData.campusNumber"></el-input>
-        </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="机构名称" prop="name">
+          <el-input v-model="formData.name"></el-input>
+        </el-form-item>   
+        <el-form-item label="机构类型">
           <el-select v-model="formData.campusType" placeholder="请选择活动区域">
             <el-option
               v-for="item in options"
@@ -38,6 +35,12 @@
             >
             </el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item label="联系人">
+          <el-input v-model="formData.campusNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话">
+          <el-input v-model="formData.campusNumber"></el-input>
         </el-form-item>
         <el-form-item label="父级园区">
           <el-select
@@ -66,78 +69,33 @@
             >
             </el-tree>
           </el-select>
-          <!-- <el-select  popper-class="select_item"  :popper-append-to-body="false" :value="formData.parentName"  placeholder="请选择" ref="selectTree1">
-            <el-option style="height:auto" :value="formData.parentId" :label="formData.parentName" class="option">
-                  <el-tree
-                      :data="treeList"
-                      :expand-on-click-node="false"
-                      :check-on-click-node="false"
-                      :default-expand-all="true"
-                      @node-click="handleNodeClick"
-                      node-key="ids">
-                  </el-tree>
-              </el-option>
-          </el-select> -->
-          <!-- <el-select v-model="formData.parentName" placeholder="请选择活动区域">
-            <el-option
-            v-for="item in parentPark"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id"
-          ></el-option>
-        </el-select> -->
+
         </el-form-item>
-        <el-form-item label="园区级别">
-          <el-select
-            v-model="formData.campusRanks"
-            placeholder="请选择活动区域"
-          >
+        <el-form-item label="入住时间">
+          <el-date-picker
+            v-model="formData.campusNumber"
+            :clearable="false"
+            type= "datetime"
+            class="datePicker my_datePicker"
+            placeholder="选择日期时间">
+          </el-date-picker>
+
+          
+          </el-form-item>
+     <el-form-item label="入住状态">
+          <el-select v-model="formData.campusType" placeholder="请选择活动区域">
             <el-option
-              v-for="item in campusRanks"
+              v-for="item in options"
               :key="item.value"
               :label="item.name"
               :value="item.value"
             >
             </el-option>
-          </el-select> </el-form-item
-        ><el-form-item label="园区地址">
-          <el-input v-model="formData.address"></el-input> </el-form-item
-        ><el-form-item label="状态">
-          <el-select
-            v-model="formData.campusStatus"
-            placeholder="请选择活动区域"
-          >
-            <el-option
-              v-for="item in typeOptions"
-              :key="item.value"
-              :label="item.name"
-              :value="item.value"
-            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="经纬度">
-          <el-input v-model="formData.location"></el-input>
-          <div class="dingwei">
-            <a
-              href="http://api.map.baidu.com/lbsapi/getpoint/?qq-pf-to=pcqq.c2c"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <svg-icon icon-class="dingwei" style="font-size:26px"> </svg-icon>
-            </a>
-          </div>
-        </el-form-item>
-
-        <el-form-item label="备注">
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 8, maxRows: 8 }"
-            v-model="formData.remark"
-          ></el-input>
-        </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer ">
-        <button class="max_bt_gy"  @click="$emit('update:dialogShow', false)">取消</button>
+      <span slot="footer" class="dialog-footer  ">
+        <button class="max_bt_gy"  @click="$emit('update:addDialogShow', false)">取消</button>
       <button class="max_bt_df" @click="submitForm">确认</button>
 
       </span>
@@ -155,7 +113,7 @@ import {
 
 export default {
   props: {
-    dialogShow: {
+    addDialogShow: {
       type: Boolean
     },
     formData: {
@@ -172,7 +130,7 @@ export default {
       options: [],
       parentPark: [],
       rules: {
-        campusName: [
+        name: [
           { required: true, message: "请输入园区名称", trigger: "blur" }
         ]
       },
@@ -206,25 +164,28 @@ export default {
     submitForm() {
       this.$refs.formData.validate(valid => {
         if (valid) {
-          if (this.type === "add") {
-            addParkManage({...this.formData}).then(res=>{
-               if(res.code==="200"){
-              this.$message({ message: res.msg,
-              type: 'success',})
-              this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
-              this.$emit('update:dialogShow', false)
-            }
-            })
-          } else if (this.type === "edit") {
-             updateParkManage({...this.formData}).then(res=>{
-              if(res.code==="200"){
-                this.$message({ message: res.msg ,
-                type: 'success',})
-                this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
-                this.$emit('update:dialogShow', false)
-              }
-            })
-          }
+          // if (this.type === "add") {
+          //   addParkManage({...this.formData}).then(res=>{
+          //      if(res.code==="200"){
+          //     this.$message({ message: res.msg,
+          //     type: 'success',})
+          //     this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+          //   
+          //   }
+          //   })
+          // } else if (this.type === "edit") {
+          //    updateParkManage({...this.formData}).then(res=>{
+          //     if(res.code==="200"){
+          //       this.$message({ message: res.msg ,
+          //       type: 'success',})
+          //       this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+          //       this.$emit('update:dialogShow', false)
+          //     }
+          //   })
+          // }
+              this.$emit('update:addDialogShow', false)
+
+            console.log(this.addDialogShow);
         } else {
           console.log("error submit!!");
           return false;
@@ -269,36 +230,23 @@ export default {
   position: absolute !important;
   left: 0 !important;
 }
-// .el-select-dropdown__item {
-//   height: auto;
-//   font-weight: normal;
-// }
-// .el-select-dropdown__item.selected {
-//   height: auto;
-//   font-weight: normal;
-// }
+
 .el-select-dropdown__item {
   background-color: #fff !important;
 }
-// .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
-//   content: '';
-// }
-// .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__content:after{
-//   position: absolute;
-//   top: 4px;
-//   right: -12px;
-//   font-size: 16px;
-//   content: '*';
-//   color: #F56C6C;
-// }
-//
+.datePicker{
+  width: 100% !important;
+  .el-input__prefix {
+    left: 90%;
+  }
+}
+.my_footer {
+  .el-dialog__footer{
+  padding: 70px 0;
 
-//   .dialog {
-//   .el-dialog__body {
-//     padding:40px  65px;
-//     color: #fff;
-//   }
-// }
+  }
+}
+
 </style>
 <style lang="scss" scoped>
 .container {
