@@ -367,12 +367,7 @@ $cursor: #fff;
       margin-left: 20px;
     }
   }
-  .el-dialog__footer {
-    text-align: center;
-    .el-button--info {
-      margin-left: 55px;
-    }
-  }
+   
 }
 </style>
 

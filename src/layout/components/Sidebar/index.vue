@@ -31,8 +31,8 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
-        // return this.$router.options.routes.concat(global.antRouter) // 最后渲染时，基础路由和动态路由合并
+      // return this.$router.options.routes
+        return this.$router.options.routes.concat(global.antRouter) // 最后渲染时，基础路由和动态路由合并
     },
     activeMenu() {
       const route = this.$route
@@ -52,6 +52,8 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     }
+  },
+  created(){
   }
 }
 </script>

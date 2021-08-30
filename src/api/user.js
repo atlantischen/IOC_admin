@@ -39,3 +39,15 @@ export function logout() {
   })
 }
 
+export function setUserInfo(data) {
+  return request({
+    url: '/campus-admin/api/v1/admin/campus/account/profile',
+    method: 'post',
+    headers: {
+      'Content-Type': 'multipart/form-data'
+      },
+    noQS: true,
+    data
+  })
+}
+

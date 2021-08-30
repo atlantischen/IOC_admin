@@ -20,7 +20,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    menus: []
+    menus: [],
+    userInfo:{}
   }
 }
 
@@ -41,6 +42,9 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
+  },
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo = userInfo
   }
 }
 
@@ -61,11 +65,11 @@ const actions = {
         client_id: 'qxsmartcity-admin',
         client_secret: '123456'
       }).then(response => {
-       
         if(response.code==='200'){
            const { data } = response
-              commit('SET_TOKEN', data.token)
+            commit('SET_TOKEN', data.token)
             setToken(data.token)
+        
         }
         resolve(response)
         
@@ -94,11 +98,13 @@ const actions = {
         const {
           username,
           avatar,
-          menus
+          router
         } = data
+        // console.log(data);
+        commit('SET_USERINFO',data)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
-        commit('SET_MENUS', menus)
+        commit('SET_MENUS', router)
         resolve(data)
       }).catch(error => {
         reject(error)
