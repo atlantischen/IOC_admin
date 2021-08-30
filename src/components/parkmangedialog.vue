@@ -6,7 +6,7 @@
       width="60%"
       :destroy-on-close="true"
       @close="$emit('update:dialogShow', false)"
-      custom-class="dialog"
+      custom-class="my_dialog"
     >
       <div slot="title" class="header-title">
         <span class="svg-container">

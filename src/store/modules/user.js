@@ -20,7 +20,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    menus: []
+    menus: [],
+    userInfo:{}
   }
 }
 
@@ -41,6 +42,9 @@ const mutations = {
   },
   SET_MENUS: (state, menus) => {
     state.menus = menus
+  },
+  SET_USERINFO: (state, userInfo) => {
+    state.userInfo = userInfo
   }
 }
 
@@ -97,6 +101,7 @@ const actions = {
           router
         } = data
         console.log(data);
+        commit('SET_USERINFO',data)
         commit('SET_NAME', username)
         commit('SET_AVATAR', avatar)
         commit('SET_MENUS', router)

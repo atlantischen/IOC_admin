@@ -2,7 +2,7 @@
   <div class="container">
     <div class="header">
       <div class="timer">
-        <span class="title">注册时间</span>
+        <span class="title">创建时间</span>
         <el-date-picker
           v-model="searchData.value"
           type="datetimerange"
@@ -13,33 +13,55 @@
         >
         </el-date-picker>
       </div>
-
-      <div style="margin:0 20px">
-        <span class="title">用户姓名</span>
-
-        <el-input
-          class="input "
-          v-model="searchData.input"
-          placeholder="请输入内容"
-        ></el-input>
+      <el-input
+        class="input "
+        v-model="searchData.input"
+        placeholder="请输入内容"
+      ></el-input>
+      <button class="md_bt_df" @click="queryClick">查询</button>
+      <div class="type">
+        <span class="title">园区类型</span>
+        <el-select
+          v-model="searchData.parkType"
+          @change="setParkType"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <span style="margin-left: 10px; font-size: 12px"
+          >(类型数据从数据字典进行加载)</span
+        >
       </div>
-      <div style="margin:0 20px">
-        <span class="title">联系电话</span>
-        <el-input
-          class="input "
-          v-model="searchData.input"
-          placeholder="请输入内容"
-        ></el-input>
+      <div class="tate">
+        <span class="title">状态</span>
+        <el-select
+          v-model="searchData.status"
+          @change="setParkStatus"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in typeOptions"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
       </div>
-      <div class="btn">
-        <button style="margin-right:20px" class="md_bt_df" @click="queryClick">
-          查询
-        </button>
-        <button class="md_bt_df" @click="Reset">
-          <i class="el-icon-circle-close"></i>
-          重置
-        </button>
-      </div>
+      <button class="md_bt_df" @click="addClick">
+        <i class="el-icon-circle-plus-outline"></i>
+        新增
+      </button>
+      <button class="md_bt_df" @click="Reset">
+        <i class="el-icon-circle-close"></i>
+        重置
+      </button>
     </div>
     <div class="content">
       <el-table
@@ -58,21 +80,64 @@
         </el-table-column>
         <el-table-column label="园区编号" prop="campusNumber" width="150">
         </el-table-column>
-        <el-table-column label="姓名" prop="campusName" width="180">
+        <el-table-column label="园区名称" prop="campusName" width="180">
         </el-table-column>
-        <el-table-column label="性别" width="180" prop="campusTypeCh">
+        <el-table-column label="类型" width="150" prop="campusTypeCh">
         </el-table-column>
-        <el-table-column label="联系电话" width="180" prop="campusRanksCh">
+        <el-table-column label="园区级别" width="150" prop="campusRanksCh">
         </el-table-column>
-        <el-table-column label="所属园区" width="180" prop="parentName">
+        <el-table-column label="父级园区" width="150" prop="parentName">
         </el-table-column>
-        <el-table-column label="最后一次登录时间" width="180" prop="creatorName">
+        <el-table-column label="创建人" width="100" prop="creatorName">
         </el-table-column>
-        <el-table-column label="注册时间"  prop="gmtCreate">
+        <el-table-column label="创建时间" width="180" prop="gmtCreate">
         </el-table-column>
-      
+        <el-table-column label="状态" width="120" prop="campusStatusCh">
+        </el-table-column>
+        <el-table-column label="默认园区" width="100" prop="defaultCampus">
+          <template slot-scope="scope">
+            <el-button
+              :type="scope.row.defaultCampus === '1' ? 'primary' : 'info'"
+              size="mini"
+              @click="handleDefault(scope.row.id)"
+              >默认</el-button
+            >
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button size="mini" @click="handleDelete(scope.row)"
+              >删除</el-button
+            >
+            <el-button size="mini" @click="handleEdit(scope.row)"
+              >编辑</el-button
+            >
+            <el-button size="mini" @click="handleDistribution(scope.row)"
+              >权限分配</el-button
+            >
+            <el-button
+              size="mini"
+              @click="handleDetails(scope.$index, scope.row)"
+            >
+              详情</el-button
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </div>
+    <Pagination :total="paginationTotal"></Pagination>
+    <Parkmangedialog
+      :dialogShow.sync="dialogShow"
+      :type="type"
+      :formData="formData"
+      @init="init"
+    />
+    <Deletedialog
+      :DeletedialogShow.sync="DeletedialogShow"
+      :id="id"
+      @init="init"
+    ></Deletedialog>
+    <Permission :permissionShow.sync="permissionShow"></Permission>
   </div>
 </template>
 
@@ -82,7 +147,10 @@ import {
   getParkSelect,
   defaultParkManage
 } from "@/api/basicServices.js";
-
+import Pagination from "@/components/pagination.vue";
+import Parkmangedialog from "@/components/parkmangedialog.vue";
+import Deletedialog from "@/components/deletedialog.vue";
+import Permission from "./permission.vue";
 export default {
   data() {
     return {
@@ -114,7 +182,7 @@ export default {
       }
     };
   },
-
+  components: { Pagination, Deletedialog, Parkmangedialog, Permission },
   methods: {
     // 删除
     handleDelete(row) {
@@ -129,7 +197,6 @@ export default {
     },
     // 权限分配
     handleDistribution(row) {
-      console.log("wwwwwwwww");
       this.permissionShow = true;
     },
     // 新增信息
@@ -243,6 +310,7 @@ export default {
 };
 </script>
 <style lang="scss">
+
 .el-input__inner {
   line-height: 30px;
   height: 30px;
@@ -260,19 +328,14 @@ export default {
 <style lang="scss" scoped>
 .header {
   display: flex;
-  position: relative;
-  // justify-content: space-around;
-  // flex-wrap: wrap;
-  margin-bottom: 10px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
   .title {
     margin-right: 10px;
   }
   .input {
     width: 200px;
-  }
-  .btn{
-    position: absolute;
-    right: 0;
   }
 }
 </style>
