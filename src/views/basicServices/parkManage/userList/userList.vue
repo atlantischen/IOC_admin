@@ -1,6 +1,5 @@
 <template>
-  <!-- 用户管理 -->
-  <div id="userManage" class="comStyles">
+  <div id="userList" class="comStyles">
     <div class="header_btns x_c">
       <div class="hb_left">
         <div>
@@ -40,15 +39,31 @@
           </button>
         </div>
         <div>
-          <span>
+          <!-- <span>
             <label class="_n">联系电话 </label>
             <el-input
               class="k_input w_160"
               placeholder="请输入联系电话"
               v-model="searchPhone"
             ></el-input>
-          </span>
+          </span> -->
           <span>
+            <label class="_n">园区类型</label>
+            <el-select
+              class="w_160"
+              v-model="slectParkType"
+              placeholder="请选择园区类型"
+            >
+              <el-option
+                v-for="item in allTypes"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              >
+              </el-option> </el-select
+          ></span>
+          <span>类型数据从数据字典进行加载</span
+          ><span>
             <label class="_n">状态</label>
             <el-select
               class="w_160"
@@ -72,15 +87,13 @@
     </div>
     <div class="a_content">
       <el-table
-        class="TabelTwo"
-        v-loading="dLoading"
         :data="dataList"
-        element-loading-text="Loading"
-        height="680"
+        class="TabelTwo"
         stripe
-        fit
+        :header-cell-style="{ textAlign: 'center' }"
+        :cell-style="{ textAlign: 'center' }"
       >
-        <el-table-column align="center" label="序号" type="index" width="60">
+        <el-table-column label="序号" width="60">
           <template slot-scope="scope">
             <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
@@ -142,8 +155,11 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span :class="scope.row.enabledCh == '已激活' ? '' : '_grey'">{{
+            <!-- <span :class="scope.row.enabledCh == '已激活' ? '' : '_grey'">{{
               scope.row.enabledCh
+            }}</span> -->
+            <span :class="scope.row.enabled == 1 ? '' : '_grey'">{{
+              scope.row.enabled == 1 ? "已激活" : "未激活"
             }}</span>
           </template>
         </el-table-column>
@@ -160,7 +176,6 @@
         <el-table-column
           align="center"
           prop="gmtCreate"
-          width="150"
           label="创建时间"
           show-overflow-tooltip
         >
@@ -175,13 +190,16 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span :class="scope.row.statusCh == '启用' ? '_yg' : '_red'">
+            <!-- <span :class="scope.row.statusCh == '启用' ? '_yg' : '_red'">
               {{ scope.row.statusCh }}
+            </span> -->
+            <span :class="scope.row.status == '1' ? '_yg' : '_red'">
+              {{ scope.row.status == "1" ? "启用" : "禁用" }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="操作" width="300"
-          ><div class="x_c_sb" slot-scope="scope">
+        <el-table-column label="操作" width="200">
+          <div slot-scope="scope" class="x_c_sb">
             <button @click="handleFun('edit', scope.row)" class="_bule">
               编辑
             </button>
@@ -191,24 +209,21 @@
             <button @click="handleFun('del', scope.row)" class="_red">
               删除
             </button>
-            <button @click="handleFun('resetPW', scope.row)" class="_bule">
-              重置密码
-            </button>
             <button @click="handleFun('role', scope.row)" class="_bule">
               角色
             </button>
           </div>
         </el-table-column>
       </el-table>
-      <PageT
-        :between="true"
-        :_currentPage="currentPage"
-        :_pageSize="pageSize"
-        :_total="total"
-        @size="sizeChange"
-        @current="currentChange"
-      />
     </div>
+    <PageT
+      :between="true"
+      :_currentPage="currentPage"
+      :_pageSize="pageSize"
+      :_total="total"
+      @size="sizeChange"
+      @current="currentChange"
+    />
     <AddEdit
       ref="addEditRef"
       :_datas="editDatas"
@@ -224,32 +239,29 @@
       :_show="showSelectRole"
       @close="handleFun"
     />
-    <ResetPW
-      ref="restPwRef"
-      :_type="dType"
-      :_datas="userInfo"
-      :_show="showRestPw"
-      @close="handleFun"
-      @refresh="initD"
-    />
   </div>
 </template>
 
 <script>
-import { adminUserApi, cgStatusApi, userDetailApi } from "@/api/userMgt";
 import AddEdit from "./components/addEditUser.vue";
 import SelectRole from "./components/selectRole.vue";
-import ResetPW from "./components/resetPW.vue";
+import { parkUserApi, cgStatusApi } from "@/api/parkUser";
 export default {
-  name: "userManage",
-  components: { AddEdit, SelectRole, ResetPW },
+  components: { AddEdit, SelectRole },
   data() {
     return {
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      searchName: "",
       startTime: "",
       endTime: "",
-      searchName: "",
-      searchPhone: "",
+      dataList: [],
+      editDatas: {},
+      dType: "add",
       slectStatus: "",
+      showSelectRole: false,
+      showD: false,
       allStatus: [
         {
           name: "全部",
@@ -261,57 +273,42 @@ export default {
         },
         {
           name: "启用",
-          value: 1
+          value: 0
         }
       ],
-      pageSize: 10,
-      total: 0,
-      currentPage: 1,
-      dLoading: false,
-      dataList: [],
-      showD: false,
-      showSelectRole: false,
-      showRestPw: false,
-      dType: "add",
-      editDatas: {},
-      PowerIds: null,
-      userInfo: null
+      slectParkType: "",
+      allTypes: []
     };
   },
   created() {
     this.initD();
   },
   methods: {
-    initD(val) {
-      this.dLoading = true;
-      adminUserApi({
+    initD() {
+      parkUserApi({
         startTime: this.startTime,
         endTime: this.endTime,
+        campusId: this.$route.query.id,
         limit: this.pageSize,
         page: this.currentPage,
-        phone: this.searchPhone,
         queryMode: "page",
+        phone: "",
         status: this.slectStatus,
         username: this.searchName
-      }).then(r => {
-        if (r.code == 200) {
-          this.dataList = r.data;
-          this.total = r.total;
-          this.dLoading = false;
+      }).then(res => {
+        if (res.code === "200") {
+          this.dataList = res.data;
+          this.total = res.total;
         }
       });
     },
+
     handleFun(t, val) {
       switch (t) {
         case "add":
           this.showD = true;
           this.dType = t;
           this.editDatas = {};
-          break;
-        case "resetPW":
-          this.dType = t;
-          this.showRestPw = true;
-          this.userInfo = val;
           break;
         case "role":
           this.dType = t;
@@ -329,7 +326,7 @@ export default {
             }
           )
             .then(_ => {
-              cgStatusApi({ id: val.id }).then(r => {
+              cgStatusApi({ campusCampusUserId: val.id }).then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success(
@@ -348,7 +345,7 @@ export default {
         case "edit":
           this.showD = true;
           this.dType = t;
-          userDetailApi({ id: val.id }).then(r => {
+          parkUserInfoApi({ id: val.id }).then(r => {
             if (r.code == 200) {
               this.editDatas = r.data;
             }
@@ -359,7 +356,7 @@ export default {
             type: "warning"
           })
             .then(_ => {
-              adminUserApi({ id: val.id }, "DELETE").then(r => {
+              parkUserApi({ id: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success("删除成功！");
@@ -371,23 +368,24 @@ export default {
         default:
           this.showD = false;
           this.showSelectRole = false;
-          this.showRestPw = false;
           break;
       }
     },
     sizeChange(v) {
-      this.pageSize = v <= 0 ? 10 : v;
+      this.pageSize = v;
       this.initD();
     },
     currentChange(v) {
-      this.currentPage = v <= 0 ? 1 : v;
+      this.currentPage = v;
       this.initD();
     }
   }
 };
 </script>
-
+<style></style>
 <style lang="scss" scoped>
-#userManage {
+#userList {
+  .header_btns {
+  }
 }
 </style>
