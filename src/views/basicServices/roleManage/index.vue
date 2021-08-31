@@ -34,7 +34,7 @@
       >
         <el-table-column align="center" label="序号" type="index" width="60">
           <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
+            <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -54,7 +54,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.userCount }}
+            {{ scope.row.userCount || '-' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -64,7 +64,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.remark }}
+            {{ scope.row.remark || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -74,7 +74,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.creatorId }}
+            {{ scope.row.creatorId  || '-' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -84,7 +84,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.gmtCreate }}
+            {{ scope.row.gmtCreate  || '-' }}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作"

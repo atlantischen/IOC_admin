@@ -160,7 +160,6 @@ export default {
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);
-      console.log("111111");
       let _a = keys.halfCheckedKeys;
       this.checkStrictly = false;
       let _i = _a.indexOf("all");

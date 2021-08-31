@@ -34,8 +34,6 @@
         @select="handChange"
         @select-all="handallChange"
       >
-        <!-- 
-        @selection-change="handleSelectionChange" -->
         <el-table-column type="selection" label="选择" width="55">
           <template slot="header">
             <span>选择</span>
@@ -48,17 +46,17 @@
         </el-table-column>
         <el-table-column prop="name" label="角色名称" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.name || '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="code" label="角色编码" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.code }}
+            {{ scope.row.code || '-'}}
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.remark }}
+            {{ scope.row.remark || '-' }}
           </template>
         </el-table-column>
       </el-table>
@@ -235,14 +233,16 @@ export default {
           }
           console.log(this.pageObjSave);
         }
-        this.dLoading = false;
       });
+      this.dLoading = false;
     },
     close() {
       this.reset();
       this.Visible = false;
       this.pageObjSave = null;
       this.$emit("close", "close");
+      this.pageSize = 10
+      this.currentPage = 1
     },
     reset() {
       this.toggleSelection();

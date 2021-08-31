@@ -91,6 +91,7 @@ export default {
     },
     reset() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm = {}
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {

@@ -1,6 +1,6 @@
 <template>
   <!-- 角色管理 -->
-  <div id="roleManage" class="comStyles">
+  <div id="roleList" class="comStyles">
     <div class="header_btns x_c">
       <div class="hb_left">
         <div>
@@ -34,7 +34,7 @@
       >
         <el-table-column align="center" label="序号" type="index" width="60">
           <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
+            <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -44,7 +44,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.name || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -54,7 +54,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.userCount }}
+            {{ scope.row.userCount || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -64,7 +64,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.remark }}
+            {{ scope.row.remark || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -147,7 +147,7 @@ import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
 export default {
-  name: "roleManage",
+  name: "roleList",
   components: { AddEdit, RolePower, SelectObj },
   data() {
     return {
@@ -270,7 +270,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#roleManage {
+#roleList {
   .TabelTwo{
     // height: calc(100% - 200px);
   }
