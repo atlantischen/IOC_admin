@@ -387,11 +387,9 @@ export default {
 .all_dataD {
 }
 #dataD {
-  // width: calc(100% - 102px);
   // margin: 22px 54px 0 48px;
   width: 100%;
-  min-height: calc(100% - 55px);
-  height: 780px;
+  height: calc(100vh - 150px);
   display: flex;
   background: #fff;
   border: 2px solid #d1d5db;
@@ -411,7 +409,7 @@ export default {
   }
   .dataD_left {
     width: 325px;
-    min-height: 650px;
+    height: 100%;
     border-right: 2px solid #d4d4d4;
     .d_header {
       button {

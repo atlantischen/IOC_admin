@@ -125,11 +125,11 @@ export default {
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
-        roleId: this._datas.id,
+        campusRoleId: this._datas.id,
         username: this.searchContent
       }).then(r => {
         if (r.code == 200) {
-          this.dataList = r.data;
+          this.dataList = r.data
           this.total = r.total;
           this.dLoading = false;
           if (!this.pageObjSave) {
@@ -270,7 +270,7 @@ export default {
         .then(_ => {
           roleUserApi(
             {
-              roleId: this._datas.id,
+              campusRoleId: this._datas.id,
               addIds: `${getIds(allAdds)}`,
               deleteIds: `${getIds(alldels)}`
             },

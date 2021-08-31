@@ -76,7 +76,7 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height="680"
+        height=""
         stripe
         fit
       >
@@ -149,12 +149,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="creatorId"
+          prop="creatorName"
           label="创建人"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.creatorId || "-" }}
+            {{ scope.row.creatorName || "-" }}
           </template>
         </el-table-column>
         <el-table-column

@@ -28,7 +28,7 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height="680"
+        height=""
         stripe
         fit
       >
@@ -69,22 +69,22 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="type"
+          prop="creatorId"
           label="创建人"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.type }}
+            {{ scope.row.creatorId }}
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          prop="belongType"
+          prop="gmtCreate"
           label="创建时间"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.belongType }}
+            {{ scope.row.gmtCreate }}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作"

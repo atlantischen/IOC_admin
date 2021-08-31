@@ -28,7 +28,7 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height="680"
+        style="height: 100%"
         stripe
         fit
       >
@@ -69,22 +69,22 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="type"
+          prop="creatorName"
           label="创建人"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.type }}
+            {{ scope.row.creatorName || '-'}}
           </template>
         </el-table-column>
         <el-table-column
           align="center"
-          prop="belongType"
+          prop="gmtCreate"
           label="创建时间"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.belongType }}
+            {{ scope.row.gmtCreate || '-'}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作"
@@ -163,7 +163,8 @@ export default {
       dType: "add",
       editDatas: {},
       PowerIds: null,
-      roleInfo: null
+      roleInfo: null,
+      campusId: this.$route.query.id
     };
   },
   created() {
@@ -173,7 +174,7 @@ export default {
     initD() {
       this.dLoading = true;
       parkRoleApi({
-        campusId: this.$route.query.id,
+        campusId: this.campusId,
         limit: this.pageSize,
         name: this.searchName,
         page: this.currentPage,
@@ -191,7 +192,7 @@ export default {
         case "add":
           this.showD = true;
           this.dType = t;
-          this.editDatas = {};
+          this.editDatas = {campusId: this.campusId};
           break;
         case "power":
           this.showRolePower = true;
@@ -199,7 +200,7 @@ export default {
           this.roleInfo = val;
           this.$refs.rolePowerRef.menuDatas = []
           this.$refs.rolePowerRef.checkStrictly = true;
-          roleMenuApi({ roleId: val.id }).then(r => {
+          roleMenuApi({ campusRoleId: val.id }).then(r => {
             if (r.code == 200) {
               this.$refs.rolePowerRef.menuDatas = [
                 {
@@ -245,7 +246,7 @@ export default {
             type: "warning"
           })
             .then(_ => {
-              parkRoleApi({ ids: val.id }, "DELETE").then(r => {
+              parkRoleApi({ ids: val.id,campusId: this.campusId, }, "DELETE").then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success("删除成功！");
@@ -270,5 +271,8 @@ export default {
 
 <style lang="scss" scoped>
 #roleManage {
+  .TabelTwo{
+    // height: calc(100% - 200px);
+  }
 }
 </style>
