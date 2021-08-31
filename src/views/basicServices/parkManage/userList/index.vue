@@ -39,34 +39,18 @@
           </button>
         </div>
         <div>
-          <!-- <span>
+          <span>
             <label class="_n">联系电话 </label>
             <el-input
               class="k_input w_160"
               placeholder="请输入联系电话"
               v-model="searchPhone"
             ></el-input>
-          </span> -->
+          </span>
           <span>
-            <label class="_n">园区类型</label>
-            <el-select
-              class="w_160"
-              v-model="slectParkType"
-              placeholder="请选择园区类型"
-            >
-              <el-option
-                v-for="item in allTypes"
-                :key="item.value"
-                :label="item.name"
-                :value="item.value"
-              >
-              </el-option> </el-select
-          ></span>
-          <span>类型数据从数据字典进行加载</span
-          ><span>
             <label class="_n">状态</label>
             <el-select
-              class="w_160"
+              class="w_160 k_select"
               v-model="slectStatus"
               placeholder="请选择类型"
             >
@@ -87,9 +71,11 @@
     </div>
     <div class="a_content">
       <el-table
+        v-loading="dLoading"
         :data="dataList"
         class="TabelTwo"
         stripe
+        height="550"
         :header-cell-style="{ textAlign: 'center' }"
         :cell-style="{ textAlign: 'center' }"
       >
@@ -234,7 +220,6 @@
     />
     <SelectRole
       ref="selectRoleRef"
-      :_datas="PowerIds"
       :_type="dType"
       :_show="showSelectRole"
       @close="handleFun"
@@ -262,6 +247,7 @@ export default {
       slectStatus: "",
       showSelectRole: false,
       showD: false,
+      dLoading: false,
       allStatus: [
         {
           name: "全部",
@@ -273,11 +259,10 @@ export default {
         },
         {
           name: "启用",
-          value: 0
+          value: 1
         }
       ],
-      slectParkType: "",
-      allTypes: []
+      searchPhone: ""
     };
   },
   created() {
@@ -285,6 +270,7 @@ export default {
   },
   methods: {
     initD() {
+      this.dLoading = true
       parkUserApi({
         startTime: this.startTime,
         endTime: this.endTime,
@@ -292,13 +278,14 @@ export default {
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
-        phone: "",
+        phone: this.searchPhone,
         status: this.slectStatus,
         username: this.searchName
       }).then(res => {
         if (res.code === "200") {
           this.dataList = res.data;
           this.total = res.total;
+          this.dLoading = false;
         }
       });
     },

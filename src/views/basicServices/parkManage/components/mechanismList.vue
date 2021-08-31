@@ -87,8 +87,7 @@ export default {
         queryMode: "page",
         organizationName: ""
       },
-      addDialogShow: true,
-      type: ""
+      addDialogShow: false
     };
   },
   components: { AddEdit },

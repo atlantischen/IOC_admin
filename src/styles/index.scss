@@ -127,6 +127,19 @@ div:focus {
 }
 
 
+// select
+.k_select{
+}
+.el-select-dropdown{
+  .el-select-dropdown__item.selected {
+    color: #000;
+    background: #e6e9eb !important;
+  }
+  .popper__arrow{
+    display: none;
+  }
+}
+
 
 // button css 
 button,input{

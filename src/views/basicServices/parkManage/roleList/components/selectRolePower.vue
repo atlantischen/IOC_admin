@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { roleMenuApi } from "@/api/role";
+import { roleMenuApi } from "@/api/parkRole";
 export default {
   name: "selectRolePower",
   props: {

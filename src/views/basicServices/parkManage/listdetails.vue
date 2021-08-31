@@ -10,10 +10,8 @@
         <el-tab-pane label="机构列表" name="first">
           <MechanismList></MechanismList>
         </el-tab-pane>
-        <el-tab-pane label="用户列表" name="second">
-          <user-list></user-list>
-        </el-tab-pane>
-        <el-tab-pane label="角色列表" name="third">角色列表</el-tab-pane>
+        <el-tab-pane label="用户列表" name="second"> <user-list></user-list></el-tab-pane>
+        <el-tab-pane label="角色列表" name="third"> <role-list></role-list> </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -21,14 +19,15 @@
 
 <script>
 import MechanismList from "./components/mechanismList.vue";
-import UserList from "./userList/userList.vue";
+import UserList from "./userList/index.vue";
+import RoleList from "./roleList/index.vue";
 export default {
   data() {
     return {
-      activeName: "second"
+      activeName: "first"
     };
   },
-  components: { MechanismList, UserList },
+  components: { MechanismList, UserList, RoleList },
   watch: {
     activeName() {
       this.resetTabActivePosition(this.$refs.tabs.$el);
