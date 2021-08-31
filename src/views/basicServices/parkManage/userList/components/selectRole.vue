@@ -231,8 +231,8 @@ export default {
           }
           console.log(this.pageObjSave);
         }
-        this.dLoading = false;
       });
+        this.dLoading = false;
     },
     close() {
       this.reset();

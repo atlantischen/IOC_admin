@@ -75,7 +75,7 @@
         :data="dataList"
         class="TabelTwo"
         stripe
-        height="550"
+        height=""
         :header-cell-style="{ textAlign: 'center' }"
         :cell-style="{ textAlign: 'center' }"
       >
@@ -151,12 +151,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="creatorId"
+          prop="creatorName"
           label="创建人"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.creatorId || "-" }}
+            {{ scope.row.creatorName || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -230,7 +230,7 @@
 <script>
 import AddEdit from "./components/addEditUser.vue";
 import SelectRole from "./components/selectRole.vue";
-import { parkUserApi, cgStatusApi } from "@/api/parkUser";
+import { parkUserApi, cgStatusApi, parkUserInfoApi } from "@/api/parkUser";
 export default {
   components: { AddEdit, SelectRole },
   data() {
@@ -262,7 +262,8 @@ export default {
           value: 1
         }
       ],
-      searchPhone: ""
+      searchPhone: "",
+      campusId: this.$route.query.id
     };
   },
   created() {
@@ -274,7 +275,7 @@ export default {
       parkUserApi({
         startTime: this.startTime,
         endTime: this.endTime,
-        campusId: this.$route.query.id,
+        campusId: this.campusId,
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
@@ -295,7 +296,7 @@ export default {
         case "add":
           this.showD = true;
           this.dType = t;
-          this.editDatas = {};
+          this.editDatas = {campusId: this.campusId};
           break;
         case "role":
           this.dType = t;

@@ -21,6 +21,17 @@
       label-width="100px"
       class="demo-ruleForm"
     >
+      <el-form-item label="角色类型"  prop="perms" >
+        <el-select v-model="ruleForm.perms" :disabled="_type === 'edit'" placeholder="请选择类型">
+          <el-option
+            v-for="item in roleList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="角色名称" prop="name">
         <el-input
           placeholder="请输入角色名称"
@@ -44,6 +55,7 @@
 
 <script>
 import { parkRoleApi2 } from "@/api/parkRole";
+import { adminDictItemApi } from "@/api/dict";
 export default {
   name: "addEditDicType",
   props: {
@@ -58,13 +70,13 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
       Visible: false,
       ruleForm: {},
-      //
+      roleList: [],
       rules: {
+        perms: [{ required: true, message: "请选择角色类型", trigger: "blur" }],
         name: [{ required: true, message: "请输入权限名称", trigger: "blur" }]
       }
     };
@@ -83,6 +95,20 @@ export default {
       deep: true
     }
   },
+  created() {
+    adminDictItemApi({
+      limit: "",
+      dictCode: "role_type",
+      name: "",
+      page: "",
+      queryMode: "list"
+    }).then(r => {
+      if (r.code == 200) {
+        this.roleList = r.data;
+        this.total = r.total;
+      }
+    });
+  },
   methods: {
     close() {
       this.reset();
@@ -91,6 +117,10 @@ export default {
     },
     reset() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm = {}
+      if(this._type == 'edit'){
+        this.ruleForm.perms = this._datas.perms
+      }
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {
