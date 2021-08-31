@@ -5,7 +5,7 @@
         <span class="title">注册时间</span>
             <el-date-picker
              class="my_datePicker"
-              v-model="searchData.startTime"
+              v-model="formData.startTime"
               type="datetime"
               :clearable="false"
               format="yyyy-MM-dd hh:mm"
@@ -16,7 +16,7 @@
             <i></i> 至 <i></i>
             <el-date-picker
              class="my_datePicker"
-              v-model="searchData.endTime"
+              v-model="formData.endTime"
               type="datetime"
               :clearable="false"
 
@@ -32,7 +32,7 @@
 
         <el-input
           class="input "
-          v-model="searchData.input"
+          v-model="formData.username"
           placeholder="请输入内容"
         ></el-input>
       </div>
@@ -40,7 +40,7 @@
         <span class="title">联系电话</span>
         <el-input
           class="input "
-          v-model="searchData.input"
+          v-model="formData.phone"
           placeholder="请输入内容"
         ></el-input>
       </div>
@@ -48,7 +48,7 @@
         <button style="margin-right:20px" class="md_bt_df" @click="queryClick">
           查询
         </button>
-        <button class="md_bt_df" @click="Reset">
+        <button class="md_bt_df" @click="resetClick" >
           <i class="el-icon-circle-close"></i>
           重置
         </button>
@@ -59,7 +59,6 @@
         :data="tableData"
         class="TabelTwo"
         stripe
-        :header-cell-class-name="headerStyle"
         :header-cell-style="{ textAlign: 'center' }"
         :cell-style="{ textAlign: 'center' }"
         style="width: 100%"
@@ -69,13 +68,11 @@
             <span>{{ scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="园区编号" prop="campusNumber" width="150">
-        </el-table-column>
-        <el-table-column label="姓名" prop="campusName" width="180">
+        <el-table-column label="姓名" prop="username" width="180">
         </el-table-column>
         <el-table-column label="性别" width="180" prop="campusTypeCh">
         </el-table-column>
-        <el-table-column label="联系电话" width="180" prop="campusRanksCh">
+        <el-table-column label="联系电话" width="180" prop="phone">
         </el-table-column>
         <el-table-column label="所属园区" width="180" prop="parentName">
         </el-table-column>
@@ -86,6 +83,14 @@
       
       </el-table>
     </div>
+      <PageT
+        :between="true"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
   </div>
 </template>
 
@@ -100,159 +105,69 @@ export default {
       options: [],
       tableData: [],
       typeOptions: [],
-      searchData: {
-        value: [],
-        input: "",
-        parkType: "",
-        status: ""
-      },
       id: null,
-      type: "add",
-      paginationTotal: null,
-      dialogShow: false,
-      DeletedialogShow: false,
-      permissionShow: false,
       formData: {
-        name: "",
-        num: "",
-        type: "",
-        parentName: "",
-        campusRanks: "",
-        address: "",
-        campusStatus: "",
-        latitude: "",
-        remarks: ""
-      }
+        limit: 10,
+        page: 1,
+        endTime: "",
+        phone: "",
+        startTime: "",
+        username: "",
+      },
+      currentPage: 1,
+      pageSize:10,
+      total: 0,
     };
   },
 
   methods: {
     init(){
-      getAppUser()
+      this.formData={
+        limit: this.pageSize,
+        page: this.currentPage,
+        endTime: "",
+        phone: "",
+        startTime: "",
+        username: "",
+      },
+      getAppUser(this.formData).then(res=>{
+        console.log(res);
+        this.tableData=res.data
+        this.total = res.total
+      })
     },
-    // 删除
-    handleDelete(row) {
-      this.DeletedialogShow = !this.DeletedialogShow;
-      this.id = row.id;
-    },
-    // 编辑
-    handleEdit(row) {
-      this.dialogShow = !this.dialogShow;
-      this.type = "edit";
-      this.formData = { ...row };
-    },
-    // 权限分配
-    handleDistribution(row) {
-      console.log("wwwwwwwww");
-      this.permissionShow = true;
-    },
-    // 新增信息
-    addClick() {
-      this.type = "add";
-      this.dialogShow = !this.dialogShow;
-      this.formData = {};
-    },
-    headerStyle({ row, rowIndex }) {
-      // return "header_style";
-    },
-    init(params) {
-      const {
-        limit,
-        page,
-        queryMode,
-        campusName,
-        campusStatus,
-        status,
-        campusType,
-        startTime,
-        endTime
-      } = params;
-      getParkManageList({
-        limit,
-        page,
-        queryMode,
-        campusName,
-        status,
-        campusType,
-        campusStatus,
-        startTime,
-        endTime
-      }).then(res => {
-        if (res.code === "200") {
-          this.tableData = res.data;
-          this.paginationTotal = res.total;
-        }
-      });
-    },
-    getParkType() {
-      getParkSelect({ queryMode: "list", dictCode: "campus_type" }).then(
-        res => {
-          this.options = res.data;
-        }
-      );
-      getParkSelect({ queryMode: "list", dictCode: "campus_status" }).then(
-        res => {
-          this.typeOptions = res.data;
-        }
-      );
-    },
+  
+  
     queryClick() {
-      if (this.searchData.value) {
-        this.init({
-          limit: "10",
-          page: "1",
-          queryMode: "page",
-          startTime: this.searchData.value[0],
-          endTime: this.searchData.value[1],
-          campusName: this.searchData.input
-        });
-      } else {
-        this.init({
-          limit: "10",
-          page: "1",
-          queryMode: "page",
-          campusName: this.searchData.input
-        });
+      console.log(this.formData);
+      this.init();
+    },
+    resetClick(){
+      this.formData={
+        limit: 10,
+        page: 1,
+        endTime: "",
+        phone: "",
+        startTime: "",
+        username: "",
       }
+      this.init();  
     },
-    setParkType() {
-      this.init({
-        limit: "10",
-        page: "1",
-        queryMode: "page",
-        campusType: this.searchData.parkType
-      });
+           sizeChange(v) {
+      this.pageSize = v <= 0 ? 10 : v;
+      console.log(this.pageSize);
+      this.init();
     },
-    setParkStatus() {
-      this.init({
-        limit: "10",
-        page: "1",
-        queryMode: "page",
-        campusStatus: this.searchData.status
-      });
-    },
-    Reset() {
-      this.searchData = {};
-      this.init({ limit: "10", page: "1", queryMode: "page" });
-    },
-    handleDefault(id) {
-      defaultParkManage({ id: id }).then(res => {
-        if (res.code === "200") {
-          this.init({ limit: "10", page: "1", queryMode: "page" });
-        }
-      });
-    },
-    setdialog(val) {
-      this.DeletedialogShow = val;
-    },
-    // 列表详情
-    handleDetails() {
-      this.$router.push("/parkManage/listdetails");
+    currentChange(v) {
+      this.currentPage = v <= 0 ? 1 : v;
+      this.init();
     }
+
+   
   },
   created() {
-    this.init({ limit: "10", page: "1", queryMode: "page" });
-    this.getParkType();
+    this.init();
+ 
   }
 };
 </script>

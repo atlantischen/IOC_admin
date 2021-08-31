@@ -68,39 +68,6 @@ export default {
       Visible: false,
       checkStrictly: false,
       menuDatas: [
-        // {
-        //   id: 1,
-        //   label: "111",
-        //   mLevel: 1,
-        //   children: [
-        //     {
-        //       id: 2,
-        //       label: "2222",
-        //       mLevel: 2,
-        //       children: [
-        //         {
-        //           id: 3,
-        //           label: "3333",
-        //           mLevel: 3,
-        //           children: [
-        //             {
-        //               id: 4,
-        //               label: "44444",
-        //               mLevel: 4,
-        //               children: [
-        //                 {
-        //                   id: 5,
-        //                   label: "55555",
-        //                   mLevel: 5
-        //                 }
-        //               ]
-        //             }
-        //           ]
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // }
       ],
       defaultKeys: [],
       defaultProps: {

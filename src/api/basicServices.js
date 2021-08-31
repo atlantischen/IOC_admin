@@ -79,3 +79,21 @@ export function getMechanismList(params) {
     params
   })
 }
+// 楼栋列表
+export function getHouse(params) {
+  return request({
+    url: '/campus-manager/api/v1/manager/house/building',
+    method: 'get',
+    params
+    
+  })
+}
+// 房源列表
+export function getRoom(params) {
+  return request({
+    url: '/campus-manager/api/v1/manager/house/houseList',
+    method: 'get',
+    params
+    
+  })
+}

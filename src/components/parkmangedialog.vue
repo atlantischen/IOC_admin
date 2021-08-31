@@ -29,7 +29,7 @@
           <el-input v-model="formData.campusNumber"></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="formData.campusType" placeholder="请选择活动区域">
+          <el-select v-model="formData.campusType" placeholder="请选择类型">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -43,7 +43,7 @@
           <el-select
             v-model="formData.parentName"
             clearable
-            placeholder="请选择"
+            placeholder="请选择园区"
             @clear="handleClear"
             ref="selectUpResId"
             @change="selectchange"
@@ -90,7 +90,7 @@
         <el-form-item label="园区级别">
           <el-select
             v-model="formData.campusRanks"
-            placeholder="请选择活动区域"
+            placeholder="请选择园区级别"
           >
             <el-option
               v-for="item in campusRanks"
@@ -314,7 +314,7 @@ export default {
         text-align: center !important;
       }
       .el-textarea {
-        width: 942px;
+        width: 942px !important;
         .el-textarea__inner {
           resize: none !important;
         }

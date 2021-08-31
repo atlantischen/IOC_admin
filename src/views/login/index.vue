@@ -189,11 +189,9 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(res => {
-              console.log(res, "res");
               switch (res.code) {
                 case "A0203":
                   this.centerDialogVisible = true;
-                  console.log("未激活");
                   break;
                 default:
                   this.$router.push({ path: "/" });
@@ -263,6 +261,15 @@ export default {
 
     handleClose() {
       this.$refs.ruleForm.resetFields();
+    }
+  },
+  created(){
+    var _self = this
+    document.onkeydown = function(e) {
+      var key = window.event.keyCode
+      if (key == 13) {
+        _self.handleLogin()
+      }
     }
   },
   beforeDestroy() {

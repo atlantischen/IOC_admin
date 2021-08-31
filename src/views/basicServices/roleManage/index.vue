@@ -199,6 +199,7 @@ export default {
           this.$refs.rolePowerRef.checkStrictly = true;
           roleMenuApi({ roleId: val.id }).then(r => {
             if (r.code == 200) {
+              console.log(r);
               this.$refs.rolePowerRef.menuDatas = [
                 {
                   name: "全部",

@@ -22,11 +22,11 @@
         label-width="80px"
         label-position="left"
       >
-        <el-form-item label="机构名称" prop="name">
+        <el-form-item label="机构名称" prop="username">
           <el-input v-model="formData.name"></el-input>
-        </el-form-item>   
+        </el-form-item>
         <el-form-item label="机构类型">
-          <el-select v-model="formData.campusType" placeholder="请选择活动区域">
+          <el-select v-model="formData.type" placeholder="请选择活动区域">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -42,47 +42,46 @@
         <el-form-item label="联系电话">
           <el-input v-model="formData.campusNumber"></el-input>
         </el-form-item>
-        <el-form-item label="父级园区">
-          <el-select
-            v-model="formData.parentName"
-            clearable
-            placeholder="请选择"
-            @clear="handleClear"
-            ref="selectUpResId"
-            @change="selectchange"
-          >
+        <el-form-item label="机构位置" class="form_select">
+          <el-select v-model="formData.building"  @change="buildingChange" placeholder="请选择楼栋">
             <el-option
-               style="height:auto" 
-              hidden
-              key="upResId"
-              :value="formData.parentName"
-              :label="formData.parentName"
+              v-for="item in buildingOptions"
+              :key="item"
+              :label="item"
+              :value="item"
             >
             </el-option>
-
-            <el-tree
-              :data="treeList"           
-              :expand-on-click-node="false"
-              :check-on-click-node="true"
-              :default-expand-all="true"
-              @node-click="handleNodeClick"
-            >
-            </el-tree>
           </el-select>
-
+          <el-select v-model="formData.floor" @change="floorChange" placeholder="请选择楼层">
+            <el-option
+              v-for="item in floorOptions"
+              :key="item.id"
+              :label="item.floor"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+          <el-select v-model="formData.room" @change="roomChange" placeholder="请选择房号">
+            <el-option
+              v-for="item in roomOptions"
+              :key="item.id"
+              :label="item.houseName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="入住时间">
           <el-date-picker
             v-model="formData.campusNumber"
             :clearable="false"
-            type= "datetime"
+            type="datetime"
             class="datePicker my_datePicker"
-            placeholder="选择日期时间">
+            placeholder="选择日期时间"
+          >
           </el-date-picker>
-
-          
-          </el-form-item>
-     <el-form-item label="入住状态">
+        </el-form-item>
+        <el-form-item label="入住状态">
           <el-select v-model="formData.campusType" placeholder="请选择活动区域">
             <el-option
               v-for="item in options"
@@ -95,21 +94,17 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer  ">
-        <button class="max_bt_gy"  @click="$emit('update:addDialogShow', false)">取消</button>
-      <button class="max_bt_df" @click="submitForm">确认</button>
-
+        <button class="max_bt_gy" @click="$emit('update:addDialogShow', false)">
+          取消
+        </button>
+        <button class="max_bt_df" @click="submitForm">确认</button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import {
-  getParkSelect,
-  updateParkManage,
-  getParentPark,
-  addParkManage
-} from "@/api/basicServices.js";
+import {getHouse,getRoom } from "@/api/basicServices.js";
 
 export default {
   props: {
@@ -125,42 +120,26 @@ export default {
   },
   data() {
     return {
-      campusRanks: [],
-      typeOptions: [],
-      options: [],
-      parentPark: [],
+      totalData:{},
+      buildingOptions:[],
+      floorOptions:[],
+      roomOptions:[],
+      options:[],
       rules: {
-        name: [
-          { required: true, message: "请输入园区名称", trigger: "blur" }
-        ]
+        name: [{ required: true, message: "请输入园区名称", trigger: "blur" }]
       },
-      treeLabel: "",
-      treeList: null
+ 
     };
   },
+  // watch:{
+  //   'formData.building':{
+  //     handler:function (n) {
+  //       // if(n) this.formData.floor=''
+  //     }
+  //   }
+  // },
 
-  methods: {
-    initSelect() {
-      getParkSelect({ queryMode: "list", dictCode: "campus_type" }).then(
-        res => {
-          this.options = res.data;
-        }
-      );
-      getParkSelect({ queryMode: "list", dictCode: "campus_status" }).then(
-        res => {
-          this.typeOptions = res.data;
-        }
-      );
-      getParkSelect({ queryMode: "list", dictCode: "campus_ranks" }).then(
-        res => {
-          this.campusRanks = res.data;
-        }
-      );
-      getParentPark({ limit: "10", page: "5", queryMode: "tree" }).then(res => {
-        // console.log(res);
-        this.treeList = res.data;
-      });
-    },
+  methods: { 
     submitForm() {
       this.$refs.formData.validate(valid => {
         if (valid) {
@@ -170,7 +149,7 @@ export default {
           //     this.$message({ message: res.msg,
           //     type: 'success',})
           //     this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
-          //   
+          //
           //   }
           //   })
           // } else if (this.type === "edit") {
@@ -183,42 +162,53 @@ export default {
           //     }
           //   })
           // }
-              this.$emit('update:addDialogShow', false)
+          this.$emit("update:addDialogShow", false);
 
-            console.log(this.addDialogShow);
+          console.log(this.addDialogShow);
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
-    handleNodeClick(node) {
-      // node.id 是你所选中的ID
-      // treeLabel展示在外界的中文名
 
-      this.formData.parentName = node.label;
-      this.formData.parentId = node.id;
-      this.$set(this.formData, this.formData.parentName, node.label)
-      this.$set(this.formData, this.formData.parentId, node.id)
-      // this.$forceUpdate()
-      this.$refs.selectUpResId.blur(); //让select失去焦点关闭下拉框
+    init() {
+      let id = this.$route.query.id;
+      getHouse({ campusId: id }).then(res => {
+        res.data.forEach(item => {
+          this.buildingOptions.push(item.building);
+        });
+          this.totalData=res.data
+      });
     },
-    handleClear(){
-      this.formData.parentName = '';
-      this.formData.parentId = '';
-       this.$set(this.formData, this.formData.parentId, '')
+    buildingChange(v){
+      this.totalData.forEach(item=>{
+        if(v===item.building){
+          this.floorOptions=[...item.floors]
+        }
+      })
+      this.formData.floor=null
+      this.formData.room=null
 
-       this.$set(this.formData, this.formData.parentName, '')
-      // this.$forceUpdate()
-
+      // console.log(this.formData.floor);
     },
-    selectchange(){
-      console.log('121212');
+
+    floorChange(v){
+      console.log(v);
+      getRoom({buildingId:v}).then(res=>{
+        this.roomOptions=res.data
+      })
+      this.formData.room=null
+      this.$forceUpdate()
+    },
+     roomChange(){
+      this.$forceUpdate()
+
     }
-    
+   
   },
   created() {
-    this.initSelect();
+    this.init()
   }
 };
 </script>
@@ -234,19 +224,30 @@ export default {
 .el-select-dropdown__item {
   background-color: #fff !important;
 }
-.datePicker{
+.datePicker {
   width: 100% !important;
   .el-input__prefix {
+    height: 30px;
     left: 90%;
   }
 }
 .my_footer {
-  .el-dialog__footer{
-  padding: 70px 0;
-
+  .el-dialog__footer {
+    padding: 70px 0;
+  }
+}
+.form_select {
+  .el-form-item__content {
+    display: flex;
   }
 }
 
+.el-input__suffix {
+  right: 0;
+}
+.el-input--suffix .el-input__inner {
+  padding-right: 22px;
+}
 </style>
 <style lang="scss" scoped>
 .container {
@@ -261,18 +262,14 @@ export default {
       .el-form-item__label {
         text-align: center !important;
       }
-      .el-textarea {
-        width: 942px;
-        .el-textarea__inner {
-          resize: none !important;
-        }
-      }
+
       .el-select {
         width: 100%;
       }
     }
     .el-form-item__content {
       width: 300px !important;
+      display: flex;
     }
   }
   .dialog-footer {

@@ -6,7 +6,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /*height:600px;*/
   max-height: calc(100% - 200px);
   max-width: calc(100% - 30px);
 
@@ -57,12 +56,6 @@
       margin: 0 25px;
     }
   }
-
-
-  
-  .el-button--info {
-    // margin-left: 55px;
-  }
 }
 // 时间选择器
 .my_datePicker{
@@ -98,6 +91,6 @@
    color: #F56C6C;
  }
 }
-.el-input__icon{
-  height: 30px;
-}
+// .el-input__icon{
+//   height: 30px;
+// }

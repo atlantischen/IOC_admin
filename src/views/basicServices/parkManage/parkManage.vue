@@ -29,7 +29,7 @@
       <el-input
         class="input "
         v-model="searchData.input"
-        placeholder="请输入内容"
+        placeholder="请输入名称"
       ></el-input>
       <button class="md_bt_df" @click="queryClick">查询</button>
       <div class="type">
@@ -274,7 +274,6 @@ export default {
       );
     },
     queryClick() {
-      if (this.searchData.startTime && this.searchData.endTime) {
         this.init({
           limit: this.pageSize,
           page: this.currentPage,
@@ -283,27 +282,19 @@ export default {
           endTime: this.searchData.endTime,
           campusName: this.searchData.input
         });
-      } else {
-        this.init({
-           limit: this.pageSize,
-          page: this.currentPage,
-          queryMode: "page",
-          campusName: this.searchData.input
-        });
-      }
     },
     setParkType() {
       this.init({
          limit: this.pageSize,
-          page: this.currentPage,
-        queryMode: "page",
-        campusType: this.searchData.parkType
+         page: this.currentPage,
+          queryMode: "page",
+          campusType: this.searchData.parkType
       });
     },
     setParkStatus() {
       this.init({
         limit: this.pageSize,
-          page: this.currentPage,
+        page: this.currentPage,
         queryMode: "page",
         campusStatus: this.searchData.status
       });
