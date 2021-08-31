@@ -127,6 +127,19 @@ div:focus {
 }
 
 
+// select
+.k_select{
+}
+.el-select-dropdown{
+  .el-select-dropdown__item.selected {
+    color: #000;
+    background: #e6e9eb !important;
+  }
+  .popper__arrow{
+    display: none;
+  }
+}
+
 
 // button css 
 button,input{
@@ -187,7 +200,8 @@ button,input{
   .header_btns {
     font-size: 14px;
     justify-content: space-between;
-    margin: 20px 53px 20px 57px;
+    // margin: 20px 53px 20px 57px;
+    margin: 0 0 15px 0;
     .hb_left {
       & >div{
         padding: 5px 0;
@@ -233,6 +247,9 @@ button,input{
         padding: 0;
       }
     }
+    .el-input__icon{
+      line-height: 30px;
+    }
     .el-select {
       height: 30px;
       .el-input {
@@ -244,14 +261,12 @@ button,input{
         background: linear-gradient(0deg, #AABED0, #778EA9);
         border: 1px solid rgba(255, 255, 255, 0.26);
         border-radius: 2px;
-        .el-select__caret{
+        .el-input__icon{
           color: #fff;
-          line-height: 22px;
+          height: 24px;
+          line-height: 24px;
         }
       }
-    }
-    .el-input__icon{
-      line-height: 30px;
     }
     .el-input__inner {
       height: 100%;
@@ -260,7 +275,7 @@ button,input{
   }
   .a_content {
     width: calc(100%-110px);
-    margin: 20px 53px 20px 57px;
+    // margin: 20px 53px 20px 57px;
   }
 }
 
@@ -369,6 +384,7 @@ button,input{
   .el-dialog{
     box-shadow: 0px 1px 9px 0px rgba(128, 143, 159, 0.95);
     border-radius: 5px;
+    max-height: 100%;
   }
   .el-dialog__header{
     border-bottom: 1px solid #eaeaea;

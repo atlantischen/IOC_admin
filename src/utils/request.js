@@ -3,11 +3,21 @@ import qs from 'qs'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+// import JSONbig from 'json-bigint'
 
 // create an axios instance
 const service = axios.create({
   baseURL:process.env.VUE_APP_BASE_API, // url = base url + request url
-  timeout: 5000 // request timeout
+  timeout: 5000, // request timeout
+  // transformResponse: [function (data) {
+  //   try {
+  //       return JSONbig.parse(data)
+  //   } catch (err) {
+  //       return {
+  //           data
+  //       }
+  //   }
+  // }]
 })
 // request interceptor
 service.interceptors.request.use(

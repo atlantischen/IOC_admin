@@ -387,11 +387,12 @@ export default {
 .all_dataD {
 }
 #dataD {
-  width: calc(100% - 102px);
+  // width: calc(100% - 102px);
+  // margin: 22px 54px 0 48px;
+  width: 100%;
   min-height: calc(100% - 55px);
   height: 780px;
   display: flex;
-  margin: 22px 54px 0 48px;
   background: #fff;
   border: 2px solid #d1d5db;
   border-radius: 8px;

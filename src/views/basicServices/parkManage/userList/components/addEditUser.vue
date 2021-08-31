@@ -66,7 +66,7 @@
 
 <script>
 import { checkPhone } from "@/utils/validate";
-import { adminUserApi2 } from "@/api/userMgt";
+import { parkUserApi2 } from "@/api/parkUser";
 export default {
   name: "addEditDicType",
   props: {
@@ -143,7 +143,7 @@ export default {
         if (valid) {
           if (this._type === "add") {
             // this.ruleForm.password = this.ruleForm.phone;
-            adminUserApi2({ ...this.ruleForm }).then(r => {
+            parkUserApi2({ ...this.ruleForm }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");
                 this.$emit("refresh");
@@ -153,7 +153,7 @@ export default {
               }
             });
           } else {
-            adminUserApi2({ ...this.ruleForm }, "put").then(r => {
+            parkUserApi2({ ...this.ruleForm }, "put").then(r => {
               if (r.code == 200) {
                 this.$message.success("修改成功！");
                 this.$emit("refresh");

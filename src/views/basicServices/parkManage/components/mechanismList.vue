@@ -47,15 +47,15 @@
         </el-table-column>
         <el-table-column label="操作" prop="gmtCreate">
           <template slot-scope="scope">
-            <el-button class="mr" type="text"  @click="handleDelete(scope.row)"
+            <el-button class="mr" type="text" @click="handleDelete(scope.row)"
               >删除</el-button
             >
-            <el-button class="mr"  type="text"  @click="handleEdit(scope.row)"
+            <el-button class="mr" type="text" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
             <el-button
               type="text"
-            class="mr" 
+              class="mr"
               @click="handleDistribution(scope.row)"
               >权限分配</el-button
             >
@@ -63,54 +63,54 @@
         </el-table-column>
       </el-table>
     </div>
-    <AddEdit :addDialogShow.sync="addDialogShow" :formData="formData" :type="type"></AddEdit>
+    <AddEdit
+      :addDialogShow.sync="addDialogShow"
+      :formData="formData"
+      :type="type"
+    ></AddEdit>
   </div>
 </template>
 
 <script>
-import {getMechanismList} from '@/api/basicServices'
-import AddEdit from './addEdit.vue'
+import { getMechanismList } from "@/api/basicServices";
+import AddEdit from "./addEdit.vue";
 export default {
   data() {
     return {
       input: "",
       tableData: [],
 
-      formData:{
-          campusId:this.$route.query.id,
-          limit:10,
-          page:1,
-          queryMode:'page',
-          organizationName:''
+      formData: {
+        campusId: this.$route.query.id,
+        limit: 10,
+        page: 1,
+        queryMode: "page",
+        organizationName: ""
       },
-      addDialogShow:true,
-      type:''
+      addDialogShow: false
     };
   },
-  components:{AddEdit},
+  components: { AddEdit },
 
   methods: {
-      init(){
-          console.log(this.formData);
-         getMechanismList(this.formData).then(res=>{
-             if(res.code==='200') this.tableData=res.data
-
-            })
-      },
-      queryClick(){
-          this.formData.organizationName=this.input
-          this.init()
-          
-      },
-      addOrEdit(val){
-            this.formData = {};
-            this.type =val;
-            this.addDialogShow = !this.addDialogShow
-           
-      }
+    init() {
+      console.log(this.formData);
+      getMechanismList(this.formData).then(res => {
+        if (res.code === "200") this.tableData = res.data;
+      });
+    },
+    queryClick() {
+      this.formData.organizationName = this.input;
+      this.init();
+    },
+    addOrEdit(val) {
+      this.formData = {};
+      this.type = val;
+      this.addDialogShow = !this.addDialogShow;
+    }
   },
   created() {
-    this.init()
+    this.init();
   }
 };
 </script>

@@ -9,7 +9,7 @@
             <el-input
               class="k_input"
               placeholder="请输入角色名称"
-              v-model="searchContent"
+              v-model="searchName"
             ></el-input
             ><i></i>
             <button class="md_bt_gy" @click="initD('search')">
@@ -142,7 +142,7 @@
 
 <script>
 import { getTrue, addLevel } from "@/utils/method";
-import { adminRoleApi, adminRoleInfoApi, roleMenuApi } from "@/api/role";
+import { parkRoleApi, parkRoleInfoApi, roleMenuApi } from "@/api/parkRole";
 import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
@@ -151,7 +151,7 @@ export default {
   components: { AddEdit, RolePower, SelectObj },
   data() {
     return {
-      searchContent: "",
+      searchName: "",
       pageSize: 10,
       total: 0,
       currentPage: 1,
@@ -172,9 +172,10 @@ export default {
   methods: {
     initD() {
       this.dLoading = true;
-      adminRoleApi({
+      parkRoleApi({
+        campusId: this.$route.query.id,
         limit: this.pageSize,
-        name: this.searchContent,
+        name: this.searchName,
         page: this.currentPage,
         queryMode: "page"
       }).then(r => {
@@ -200,7 +201,6 @@ export default {
           this.$refs.rolePowerRef.checkStrictly = true;
           roleMenuApi({ roleId: val.id }).then(r => {
             if (r.code == 200) {
-              console.log(r);
               this.$refs.rolePowerRef.menuDatas = [
                 {
                   name: "全部",
@@ -223,7 +223,7 @@ export default {
         case "edit":
           this.showD = true;
           this.dType = t;
-          adminRoleInfoApi({ id: val.id }).then(r => {
+          parkRoleInfoApi({ id: val.id }).then(r => {
             if (r.code == 200) {
               this.editDatas = r.data;
             }
@@ -245,7 +245,7 @@ export default {
             type: "warning"
           })
             .then(_ => {
-              adminRoleApi({ ids: val.id }, "DELETE").then(r => {
+              parkRoleApi({ ids: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success("删除成功！");
