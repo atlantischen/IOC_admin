@@ -1,6 +1,6 @@
 <template>
   <!-- 角色管理 -->
-  <div id="roleManage" class="comStyles">
+  <div id="roleList" class="comStyles">
     <div class="header_btns x_c">
       <div class="hb_left">
         <div>
@@ -9,7 +9,7 @@
             <el-input
               class="k_input"
               placeholder="请输入角色名称"
-              v-model="searchContent"
+              v-model="searchName"
             ></el-input
             ><i></i>
             <button class="md_bt_gy" @click="initD('search')">
@@ -28,7 +28,7 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height=""
+        style="height: 100%"
         stripe
         fit
       >
@@ -44,7 +44,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.name || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -54,7 +54,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.userCount || '-' }}
+            {{ scope.row.userCount || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -69,12 +69,12 @@
         </el-table-column>
         <el-table-column
           align="center"
-          prop="creatorId"
+          prop="creatorName"
           label="创建人"
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.creatorId  || '-' }}
+            {{ scope.row.creatorName || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -84,7 +84,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.gmtCreate  || '-' }}
+            {{ scope.row.gmtCreate || '-'}}
           </template>
         </el-table-column>
         <el-table-column align="left" label="操作"
@@ -142,16 +142,16 @@
 
 <script>
 import { getTrue, addLevel } from "@/utils/method";
-import { adminRoleApi, adminRoleInfoApi, roleMenuApi } from "@/api/role";
+import { parkRoleApi, parkRoleInfoApi, roleMenuApi } from "@/api/parkRole";
 import AddEdit from "./components/addEditRole.vue";
 import RolePower from "./components/selectRolePower.vue";
 import SelectObj from "./components/selectObj.vue";
 export default {
-  name: "roleManage",
+  name: "roleList",
   components: { AddEdit, RolePower, SelectObj },
   data() {
     return {
-      searchContent: "",
+      searchName: "",
       pageSize: 10,
       total: 0,
       currentPage: 1,
@@ -163,7 +163,8 @@ export default {
       dType: "add",
       editDatas: {},
       PowerIds: null,
-      roleInfo: null
+      roleInfo: null,
+      campusId: this.$route.query.id
     };
   },
   created() {
@@ -172,9 +173,10 @@ export default {
   methods: {
     initD() {
       this.dLoading = true;
-      adminRoleApi({
+      parkRoleApi({
+        campusId: this.campusId,
         limit: this.pageSize,
-        name: this.searchContent,
+        name: this.searchName,
         page: this.currentPage,
         queryMode: "page"
       }).then(r => {
@@ -190,7 +192,7 @@ export default {
         case "add":
           this.showD = true;
           this.dType = t;
-          this.editDatas = {};
+          this.editDatas = {campusId: this.campusId};
           break;
         case "power":
           this.showRolePower = true;
@@ -198,7 +200,7 @@ export default {
           this.roleInfo = val;
           this.$refs.rolePowerRef.menuDatas = []
           this.$refs.rolePowerRef.checkStrictly = true;
-          roleMenuApi({ roleId: val.id }).then(r => {
+          roleMenuApi({ campusRoleId: val.id }).then(r => {
             if (r.code == 200) {
               this.$refs.rolePowerRef.menuDatas = [
                 {
@@ -222,7 +224,7 @@ export default {
         case "edit":
           this.showD = true;
           this.dType = t;
-          adminRoleInfoApi({ id: val.id }).then(r => {
+          parkRoleInfoApi({ id: val.id }).then(r => {
             if (r.code == 200) {
               this.editDatas = r.data;
             }
@@ -244,7 +246,7 @@ export default {
             type: "warning"
           })
             .then(_ => {
-              adminRoleApi({ ids: val.id }, "DELETE").then(r => {
+              parkRoleApi({ ids: val.id,campusId: this.campusId, }, "DELETE").then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success("删除成功！");
@@ -268,6 +270,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-#roleManage {
+#roleList {
+  .TabelTwo{
+    // height: calc(100% - 200px);
+  }
 }
 </style>

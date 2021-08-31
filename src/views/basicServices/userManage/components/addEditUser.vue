@@ -137,12 +137,13 @@ export default {
     },
     reset() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm = {}
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           if (this._type === "add") {
-            this.ruleForm.password = this.ruleForm.phone;
+            // this.ruleForm.password = this.ruleForm.phone;
             adminUserApi2({ ...this.ruleForm }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");

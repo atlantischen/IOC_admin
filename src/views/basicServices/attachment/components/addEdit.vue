@@ -98,7 +98,6 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
       Visible: false,

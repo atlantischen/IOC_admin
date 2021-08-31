@@ -120,6 +120,10 @@ export default {
     },
     reset() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm = {}
+      if (this._type === "edit") {
+        this.ruleForm.dictCode = this._datas.dictCode
+      }
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {

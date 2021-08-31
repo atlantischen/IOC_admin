@@ -42,7 +42,7 @@
               show-overflow-tooltip
             >
               <template slot-scope="scope">
-                {{ scope.row.name }}
+                {{ scope.row.name || '-'}}
               </template>
             </el-table-column>
             <el-table-column
@@ -52,7 +52,7 @@
               show-overflow-tooltip
             >
               <template slot-scope="scope">
-                {{ scope.row.code }}
+                {{ scope.row.code || '-'}}
               </template>
             </el-table-column>
           </el-table>
@@ -99,22 +99,22 @@
             </el-table-column>
             <el-table-column align="center" prop="name" label="字典名称">
               <template slot-scope="scope">
-                {{ scope.row.name }}
+                {{ scope.row.name || '-'}}
               </template>
             </el-table-column>
             <el-table-column align="center" prop="sort" label="字典选项值">
               <template slot-scope="scope">
-                {{ scope.row.sort }}
+                {{ scope.row.sort || '-'}}
               </template>
             </el-table-column>
             <el-table-column align="center" prop="dictCode" label="字典编码">
               <template slot-scope="scope">
-                {{ scope.row.dictCode }}
+                {{ scope.row.dictCode || '-'}}
               </template>
             </el-table-column>
             <el-table-column align="center" prop="remark" label="备注">
               <template slot-scope="scope">
-                {{ scope.row.remark }}
+                {{ scope.row.remark || '-'}}
               </template>
             </el-table-column>
             <el-table-column align="center" prop="code" label="操作">
@@ -387,11 +387,10 @@ export default {
 .all_dataD {
 }
 #dataD {
-  width: calc(100% - 102px);
-  min-height: calc(100% - 55px);
-  height: 780px;
+  // margin: 22px 54px 0 48px;
+  width: 100%;
+  height: calc(100vh - 150px);
   display: flex;
-  margin: 22px 54px 0 48px;
   background: #fff;
   border: 2px solid #d1d5db;
   border-radius: 8px;
@@ -402,6 +401,7 @@ export default {
     padding: 0 12px;
     background: #f7f8fa;
     border-bottom: 2px solid #d4d4d4;
+    overflow-x: auto;
   }
   .d_content {
     height: calc(100% - 55px);
@@ -410,7 +410,7 @@ export default {
   }
   .dataD_left {
     width: 325px;
-    min-height: 650px;
+    height: 100%;
     border-right: 2px solid #d4d4d4;
     .d_header {
       button {

@@ -9,23 +9,25 @@
       >
         <el-tab-pane label="机构列表" name="first">
           <MechanismList></MechanismList>
-          </el-tab-pane>
-        <el-tab-pane label="用户列表" name="second">用户列表</el-tab-pane>
-        <el-tab-pane label="角色列表" name="third">角色列表</el-tab-pane>
+        </el-tab-pane>
+        <el-tab-pane label="用户列表" name="second"> <user-list></user-list></el-tab-pane>
+        <el-tab-pane label="角色列表" name="third"> <role-list></role-list> </el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import MechanismList from './components/mechanismList.vue'
+import MechanismList from "./components/mechanismList.vue";
+import UserList from "./userList/index.vue";
+import RoleList from "./roleList/index.vue";
 export default {
   data() {
     return {
       activeName: "first"
     };
   },
-  components:{MechanismList},
+  components: { MechanismList, UserList, RoleList },
   watch: {
     activeName() {
       this.resetTabActivePosition(this.$refs.tabs.$el);
@@ -50,10 +52,10 @@ export default {
     }
   },
   created() {
-      this.$nextTick(() => {
-          this.resetTabActivePosition(this.$refs.tabs.$el)
-      });
-  },
+    this.$nextTick(() => {
+      this.resetTabActivePosition(this.$refs.tabs.$el);
+    });
+  }
 };
 </script>
 <style lang="scss">
@@ -72,9 +74,9 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.19);
   border-radius: 3px;
 }
-.el-tabs__item:hover{
+.el-tabs__item:hover {
   color: #fff;
-}  
+}
 .el-tabs__item.is-active {
   color: #fff;
   background: linear-gradient(0deg, #009afb, #0ec6ee);

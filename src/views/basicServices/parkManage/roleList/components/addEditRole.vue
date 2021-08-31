@@ -10,9 +10,9 @@
     <div slot="title" class="header-title">
       <i
         class="iconfont"
-        :class="_type === 'add' ? 'icon-tianjia' : 'icon-shenqingguanli'"
+        :class="_type === 'add' ? 'icon-xinzeng' : 'icon-shenqingguanli'"
       ></i>
-      <span>{{ _type === "add" ? "添加" : "编辑" }}字典类别</span>
+      <span>{{ _type === "add" ? "新增" : "修改" }}角色</span>
     </div>
     <el-form
       :model="ruleForm"
@@ -21,25 +21,27 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item class="count_item" label="类别名称" prop="name">
+      <el-form-item label="角色类型"  prop="perms" >
+        <el-select v-model="ruleForm.perms" :disabled="_type === 'edit'" placeholder="请选择类型">
+          <el-option
+            v-for="item in roleList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="角色名称" prop="name">
         <el-input
-          placeholder="请输入类别名称"
+          placeholder="请输入角色名称"
           v-model="ruleForm.name"
-        ></el-input>
-      </el-form-item>
-      <el-form-item class="count_item" label="类别编码" prop="code">
+        ></el-input
+      ></el-form-item>
+      <el-form-item label="角色说明">
         <el-input
-          placeholder="请输入类别编码"
-          v-model="ruleForm.code"
-        ></el-input>
-      </el-form-item>
-      <el-form-item class="count_item" label="排序值" prop="sort">
-        <el-input placeholder="请输入排序值" v-model="ruleForm.sort"></el-input>
-      </el-form-item>
-      <el-form-item class="count_item" label="备注" prop="remark">
-        <el-input
+          placeholder=""
           type="textarea"
-          placeholder="请输入内容"
           v-model="ruleForm.remark"
         ></el-input>
       </el-form-item>
@@ -52,7 +54,8 @@
 </template>
 
 <script>
-import { adminDictApi2, adminDictApi } from "@/api/dict";
+import { parkRoleApi2 } from "@/api/parkRole";
+import { adminDictItemApi } from "@/api/dict";
 export default {
   name: "addEditDicType",
   props: {
@@ -71,10 +74,10 @@ export default {
     return {
       Visible: false,
       ruleForm: {},
+      roleList: [],
       rules: {
-        name: [{ required: true, message: "请输入类别名称", trigger: "blur" }],
-        code: [{ required: true, message: "请输入类别编码", trigger: "blur" }],
-        value: [{ required: true, message: "请输入排序值", trigger: "blur" }]
+        perms: [{ required: true, message: "请选择角色类型", trigger: "blur" }],
+        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }]
       }
     };
   },
@@ -92,6 +95,20 @@ export default {
       deep: true
     }
   },
+  created() {
+    adminDictItemApi({
+      limit: "",
+      dictCode: "role_type",
+      name: "",
+      page: "",
+      queryMode: "list"
+    }).then(r => {
+      if (r.code == 200) {
+        this.roleList = r.data;
+        this.total = r.total;
+      }
+    });
+  },
   methods: {
     close() {
       this.reset();
@@ -101,22 +118,25 @@ export default {
     reset() {
       this.$refs.ruleForm.resetFields();
       this.ruleForm = {}
+      if(this._type == 'edit'){
+        this.ruleForm.perms = this._datas.perms
+      }
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           if (this._type === "add") {
-            adminDictApi2({ ...this.ruleForm }).then(r => {
+            parkRoleApi2({ ...this.ruleForm }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");
                 this.$emit("refresh");
                 this.close();
               } else {
-                this.$message.error("新增失败！");
+                // this.$message.error("新增失败！");
               }
             });
           } else {
-            adminDictApi2({ ...this.ruleForm }, "put").then(r => {
+            parkRoleApi2({ ...this.ruleForm }, "put").then(r => {
               if (r.code == 200) {
                 this.$message.success("修改成功！");
                 this.$emit("refresh");

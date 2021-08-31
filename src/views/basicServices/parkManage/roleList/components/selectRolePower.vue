@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { roleMenuApi } from "@/api/role";
+import { roleMenuApi } from "@/api/parkRole";
 export default {
   name: "selectRolePower",
   props: {
@@ -160,7 +160,6 @@ export default {
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);
-      console.log("111111");
       let _a = keys.halfCheckedKeys;
       this.checkStrictly = false;
       let _i = _a.indexOf("all");

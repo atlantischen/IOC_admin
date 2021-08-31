@@ -1,6 +1,5 @@
 <template>
-  <!-- 用户管理 -->
-  <div id="userManage" class="comStyles">
+  <div id="userList" class="comStyles">
     <div class="header_btns x_c">
       <div class="hb_left">
         <div>
@@ -51,7 +50,7 @@
           <span>
             <label class="_n">状态</label>
             <el-select
-              class="w_160"
+              class="w_160 k_select"
               v-model="slectStatus"
               placeholder="请选择类型"
             >
@@ -72,15 +71,15 @@
     </div>
     <div class="a_content">
       <el-table
-        class="TabelTwo"
         v-loading="dLoading"
         :data="dataList"
-        element-loading-text="Loading"
-        height=""
+        class="TabelTwo"
         stripe
-        fit
+        height=""
+        :header-cell-style="{ textAlign: 'center' }"
+        :cell-style="{ textAlign: 'center' }"
       >
-        <el-table-column align="center" label="序号" type="index" width="60">
+        <el-table-column label="序号" width="60">
           <template slot-scope="scope">
             <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
@@ -142,8 +141,11 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span :class="scope.row.enabledCh == '已激活' ? '' : '_grey'">{{
+            <!-- <span :class="scope.row.enabledCh == '已激活' ? '' : '_grey'">{{
               scope.row.enabledCh
+            }}</span> -->
+            <span :class="scope.row.enabled == 1 ? '' : '_grey'">{{
+              scope.row.enabled == 1 ? "已激活" : "未激活"
             }}</span>
           </template>
         </el-table-column>
@@ -160,7 +162,6 @@
         <el-table-column
           align="center"
           prop="gmtCreate"
-          width="150"
           label="创建时间"
           show-overflow-tooltip
         >
@@ -175,13 +176,16 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            <span :class="scope.row.statusCh == '启用' ? '_yg' : '_red'">
+            <!-- <span :class="scope.row.statusCh == '启用' ? '_yg' : '_red'">
               {{ scope.row.statusCh }}
+            </span> -->
+            <span :class="scope.row.status == '1' ? '_yg' : '_red'">
+              {{ scope.row.status == "1" ? "启用" : "禁用" }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="操作" width="300"
-          ><div class="x_c_sb" slot-scope="scope">
+        <el-table-column label="操作" width="200">
+          <div slot-scope="scope" class="x_c_sb">
             <button @click="handleFun('edit', scope.row)" class="_bule">
               编辑
             </button>
@@ -191,24 +195,21 @@
             <button @click="handleFun('del', scope.row)" class="_red">
               删除
             </button>
-            <button @click="handleFun('resetPW', scope.row)" class="_bule">
-              重置密码
-            </button>
             <button @click="handleFun('role', scope.row)" class="_bule">
               角色
             </button>
           </div>
         </el-table-column>
       </el-table>
-      <PageT
-        :between="true"
-        :_currentPage="currentPage"
-        :_pageSize="pageSize"
-        :_total="total"
-        @size="sizeChange"
-        @current="currentChange"
-      />
     </div>
+    <PageT
+      :between="true"
+      :_currentPage="currentPage"
+      :_pageSize="pageSize"
+      :_total="total"
+      @size="sizeChange"
+      @current="currentChange"
+    />
     <AddEdit
       ref="addEditRef"
       :_datas="editDatas"
@@ -219,37 +220,34 @@
     />
     <SelectRole
       ref="selectRoleRef"
-      :_datas="PowerIds"
       :_type="dType"
       :_show="showSelectRole"
       @close="handleFun"
-    />
-    <ResetPW
-      ref="restPwRef"
-      :_type="dType"
-      :_datas="userInfo"
-      :_show="showRestPw"
-      @close="handleFun"
-      @refresh="initD"
     />
   </div>
 </template>
 
 <script>
-import { adminUserApi, cgStatusApi, userDetailApi } from "@/api/userMgt";
 import AddEdit from "./components/addEditUser.vue";
 import SelectRole from "./components/selectRole.vue";
-import ResetPW from "./components/resetPW.vue";
+import { parkUserApi, cgStatusApi, parkUserInfoApi } from "@/api/parkUser";
 export default {
-  name: "userManage",
-  components: { AddEdit, SelectRole, ResetPW },
+  components: { AddEdit, SelectRole },
   data() {
     return {
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      searchName: "",
       startTime: "",
       endTime: "",
-      searchName: "",
-      searchPhone: "",
+      dataList: [],
+      editDatas: {},
+      dType: "add",
       slectStatus: "",
+      showSelectRole: false,
+      showD: false,
+      dLoading: false,
       allStatus: [
         {
           name: "全部",
@@ -264,54 +262,41 @@ export default {
           value: 1
         }
       ],
-      pageSize: 10,
-      total: 0,
-      currentPage: 1,
-      dLoading: false,
-      dataList: [],
-      showD: false,
-      showSelectRole: false,
-      showRestPw: false,
-      dType: "add",
-      editDatas: {},
-      PowerIds: null,
-      userInfo: null
+      searchPhone: "",
+      campusId: this.$route.query.id
     };
   },
   created() {
     this.initD();
   },
   methods: {
-    initD(val) {
-      this.dLoading = true;
-      adminUserApi({
+    initD() {
+      this.dLoading = true
+      parkUserApi({
         startTime: this.startTime,
         endTime: this.endTime,
+        campusId: this.campusId,
         limit: this.pageSize,
         page: this.currentPage,
-        phone: this.searchPhone,
         queryMode: "page",
+        phone: this.searchPhone,
         status: this.slectStatus,
         username: this.searchName
-      }).then(r => {
-        if (r.code == 200) {
-          this.dataList = r.data;
-          this.total = r.total;
+      }).then(res => {
+        if (res.code === "200") {
+          this.dataList = res.data;
+          this.total = res.total;
           this.dLoading = false;
         }
       });
     },
+
     handleFun(t, val) {
       switch (t) {
         case "add":
           this.showD = true;
           this.dType = t;
-          this.editDatas = {};
-          break;
-        case "resetPW":
-          this.dType = t;
-          this.showRestPw = true;
-          this.userInfo = val;
+          this.editDatas = {campusId: this.campusId};
           break;
         case "role":
           this.dType = t;
@@ -329,7 +314,7 @@ export default {
             }
           )
             .then(_ => {
-              cgStatusApi({ id: val.id }).then(r => {
+              cgStatusApi({ campusCampusUserId: val.id }).then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success(
@@ -348,7 +333,7 @@ export default {
         case "edit":
           this.showD = true;
           this.dType = t;
-          userDetailApi({ id: val.id }).then(r => {
+          parkUserInfoApi({ id: val.id }).then(r => {
             if (r.code == 200) {
               this.editDatas = r.data;
             }
@@ -359,7 +344,7 @@ export default {
             type: "warning"
           })
             .then(_ => {
-              adminUserApi({ id: val.id }, "DELETE").then(r => {
+              parkUserApi({ id: val.id }, "DELETE").then(r => {
                 if (r.code == 200) {
                   this.initD();
                   this.$message.success("删除成功！");
@@ -371,23 +356,24 @@ export default {
         default:
           this.showD = false;
           this.showSelectRole = false;
-          this.showRestPw = false;
           break;
       }
     },
     sizeChange(v) {
-      this.pageSize = v <= 0 ? 10 : v;
+      this.pageSize = v;
       this.initD();
     },
     currentChange(v) {
-      this.currentPage = v <= 0 ? 1 : v;
+      this.currentPage = v;
       this.initD();
     }
   }
 };
 </script>
-
+<style></style>
 <style lang="scss" scoped>
-#userManage {
+#userList {
+  .header_btns {
+  }
 }
 </style>

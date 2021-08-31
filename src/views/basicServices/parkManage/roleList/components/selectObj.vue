@@ -9,7 +9,7 @@
   >
     <div slot="title" class="header-title">
       <i class="iconfont icon-jiaosepeizhi"></i>
-      <span>选择角色</span>
+      <span>选择对象</span>
     </div>
     <div class="selectObj dLog_content">
       <div class="selectObj_h x_c">
@@ -44,19 +44,14 @@
             <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="角色名称" show-overflow-tooltip>
+        <el-table-column prop="username" label="用户名" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.name || '-' }}
+            {{ scope.row.username || '-'}}
           </template>
         </el-table-column>
-        <el-table-column prop="code" label="角色编码" show-overflow-tooltip>
+        <el-table-column prop="phone" label="手机号" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.code || '-'}}
-          </template>
-        </el-table-column>
-        <el-table-column prop="remark" label="备注" show-overflow-tooltip>
-          <template slot-scope="scope">
-            {{ scope.row.remark || '-' }}
+            {{ scope.row.phone || '-'}}
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +75,7 @@
 </template>
 
 <script>
-import { userRoleApi } from "@/api/userMgt";
+import { roleUserApi } from "@/api/parkRole";
 import { getDiffArr, getComArr, getIds } from "@/utils/method.js";
 export default {
   name: "selectObj",
@@ -119,18 +114,22 @@ export default {
   },
   methods: {
     getList() {
+      // this.$nextTick().then(() => {
+      //   this.$refs.tableRef.clearSelection();
+      // });
       this.dataList = [];
       this.dLoading = true;
-      userRoleApi({
+      roleUserApi({
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
-        userId: this._datas.id,
-        name: this.searchContent
+        campusRoleId: this._datas.id,
+        username: this.searchContent
       }).then(r => {
         if (r.code == 200) {
-          this.dataList = r.data;
+          this.dataList = r.data
           this.total = r.total;
+          this.dLoading = false;
           if (!this.pageObjSave) {
             // 自定义每页存储（add：新增，del: 已默认中需删除de，df：默认）
             this.pageObjSave = [];
@@ -142,62 +141,6 @@ export default {
                 alls: []
               };
             }
-          } else {
-            //   this.flag = true;
-            //   let _a = (this.addIds = this.pageObjSave[this.currentPage - 1][
-            //     "add"
-            //   ]);
-            //   this.defalutIds = this.pageObjSave[this.currentPage - 1]["df"];
-            //   this.delIds = this.pageObjSave[this.currentPage - 1]["del"];
-            //   //
-            //   console.log(this.addIds);
-            //   if (
-            //     this.addIds.length > 0 &&
-            //     this.defalutIds.length == 0 &&
-            //     this.delIds.length == 0
-            //   ) {
-            //     // 加
-            //     console.log("//////////add");
-            //     console.log(_a.length);
-            //     _a.forEach(r => {
-            //       console.log("//////////pppppppppppppppp");
-            //       console.log(r);
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //       console.log("//////////pppppppppppppppp2");
-            //     });
-            //   } else if (
-            //     this.addIds.length > 0 &&
-            //     this.defalutIds.length > 0 &&
-            //     this.delIds.length == 0
-            //   ) {
-            //     console.log("//////////add+df");
-            //     let _ad = getDiffArr(this.defalutIds, this.addIds);
-            //     _ad.forEach(r => {
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //     });
-            //   } else if (
-            //     this.defalutIds.length >= 0 &&
-            //     this.addIds.length >= 0 &&
-            //     this.delIds.length >= 0
-            //   ) {
-            //     // 加，减，默认
-            //     console.log("///////////df");
-            //     this.defalutIds.forEach(r => {
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //     });
-            //   } else {
-            //     console.log("///////////------");
-            //   }
-            //   this.flag = false;
           }
           // 初始化每页默认复现
           this.defalutIds = [];
@@ -234,7 +177,6 @@ export default {
           console.log(this.pageObjSave);
         }
       });
-      this.dLoading = false;
     },
     close() {
       this.reset();
@@ -257,7 +199,7 @@ export default {
     },
 
     sure() {
-      console.log(this.pageObjSave);
+      // console.log(this.pageObjSave);
       let allAdds = [],
         alldels = [];
       for (let i = 0; i < this.pageObjSave.length; i++) {
@@ -266,15 +208,15 @@ export default {
         alldels.push(...this.pageObjSave[i].del);
       }
       console.log(allAdds);
-      this.$confirm("确认修改选择角色？", "操作确认", {
+      this.$confirm("确认修改选择对象？", "操作确认", {
         type: "warning"
       })
         .then(_ => {
-          userRoleApi(
+          roleUserApi(
             {
-              userId: this._datas.id,
-              addRoleIds: `${getIds(allAdds)}`,
-              deleteRoleIds: `${getIds(alldels)}`
+              campusRoleId: this._datas.id,
+              addIds: `${getIds(allAdds)}`,
+              deleteIds: `${getIds(alldels)}`
             },
             "put"
           ).then(r => {

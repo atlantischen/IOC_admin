@@ -10,9 +10,9 @@
     <div slot="title" class="header-title">
       <i
         class="iconfont"
-        :class="_type === 'add' ? 'icon-tianjia' : 'icon-shenqingguanli'"
+        :class="_type === 'add' ? 'icon-xinzeng' : 'icon-shenqingguanli'"
       ></i>
-      <span>{{ _type === "add" ? "添加" : "编辑" }}字典类别</span>
+      <span>{{ _type === "add" ? "新增" : "修改" }}</span>
     </div>
     <el-form
       :model="ruleForm"
@@ -21,26 +21,39 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item class="count_item" label="类别名称" prop="name">
+      <el-form-item label="手机号" prop="phone">
         <el-input
-          placeholder="请输入类别名称"
-          v-model="ruleForm.name"
+          placeholder="请输入联系电话"
+          v-model="ruleForm.phone"
+        ></el-input
+      ></el-form-item>
+      <el-form-item label="姓名" prop="username">
+        <el-input
+          placeholder="请输入用户姓名"
+          v-model="ruleForm.username"
         ></el-input>
       </el-form-item>
-      <el-form-item class="count_item" label="类别编码" prop="code">
+      <el-form-item label="性别">
+        <el-select v-model="ruleForm.gender" placeholder="请选择性别">
+          <el-option
+            v-for="item in genderList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="部门">
         <el-input
-          placeholder="请输入类别编码"
-          v-model="ruleForm.code"
+          placeholder="请输入部门名称"
+          v-model="ruleForm.dept"
         ></el-input>
       </el-form-item>
-      <el-form-item class="count_item" label="排序值" prop="sort">
-        <el-input placeholder="请输入排序值" v-model="ruleForm.sort"></el-input>
-      </el-form-item>
-      <el-form-item class="count_item" label="备注" prop="remark">
+      <el-form-item label="职位">
         <el-input
-          type="textarea"
-          placeholder="请输入内容"
-          v-model="ruleForm.remark"
+          placeholder="请输入职位名称"
+          v-model="ruleForm.position"
         ></el-input>
       </el-form-item>
     </el-form>
@@ -52,7 +65,8 @@
 </template>
 
 <script>
-import { adminDictApi2, adminDictApi } from "@/api/dict";
+import { checkPhone } from "@/utils/validate";
+import { parkUserApi2 } from "@/api/parkUser";
 export default {
   name: "addEditDicType",
   props: {
@@ -71,10 +85,33 @@ export default {
     return {
       Visible: false,
       ruleForm: {},
+      genderList: [
+        {
+          name: "保密",
+          value: ""
+        },
+        {
+          name: "男",
+          value: "0"
+        },
+        {
+          name: "女",
+          value: "1"
+        }
+      ],
       rules: {
-        name: [{ required: true, message: "请输入类别名称", trigger: "blur" }],
-        code: [{ required: true, message: "请输入类别编码", trigger: "blur" }],
-        value: [{ required: true, message: "请输入排序值", trigger: "blur" }]
+        phone: [
+          { required: true, message: "请输入联系电话", trigger: "blur" },
+          {
+            type: "number",
+            validator: checkPhone,
+            message: "请输入有效手机号号码",
+            trigger: ["blur", "change"]
+          }
+        ],
+        username: [
+          { required: true, message: "请输入用户姓名", trigger: "blur" }
+        ]
       }
     };
   },
@@ -106,7 +143,8 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           if (this._type === "add") {
-            adminDictApi2({ ...this.ruleForm }).then(r => {
+            // this.ruleForm.password = this.ruleForm.phone;
+            parkUserApi2({ ...this.ruleForm }).then(r => {
               if (r.code == 200) {
                 this.$message.success("新增成功！");
                 this.$emit("refresh");
@@ -116,7 +154,7 @@ export default {
               }
             });
           } else {
-            adminDictApi2({ ...this.ruleForm }, "put").then(r => {
+            parkUserApi2({ ...this.ruleForm }, "put").then(r => {
               if (r.code == 200) {
                 this.$message.success("修改成功！");
                 this.$emit("refresh");

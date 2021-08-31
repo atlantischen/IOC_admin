@@ -46,17 +46,17 @@
         </el-table-column>
         <el-table-column prop="name" label="角色名称" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.name || '-' }}
+            {{ scope.row.name }}
           </template>
         </el-table-column>
         <el-table-column prop="code" label="角色编码" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.code || '-'}}
+            {{ scope.row.code }}
           </template>
         </el-table-column>
         <el-table-column prop="remark" label="备注" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.remark || '-' }}
+            {{ scope.row.remark }}
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-import { userRoleApi } from "@/api/userMgt";
+import { getUserRoleApi } from "@/api/parkUser";
 import { getDiffArr, getComArr, getIds } from "@/utils/method.js";
 export default {
   name: "selectObj",
@@ -121,11 +121,11 @@ export default {
     getList() {
       this.dataList = [];
       this.dLoading = true;
-      userRoleApi({
+      getUserRoleApi({
         limit: this.pageSize,
         page: this.currentPage,
         queryMode: "page",
-        userId: this._datas.id,
+        campusCampusUserId: this._datas.id,
         name: this.searchContent
       }).then(r => {
         if (r.code == 200) {
@@ -207,7 +207,6 @@ export default {
             this.pageObjSave[this.currentPage - 1].add.length == 0 &&
             this.pageObjSave[this.currentPage - 1].del.length == 0
           ) {
-            console.log("111111111");
             r.data.forEach(r => {
               if (r.choice.toString() == "true") {
                 this.defalutIds.push(r);
@@ -219,7 +218,6 @@ export default {
             this.pageObjSave[this.currentPage - 1].df = this.defalutIds;
             this.pageObjSave[this.currentPage - 1].alls = this.defalutIds;
           } else {
-            console.log("22222");
             this.dataList.forEach(_o => {
               this.pageObjSave[this.currentPage - 1]["alls"].forEach(_t => {
                 if (_o.id == _t.id) {
@@ -234,15 +232,13 @@ export default {
           console.log(this.pageObjSave);
         }
       });
-      this.dLoading = false;
+        this.dLoading = false;
     },
     close() {
       this.reset();
       this.Visible = false;
       this.pageObjSave = null;
       this.$emit("close", "close");
-      this.pageSize = 10
-      this.currentPage = 1
     },
     reset() {
       this.toggleSelection();
@@ -257,7 +253,7 @@ export default {
     },
 
     sure() {
-      console.log(this.pageObjSave);
+      // console.log(this.pageObjSave);
       let allAdds = [],
         alldels = [];
       for (let i = 0; i < this.pageObjSave.length; i++) {
@@ -270,11 +266,11 @@ export default {
         type: "warning"
       })
         .then(_ => {
-          userRoleApi(
+          getUserRoleApi(
             {
-              userId: this._datas.id,
-              addRoleIds: `${getIds(allAdds)}`,
-              deleteRoleIds: `${getIds(alldels)}`
+              campusCampusUserId: this._datas.id,
+              addIds: `${getIds(allAdds)}`,
+              deleteIds: `${getIds(alldels)}`
             },
             "put"
           ).then(r => {
