@@ -97,3 +97,12 @@ export function getRoom(params) {
     
   })
 }
+// 机构管理新增
+export function getOrganization(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/organization',
+    method: 'get',
+    params
+    
+  })
+}

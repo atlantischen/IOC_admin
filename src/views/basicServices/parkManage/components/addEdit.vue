@@ -28,7 +28,7 @@
         <el-form-item label="机构类型">
           <el-select v-model="formData.type" placeholder="请选择活动区域">
             <el-option
-              v-for="item in options"
+              v-for="item in typeOptions"
               :key="item.value"
               :label="item.name"
               :value="item.value"
@@ -37,10 +37,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="联系人">
-          <el-input v-model="formData.campusNumber"></el-input>
+          <el-input v-model="formData.contacts"></el-input>
         </el-form-item>
         <el-form-item label="联系电话">
-          <el-input v-model="formData.campusNumber"></el-input>
+          <el-input v-model="formData.phone"></el-input>
         </el-form-item>
         <el-form-item label="机构位置" class="form_select">
           <el-select v-model="formData.building"  @change="buildingChange" placeholder="请选择楼栋">
@@ -61,7 +61,7 @@
             >
             </el-option>
           </el-select>
-          <el-select v-model="formData.room" @change="roomChange" placeholder="请选择房号">
+          <el-select v-model="formData.houseId" @change="roomChange" placeholder="请选择房号">
             <el-option
               v-for="item in roomOptions"
               :key="item.id"
@@ -73,18 +73,19 @@
         </el-form-item>
         <el-form-item label="入住时间">
           <el-date-picker
-            v-model="formData.campusNumber"
+            v-model="formData.inDate"
             :clearable="false"
             type="datetime"
+             value-format="yyyy-MM-dd hh:mm:ss"
             class="datePicker my_datePicker"
             placeholder="选择日期时间"
           >
           </el-date-picker>
         </el-form-item>
         <el-form-item label="入住状态">
-          <el-select v-model="formData.campusType" placeholder="请选择活动区域">
+          <el-select v-model="formData.checkIn" placeholder="请选择活动区域">
             <el-option
-              v-for="item in options"
+              v-for="item in statusOptions"
               :key="item.value"
               :label="item.name"
               :value="item.value"
@@ -104,7 +105,8 @@
 </template>
 
 <script>
-import {getHouse,getRoom } from "@/api/basicServices.js";
+import {getHouse,getRoom,getParkSelect,getOrganization } from "@/api/basicServices.js";
+
 
 export default {
   props: {
@@ -125,6 +127,8 @@ export default {
       floorOptions:[],
       roomOptions:[],
       options:[],
+      typeOptions:[],
+      statusOptions:[],
       rules: {
         name: [{ required: true, message: "请输入园区名称", trigger: "blur" }]
       },
@@ -143,28 +147,30 @@ export default {
     submitForm() {
       this.$refs.formData.validate(valid => {
         if (valid) {
-          // if (this.type === "add") {
-          //   addParkManage({...this.formData}).then(res=>{
-          //      if(res.code==="200"){
-          //     this.$message({ message: res.msg,
-          //     type: 'success',})
-          //     this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
-          //
-          //   }
-          //   })
-          // } else if (this.type === "edit") {
-          //    updateParkManage({...this.formData}).then(res=>{
-          //     if(res.code==="200"){
-          //       this.$message({ message: res.msg ,
-          //       type: 'success',})
-          //       this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
-          //       this.$emit('update:dialogShow', false)
-          //     }
-          //   })
-          // }
+          console.log(this.formData,'checkIn');
+          if (this.type === "add") {
+            getOrganization({...this.formData}).then(res=>{
+              console.log(res,'res');
+               if(res.code==="200"){
+
+              // this.$message({ message: res.msg,
+              // type: 'success',})
+              // this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+          
+            }
+            })
+          } else if (this.type === "edit") {
+            //  updateParkManage({...this.formData}).then(res=>{
+            //   if(res.code==="200"){
+            //     this.$message({ message: res.msg ,
+            //     type: 'success',})
+            //     this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+            //     this.$emit('update:dialogShow', false)
+            //   }
+            // })
+          }
           this.$emit("update:addDialogShow", false);
 
-          console.log(this.addDialogShow);
         } else {
           console.log("error submit!!");
           return false;
@@ -180,6 +186,16 @@ export default {
         });
           this.totalData=res.data
       });
+       getParkSelect({ queryMode: "list", dictCode: "organization_type" }).then( res => {
+          this.typeOptions = res.data;
+     
+        }
+      );
+        getParkSelect({ queryMode: "list", dictCode: "check_in" }).then( res => {
+        
+          this.statusOptions = res.data;
+        }
+      );
     },
     buildingChange(v){
       this.totalData.forEach(item=>{
@@ -188,7 +204,7 @@ export default {
         }
       })
       this.formData.floor=null
-      this.formData.room=null
+      this.formData.houseId=null
 
       // console.log(this.formData.floor);
     },
@@ -198,7 +214,7 @@ export default {
       getRoom({buildingId:v}).then(res=>{
         this.roomOptions=res.data
       })
-      this.formData.room=null
+      this.formData.houseId=null
       this.$forceUpdate()
     },
      roomChange(){

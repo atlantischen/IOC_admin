@@ -68,6 +68,7 @@ import { getToken } from '@/utils/auth'
 import {
   setUserInfo
 } from "@/api/user.js";
+import {getParkSelect} from "@/api/basicServices.js";
 export default {
       props:{
         dialogVisible:{
@@ -127,7 +128,6 @@ export default {
             
       },
       handleAvatarSuccess(res, file) {
-        // console.log(file);
         this.multipartFile=file
         this.form.avatar = URL.createObjectURL(file.raw);
       },
@@ -142,17 +142,21 @@ export default {
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过300k!');
         }
-
         // let fd = new FormData();//通过form数据格式来传
         // fd.append("picFile", file); //传文件
         // console.log(fd.get('picFile'));
-
         return isPG  && isLt2M;
       },
       handleAvatarError(e){
         console.log(e);
       }
-    }
+    },
+    created() {
+       getParkSelect({ queryMode: "list", dictCode: "gender" }).then( res => {
+          // this.genderOpaction = res.data;
+        }
+      );
+    },
 }
 </script>
 <style lang="scss">
