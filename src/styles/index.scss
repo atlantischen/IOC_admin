@@ -123,24 +123,19 @@ div:focus {
     }
 }
 
-<<<<<<< HEAD
-=======
-
 // select
-.k_select{
-}
-.el-select-dropdown{
-  .el-select-dropdown__item.selected {
-    color: #000;
-    background: #e6e9eb !important;
-  }
-  .popper__arrow{
-    display: none;
-  }
+.k_select {}
+
+.el-select-dropdown {
+    .el-select-dropdown__item.selected {
+        color: #000;
+        background: #e6e9eb !important;
+    }
+    .popper__arrow {
+        display: none;
+    }
 }
 
-
->>>>>>> 01d3c3083dc2252451ac968d5636cccee8e75401
 // button css 
 button,
 input {
@@ -201,75 +196,36 @@ input {
 }
 
 // comStyles
-<<<<<<< HEAD
 .comStyles {
     .header_btns {
+        width: 100%;
+        overflow-x: auto;
         font-size: 14px;
         justify-content: space-between;
-        margin: 20px 53px 20px 57px;
+        // margin: 20px 53px 20px 57px;
+        margin: 0 0 15px 0;
+        &>div {
+            white-space: nowrap;
+        }
         .hb_left {
+            white-space: nowrap;
+            padding-right: 20px;
             &>div {
                 padding: 5px 0;
             }
             &>div>span {
+                white-space: nowrap;
                 display: inline-block;
                 padding-right: 40px;
                 ._n {
                     font-weight: 500;
                     padding-right: 15px;
                 }
-            }
-=======
-.comStyles{
-  .header_btns {
-    width: 100%;
-    overflow-x: auto;
-    font-size: 14px;
-    justify-content: space-between;
-    // margin: 20px 53px 20px 57px;
-    margin: 0 0 15px 0;
-    & >div{
-      white-space: nowrap;
-    }
-    .hb_left {
-      white-space: nowrap;
-      padding-right: 20px;
-      & >div{
-        padding: 5px 0;
-      }
-      & >div> span {
-        white-space: nowrap;
-        display: inline-block;
-        padding-right: 40px;
-        ._n{
-          font-weight: 500;
-          padding-right: 15px;
->>>>>>> 01d3c3083dc2252451ac968d5636cccee8e75401
-        }
-        i {
-            padding: 0 5px;
-        }
-        .w_160 {
-            width: 160px;
-        }
-<<<<<<< HEAD
-        .w_200 {
-            width: 200px;
-        }
-        .el-date-editor {
-            height: 30px;
-            .el-input__prefix,
-            .el-input__suffix {
-                left: 82%;
-            }
-            .el-input__prefix {
-                .el-icon-time {
-                    font-size: 16px;
-                    color: #000;
-                    font-family: "iconfont" !important;
+                i {
+                    padding: 0 5px;
                 }
-                .el-icon-time:before {
-                    content: "\e63c";
+                .w_160 {
+                    width: 160px;
                 }
             }
             .el-input__suffix {
@@ -279,6 +235,9 @@ input {
                 font-size: 24px;
                 padding: 0;
             }
+        }
+        .el-input__icon {
+            line-height: 30px;
         }
         .el-select {
             height: 30px;
@@ -291,14 +250,12 @@ input {
                 background: linear-gradient(0deg, #AABED0, #778EA9);
                 border: 1px solid rgba(255, 255, 255, 0.26);
                 border-radius: 2px;
-                .el-select__caret {
+                .el-input__icon {
                     color: #fff;
-                    line-height: 22px;
+                    height: 24px;
+                    line-height: 24px;
                 }
             }
-        }
-        .el-input__icon {
-            line-height: 30px;
         }
         .el-input__inner {
             height: 100%;
@@ -307,102 +264,14 @@ input {
     }
     .a_content {
         width: calc(100%-110px);
-        margin: 20px 53px 20px 57px;
+        // margin: 20px 53px 20px 57px;
     }
-=======
-      }
-      .el-input__suffix{
-        color: transparent;
-      }
-      .el-icon-circle-close{
-        font-size: 24px;
-        padding: 0;
-      }
-    }
-    .el-input__icon{
-      line-height: 30px;
-    }
-    .el-select {
-      height: 30px;
-      .el-input {
-        height: 100%;
-      }
-      .el-input__suffix{
-        top: 3px;
-        height: 24px;
-        background: linear-gradient(0deg, #AABED0, #778EA9);
-        border: 1px solid rgba(255, 255, 255, 0.26);
-        border-radius: 2px;
-        .el-input__icon{
-          color: #fff;
-          height: 24px;
-          line-height: 24px;
-        }
-      }
-    }
-    .el-input__inner {
-      height: 100%;
-      width: 100%;
-    }
-  }
-  .a_content {
-    width: calc(100%-110px);
-    // margin: 20px 53px 20px 57px;
-  }
->>>>>>> 01d3c3083dc2252451ac968d5636cccee8e75401
 }
 
 // table css
-<<<<<<< HEAD
 .TabelOne {
     background: transparent;
     border: 1px solid #9c9c9c;
-=======
-.TabelOne{
-  background: transparent;
-  border: 1px solid #9c9c9c;
-  border-radius: 5px;
-  td, th.is-leaf{
-    border-color: #9c9c9c;
-  }
-  tr{
-    th:nth-last-child(2).is-leaf,td:nth-last-child(1){
-      border-right:none;
-    }
-  }
-  thead{
-    tr{
-      &:nth-child(1){
-        th.is-leaf{
-        background: #e8eff7;
-      }
-      }
-    }
-  }
-  .table-actived{
-    background: #00FFD8;
-  }
-  tbody{
-    tr{
-      &:nth-last-child(1){
-        td{
-          border-bottom:none;
-        }
-      }
-    }
-  }
-  &.el-table::before,&.el-table--border::after, &.el-table--group::after{
-    width: 0;
-    height: 0;
-  }
-}
-.TabelTwo{
-  width: 100%;
-  background: transparent;
-  .el-table__header-wrapper{
-    background: linear-gradient(0deg, #778EA9, #AABED0), #778EA9;
-    box-shadow: 0px 1px 3px 0px rgba(26, 39, 49, 0.4), 0px 0px 7px 0px rgba(127, 151, 183, 0.48);
->>>>>>> 01d3c3083dc2252451ac968d5636cccee8e75401
     border-radius: 5px;
     td,
     th.is-leaf {
@@ -444,6 +313,7 @@ input {
 }
 
 .TabelTwo {
+    width: 100%;
     background: transparent;
     .el-table__header-wrapper {
         background: linear-gradient(0deg, #778EA9, #AABED0), #778EA9;
@@ -492,7 +362,6 @@ input {
 }
 
 // dialog
-<<<<<<< HEAD
 .dLog {
     .header-title {
         display: flex;
@@ -506,6 +375,7 @@ input {
     .el-dialog {
         box-shadow: 0px 1px 9px 0px rgba(128, 143, 159, 0.95);
         border-radius: 5px;
+        max-height: 100%;
     }
     .el-dialog__header {
         border-bottom: 1px solid #eaeaea;
@@ -547,63 +417,6 @@ input {
         border-radius: 4px;
         overflow: hidden;
     }
-=======
-.dLog{
-  .header-title{
-    display: flex;
-    align-items: center;
-    .iconfont{
-      font-size: 24px;
-      margin-right: 10px;
-      color: #008aff;
-    }
-  }
-  .el-dialog{
-    box-shadow: 0px 1px 9px 0px rgba(128, 143, 159, 0.95);
-    border-radius: 5px;
-    max-height: 100%;
-  }
-  .el-dialog__header{
-    border-bottom: 1px solid #eaeaea;
-  }
-  .el-dialog__footer{
-    border-top: 1px solid #eaeaea;
-    padding: 27px 0 32px;
-  }
-  
-  .dialog-footer {
-    .max_bt_gy,
-    .max_bt_df {
-      margin: 0 25px;
-    }
-  }
-  .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__label:before{
-    content: '';
-  }
-  .el-form-item.is-required:not(.is-no-asterisk)>.el-form-item__content:after{
-    position: absolute;
-    top: 4px;
-    right: -12px;
-    font-size: 16px;
-    content: '*';
-    color: #F56C6C;
-  }
-  // 
-  .el-dialog__body {
-      padding: 30px 100px ;
-  }
-  .el-input,.el-select {
-      width: 100%;
-      .el-input__inner {
-        height: 30px;
-      }
-  }
-  .dLog_content {
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    overflow: hidden;
-  }
->>>>>>> 01d3c3083dc2252451ac968d5636cccee8e75401
 }
 
 // .el-message  css

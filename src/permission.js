@@ -13,101 +13,100 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
-  // start progress bar
-  NProgress.start()
-  // set page title
-  document.title = getPageTitle(to.meta.title)
-  // determine whether the user has logged in
-  const hasToken = getToken()
-  if (hasToken) {
-    if (to.path === '/login') {
-      next()
-      NProgress.done()
-    } else {
-      const hasGetUserInfo = store.getters.name
-      // 判断是否获取到菜单
-      // if (store.getters.menus && store.getters.menus.length > 0) {
-      if (hasGetUserInfo) {
-        next()
-      } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-          next()
-          if (store.getters.menus.length < 1) {
-            global.antRouter = []
+    // start progress bar
+    NProgress.start()
+        // set page title
+    document.title = getPageTitle(to.meta.title)
+        // determine whether the user has logged in
+    const hasToken = getToken()
+    if (hasToken) {
+        if (to.path === '/login') {
             next()
-          }
-          const menus = filterAsyncRouter(store.getters.menus) // 1.过滤路由
-          router.addRoutes(menus) // 2.动态添加路由
-          let lastRou=[{ path: '*', redirect: '/404', hidden: true }]
-          router.addRoutes(lastRou) 
-          global.antRouter = menus // 3.将路由数据传递给全局变量，做侧边栏菜单渲染工作
-      
+            NProgress.done()
+        } else {
+            const hasGetUserInfo = store.getters.name
+                // 判断是否获取到菜单
+                // if (store.getters.menus && store.getters.menus.length > 0) {
+            if (hasGetUserInfo) {
+                next()
+            } else {
+                try {
+                    // get user info
+                    await store.dispatch('user/getInfo')
+                    next()
+                    if (store.getters.menus.length < 1) {
+                        global.antRouter = []
+                        next()
+                    }
+                    const menus = filterAsyncRouter(store.getters.menus) // 1.过滤路由
+                    router.addRoutes(menus) // 2.动态添加路由
+                    let lastRou = [{ path: '*', redirect: '/404', hidden: true }]
+                    router.addRoutes(lastRou)
+                    global.antRouter = menus // 3.将路由数据传递给全局变量，做侧边栏菜单渲染工作
 
-          next({
-            ...to,
-            replace: true
-          }) // hack方法 确保addRoutes已完成 
-        } catch (error) {
-         console.log(error);
-          await store.dispatch('user/resetToken')
-          next(`/login?redirect=${to.path}`)
-          NProgress.done()
+
+                    next({
+                            ...to,
+                            replace: true
+                        }) // hack方法 确保addRoutes已完成 
+                } catch (error) {
+                    console.log(error);
+                    await store.dispatch('user/resetToken')
+                    next(`/login?redirect=${to.path}`)
+                    NProgress.done()
+                }
+            }
         }
-      }
-    }
-  } else {
-    if (whiteList.indexOf(to.path) !== -1) {
-      next()
     } else {
-      next(`/login?redirect=${to.path}`)
-      NProgress.done()
+        if (whiteList.indexOf(to.path) !== -1) {
+            next()
+        } else {
+            next(`/login?redirect=${to.path}`)
+            NProgress.done()
+        }
     }
-  }
 })
 
 router.afterEach(() => {
-  // finish progress bar
-  NProgress.done()
+    // finish progress bar
+    NProgress.done()
 })
 
 function filterAsyncRouter(asyncRouterMap) {
-  // let newRouters = asyncRouterMap.map((r) => {
-  //   console.log(r.component);
-  //   let routes = {
-  //     path: r.path,
-  //     redirect:r.redirect,
-  //     name: r.name,
-  //     meta:r.meta,
-  //     component:null
-  //   }
-  //   if(r.component){
-  //     if(r.component==='Layout'){
-  //       routes.component = Layout
-  //     } else {
-  //       routes.component =_import(r.component) // 导入组件
-  //     }
-  //   }
-  //   if (r.children && r.children.length) {
-  //     routes.children = filterAsyncRouter(r.children);
-  //   }
-  //   return routes;
-  // });
-  // return newRouters;
-  const accessedRouters = asyncRouterMap.filter(route => {
-    if (route.component) {
-      if (route.component === 'Layout') {
-        route.component = Layout
-      } else {
-        route.component = _import(route.component) // 导入组件
-      }
-    }
-    if (route.children && route.children.length) {
-      route.children = filterAsyncRouter(route.children)
-    }
-    return true
-  })
-  return accessedRouters
+    // let newRouters = asyncRouterMap.map((r) => {
+    //   console.log(r.component);
+    //   let routes = {
+    //     path: r.path,
+    //     redirect:r.redirect,
+    //     name: r.name,
+    //     meta:r.meta,
+    //     component:null
+    //   }
+    //   if(r.component){
+    //     if(r.component==='Layout'){
+    //       routes.component = Layout
+    //     } else {
+    //       routes.component =_import(r.component) // 导入组件
+    //     }
+    //   }
+    //   if (r.children && r.children.length) {
+    //     routes.children = filterAsyncRouter(r.children);
+    //   }
+    //   return routes;
+    // });
+    // return newRouters;
+    const accessedRouters = asyncRouterMap.filter(route => {
+        if (route.component) {
+            if (route.component === 'Layout') {
+                route.component = Layout
+            } else {
+                route.component = _import(route.component) // 导入组件
+            }
+        }
+        if (route.children && route.children.length) {
+            route.children = filterAsyncRouter(route.children)
+        }
+        return true
+    })
+    return accessedRouters
 }
-
