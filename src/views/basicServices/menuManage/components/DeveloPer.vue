@@ -55,6 +55,9 @@
                 <el-form-item label="路径">
                     <el-input v-model="form.component"></el-input>
                 </el-form-item>
+                <el-form-item label="url">
+                    <el-input v-model="form.url"></el-input>
+                </el-form-item>
                 <el-form-item label="排序">
                   <el-input v-model="form.sort"></el-input>
                 </el-form-item>
@@ -73,7 +76,7 @@
                 <el-form-item label="图标">
                   <el-upload
                     class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
+                    action=""
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove"
@@ -88,9 +91,9 @@
                 </el-form-item>
               </el-form>
             </div>
-            <div class="hp10 wp100 DeveloPer_passage" v-if="adjunction">
+            <div class="hp10 wp100 DeveloPer_passage" >
               <div class="sjc  hp100">
-                <button class="md_bt_df mgr5" @click="adjunction=false">
+                <button class="md_bt_df mgr5" @click="onCancel">
                   取消
                 </button>
                 <i></i>
@@ -109,7 +112,8 @@
 <script>
 import {
   MenuManagement,
-  MenuroleApi
+  MenuroleApi,
+  MenuModification
 } from "@/api/menu";
 export default {
   name: "DeveloPer",
@@ -125,7 +129,6 @@ export default {
       website1:false,
       website2:false,
       website3:false,
-      adjunction:false,
       certain:'',
       layer1:'',
       layer2:'',
@@ -137,7 +140,8 @@ export default {
         sort:'',
         status:'',
         visible:'',
-        icon: ''
+        icon: '',
+        url:'',
       },
       multipartFile:null,
       defaultProps: {
@@ -176,7 +180,6 @@ export default {
       }
       this.form={name: '',component:'',sort:'',status:'',visible:'',desc: ''},
       this.lopersta=false;
-      this.adjunction=true;
     },
     handleAvatarSuccess(res, file) {
       // console.log(file);
@@ -223,13 +226,16 @@ export default {
         type: this.certain.type,     
         url: this.form.url,     
         visible: this.form.sort,    
-        parentId: this.certain.parentId
+        parentId: this.certain.id,
        }).then(r => {
         console.log(r,'新增返回的是')
         if (r.code == 200) {
           this.initial()
         }
       });
+    },
+    onCancel(){
+
     },
     filterNode(value, purview,node) {
       // console.log(value, purview,'156465****',node)
@@ -239,7 +245,6 @@ export default {
     handleNodeClick(data) {
       this.form=data
       this.certain=data
-      this.adjunction=false
       console.log(data,'点击',this.form);
       switch (data.type) {
         case '1':
