@@ -122,14 +122,14 @@ export default {
 
   methods: {
     init(){
-      this.formData={
-        limit: this.pageSize,
-        page: this.currentPage,
-        endTime: "",
-        phone: "",
-        startTime: "",
-        username: "",
-      },
+      // this.formData={
+      //   limit: this.pageSize,
+      //   page: this.currentPage,
+      //   endTime: "",
+      //   phone: "",
+      //   startTime: "",
+      //   username: "",
+      // },
       getAppUser(this.formData).then(res=>{
         console.log(res);
         this.tableData=res.data

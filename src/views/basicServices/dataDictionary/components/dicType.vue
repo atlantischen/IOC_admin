@@ -67,7 +67,6 @@ export default {
       type: String
     }
   },
-  // props: ["_show", "_datas", "_type"],
   data() {
     return {
       Visible: false,
@@ -101,6 +100,7 @@ export default {
     },
     reset() {
       this.$refs.ruleForm.resetFields();
+      this.ruleForm = {}
     },
     sure() {
       this.$refs.ruleForm.validate(valid => {

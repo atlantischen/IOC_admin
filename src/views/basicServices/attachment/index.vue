@@ -13,13 +13,13 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height="680"
+        height=""
         stripe
         fit
       >
         <el-table-column align="center" label="序号" type="index" width="60">
           <template slot-scope="scope">
-            <span>{{ scope.$index + 1 }}</span>
+            <span>{{ (currentPage - 1) * pageSize + scope.$index + 1 }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -29,7 +29,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.name }}
+            {{ scope.row.name || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -39,7 +39,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.from }}
+            {{ scope.row.from || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -49,7 +49,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.size }}
+            {{ scope.row.size || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -59,7 +59,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.type }}
+            {{ scope.row.type || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -69,7 +69,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.belongType }}
+            {{ scope.row.belongType || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -79,7 +79,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.remark }}
+            {{ scope.row.remark || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -89,7 +89,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.handler }}
+            {{ scope.row.handler || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -99,7 +99,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.upTime }}
+            {{ scope.row.upTime || "-" }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作"
@@ -221,11 +221,11 @@ export default {
       }
     },
     sizeChange(v) {
-      this.pageSize = v <= 0 ? 10 : v;
+      this.pageSize = v
       this.initD();
     },
     currentChange(v) {
-      this.currentPage = v <= 0 ? 1 : v;
+      this.currentPage = v
       this.initD();
     }
   }

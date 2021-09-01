@@ -7,8 +7,12 @@
   @close="$emit('update:DeletedialogShow',false)"
   >
     <div style=" text-align:center;font-size:20px">
+<<<<<<< HEAD
       <svg-icon icon-class="gantan"  style="font-size:20px;color:#FFA800"/>
      确认删除该园区</div>
+=======
+      <svg-icon icon-class="gantan"  style="font-size:20px;color:#FFA800"/>确认删除改园区</div>
+>>>>>>> 3d8a5494f26f22e47db69d08a9a41eb993fb40fa
   <span slot="footer" class="dialog-footer">
         <button class="max_bt_gy"  @click="$emit('update:DeletedialogShow',false)">取消</button>
       <button class="max_bt_df" @click="handleClick">确认</button>

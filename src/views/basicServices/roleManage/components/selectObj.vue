@@ -48,12 +48,12 @@
         </el-table-column>
         <el-table-column prop="username" label="用户名" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.username }}
+            {{ scope.row.username || '-'}}
           </template>
         </el-table-column>
         <el-table-column prop="phone" label="手机号" show-overflow-tooltip>
           <template slot-scope="scope">
-            {{ scope.row.phone }}
+            {{ scope.row.phone || '-'}}
           </template>
         </el-table-column>
       </el-table>
@@ -143,62 +143,6 @@ export default {
                 alls: []
               };
             }
-          } else {
-            //   this.flag = true;
-            //   let _a = (this.addIds = this.pageObjSave[this.currentPage - 1][
-            //     "add"
-            //   ]);
-            //   this.defalutIds = this.pageObjSave[this.currentPage - 1]["df"];
-            //   this.delIds = this.pageObjSave[this.currentPage - 1]["del"];
-            //   //
-            //   console.log(this.addIds);
-            //   if (
-            //     this.addIds.length > 0 &&
-            //     this.defalutIds.length == 0 &&
-            //     this.delIds.length == 0
-            //   ) {
-            //     // 加
-            //     console.log("//////////add");
-            //     console.log(_a.length);
-            //     _a.forEach(r => {
-            //       console.log("//////////pppppppppppppppp");
-            //       console.log(r);
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //       console.log("//////////pppppppppppppppp2");
-            //     });
-            //   } else if (
-            //     this.addIds.length > 0 &&
-            //     this.defalutIds.length > 0 &&
-            //     this.delIds.length == 0
-            //   ) {
-            //     console.log("//////////add+df");
-            //     let _ad = getDiffArr(this.defalutIds, this.addIds);
-            //     _ad.forEach(r => {
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //     });
-            //   } else if (
-            //     this.defalutIds.length >= 0 &&
-            //     this.addIds.length >= 0 &&
-            //     this.delIds.length >= 0
-            //   ) {
-            //     // 加，减，默认
-            //     console.log("///////////df");
-            //     this.defalutIds.forEach(r => {
-            //       // this.$refs.tableRef.toggleRowSelection(r, this.flag);
-            //       this.$nextTick().then(() => {
-            //         this.$refs.tableRef.toggleRowSelection(r, true);
-            //       });
-            //     });
-            //   } else {
-            //     console.log("///////////------");
-            //   }
-            //   this.flag = false;
           }
           // 初始化每页默认复现
           this.defalutIds = [];
