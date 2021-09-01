@@ -8,10 +8,12 @@
   >
     <div style=" text-align:center;font-size:20px">
       <svg-icon icon-class="gantan"  style="font-size:20px;color:#FFA800"/>
-     确认删除改园区</div>
+     确认删除该园区</div>
   <span slot="footer" class="dialog-footer">
-    <el-button size="mini" type="info" @click="$emit('update:DeletedialogShow',false)">取 消</el-button>
-    <el-button size="mini" type="primary" @click="handleClick">确 定</el-button>
+        <button class="max_bt_gy"  @click="$emit('update:DeletedialogShow',false)">取消</button>
+      <button class="max_bt_df" @click="handleClick">确认</button>
+    <!-- <el-button size="mini" type="info" @click="$emit('update:DeletedialogShow',false)">取 消</el-button>
+    <el-button size="mini" type="primary" @click="handleClick">确 定</el-button> -->
   </span>
 </el-dialog>
 </template>

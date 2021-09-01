@@ -38,6 +38,7 @@ export const constantRoutes = [{
             path: '/parkManage/index',
             name: '园区管理',
             meta: {
+              title: '',
               activeMenu:'/parkManage'
             },
             component: () => import('@/views/basicServices/parkManage/parkManage.vue'),

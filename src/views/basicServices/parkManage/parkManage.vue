@@ -119,17 +119,18 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleDelete(scope.row)"
+            <el-button type="text" @click="handleDelete(scope.row)"
               >删除</el-button
             >
-            <el-button size="mini" @click="handleEdit(scope.row)"
+            <el-button type="text" @click="handleEdit(scope.row)"
               >编辑</el-button
             >
-            <el-button size="mini" @click="handleDistribution(scope.row)"
+            <el-button  type="text" @click="handleDistribution(scope.row)"
               >权限分配</el-button
             >
             <el-button
-              size="mini"
+              type="text"
+              
               @click="handleDetails(scope.row)"
             >
               详情</el-button
