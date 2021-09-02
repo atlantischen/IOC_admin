@@ -9,8 +9,9 @@
               type="datetime"
               :clearable="false"
               format="yyyy-MM-dd hh:mm"
+              :picker-options="startTime"
               value-format="yyyy-MM-dd hh:mm:ss"
-              placeholder="选择日期时间"
+              placeholder="选择开始日期时间"
             >
             </el-date-picker>
             <i></i> 至 <i></i>
@@ -19,10 +20,10 @@
               v-model="formData.endTime"
               type="datetime"
               :clearable="false"
-
+              :picker-options="endTime"
               format="yyyy-MM-dd hh:mm"
               value-format="yyyy-MM-dd hh:mm:ss"
-              placeholder="选择日期时间"
+              placeholder="选择结束日期时间"
             >
             </el-date-picker>
       </div>
@@ -33,7 +34,7 @@
         <el-input
           class="input "
           v-model="formData.username"
-          placeholder="请输入内容"
+          placeholder="请输入姓名"
         ></el-input>
       </div>
       <div style="margin:0 20px">
@@ -41,7 +42,7 @@
         <el-input
           class="input "
           v-model="formData.phone"
-          placeholder="请输入内容"
+          placeholder="请输入联系电话"
         ></el-input>
       </div>
       <div class="btn">
@@ -74,9 +75,9 @@
         </el-table-column>
         <el-table-column label="联系电话" width="180" prop="phone">
         </el-table-column>
-        <el-table-column label="所属园区" width="180" prop="parentName">
+        <el-table-column label="所属园区" width="180" prop="defaultCampusName">
         </el-table-column>
-        <el-table-column label="最后一次登录时间" width="180" prop="creatorName">
+        <el-table-column label="最后一次登录时间" width="180" prop="loginTime">
         </el-table-column>
         <el-table-column label="注册时间"  prop="gmtCreate">
         </el-table-column>
@@ -102,6 +103,30 @@ import {
 export default {
   data() {
     return {
+           // 时间判断
+        startTime: {
+          disabledDate: time => {
+            if (this.formData.endTime) {
+              return (
+                time.getTime() >  new Date(this.formData.endTime).getTime()
+              )
+            } else {
+              // 不能小于当前日期
+              return time.getTime() > Date.now() - 8.64e7// 加- 8.64e7则表示包当天
+            }
+          }
+        },
+        endTime: {
+         disabledDate: time => {
+            if (this.formData.startTime) {
+              return (
+                time.getTime() < new Date(this.formData.startTime).getTime()
+              )
+            } else {
+              return time.getTime() > Date.now()- 8.64e7// 加- 8.64e7则表示包当天
+            }
+          }
+        },
       options: [],
       tableData: [],
       typeOptions: [],
@@ -122,48 +147,37 @@ export default {
 
   methods: {
     init(){
-      // this.formData={
-      //   limit: this.pageSize,
-      //   page: this.currentPage,
-      //   endTime: "",
-      //   phone: "",
-      //   startTime: "",
-      //   username: "",
-      // },
+      this.formData.limit=this.pageSize
+      this.formData.page=this.currentPage
       getAppUser(this.formData).then(res=>{
-        console.log(res);
         this.tableData=res.data
         this.total = res.total
       })
     },
-  
-  
     queryClick() {
-      console.log(this.formData);
       this.init();
     },
     resetClick(){
       this.formData={
-        limit: 10,
-        page: 1,
+        limit: 1,
+        page: 10,
         endTime: "",
         phone: "",
         startTime: "",
         username: "",
       }
+      this.pageSize=10
+      this.currentPage =1
       this.init();  
     },
-           sizeChange(v) {
+    sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
-      console.log(this.pageSize);
       this.init();
     },
     currentChange(v) {
       this.currentPage = v <= 0 ? 1 : v;
       this.init();
     }
-
-   
   },
   created() {
     this.init();

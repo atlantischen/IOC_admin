@@ -24,6 +24,7 @@ service.interceptors.request.use(
   config => {
     if(config.method==='post' || config.method==='POST'){
       config.data= config.noQS?config.data:qs.stringify(config.data)
+      console.log(config.data);
     }
     if (store.getters.token) {
       config.headers['Authorization'] = getToken()

@@ -8,6 +8,7 @@
         placeholder="请输入内容"
       ></el-input>
       <button class="max_bt_gy mr" @click="queryClick">查询</button>
+      <button class="max_bt_gy mr" @click="resetClick">重置</button>
       <button class="max_bt_df mr" @click="addOrEdit('add')">
         <i class="el-icon-circle-plus-outline"></i>
         新增信息
@@ -29,21 +30,21 @@
         </el-table-column>
         <el-table-column label="机构名称" prop="name" width="180">
         </el-table-column>
-        <el-table-column label="机构类型" prop="campusName" width="150">
+        <el-table-column label="机构类型" prop="organizationTypeCh" width="150">
         </el-table-column>
-        <el-table-column label="机构地址" prop="campusNumber" width="150">
+        <el-table-column label="机构地址" prop="houseId" width="150">
         </el-table-column>
-        <el-table-column label="入住状态" prop="campusName" width="150">
+        <el-table-column label="入住状态" prop="checkInCh" width="150">
         </el-table-column>
-        <el-table-column label="入住时间" prop="phone" width="150">
+        <el-table-column label="入住时间" prop="inDate" width="150">
         </el-table-column>
-        <el-table-column label="联系人" width="120" prop="campusTypeCh">
+        <el-table-column label="联系人" width="120" prop="contacts">
         </el-table-column>
-        <el-table-column label="联系电话" width="120" prop="campusRanksCh">
+        <el-table-column label="联系电话" width="120" prop="phone">
         </el-table-column>
-        <el-table-column label="创建人" width="120" prop="parentName">
+        <el-table-column label="创建人" width="120" prop="creatorId">
         </el-table-column>
-        <el-table-column label="创建时间" width="150" prop="creatorName">
+        <el-table-column label="创建时间" width="150" prop="gmtCreate">
         </el-table-column>
         <el-table-column label="操作" prop="gmtCreate">
           <template slot-scope="scope">
@@ -67,50 +68,129 @@
       :addDialogShow.sync="addDialogShow"
       :formData="formData"
       :type="type"
+      @initData="init"
     ></AddEdit>
+    <Delete :DeletedialogShow.sync='DeletedialogShow' :id="id" @initData="init"></Delete>
+     <PageT
+        :between="true"
+        :_currentPage="currentPage"
+        :_pageSize="pageSize"
+        :_total="total"
+        @size="sizeChange"
+        @current="currentChange"
+      />
   </div>
 </template>
 
 <script>
 import { getMechanismList } from "@/api/basicServices";
 import AddEdit from "./addEdit.vue";
+import Delete from "./delete.vue";
 export default {
   data() {
     return {
+      type:'',
       input: "",
       tableData: [],
+      initData: {},
+      addDialogShow: false,
+      DeletedialogShow:false,
+      id:null,
+      formData:{},
+      currentPage: 1,
+      pageSize:10,
+      total: 0,
+    };
+  },
+  components: { AddEdit,Delete },
 
-      formData: {
+  methods: {
+    init(data) {
+      // this.initData={
+      //   campusId: this.$route.query.id,
+      //   limit: this.pageSize,
+      //   page: this.currentPage,
+      //   queryMode: "page",
+      //   organizationName: this.input
+      // }
+      console.log(this.initData);
+      getMechanismList(data).then(res => {
+        if (res.code === "200") {
+          this.tableData = res.data;
+          this.total=res.total
+        }
+      });
+    },
+    queryClick() {
+
+      this.init({
+        campusId: this.$route.query.id,
+        limit: this.pageSize,
+        page: this.currentPage,
+        queryMode: "page",
+        organizationName: this.input
+      });
+    },
+    resetClick(){
+
+      this.init({
+         campusId: this.$route.query.id,
+        limit: 10,
+        page: 1,
+        queryMode: "page",
+        organizationName: ''
+      });
+      this.pageSize=10
+      this.currentPage=1
+    },
+    addOrEdit(val) {
+      // this.initData = {};
+      this.formData = {};
+      this.type = val;
+      this.addDialogShow = !this.addDialogShow;
+    },
+    handleDelete(row){
+      this.DeletedialogShow=true
+      this.id =row.id
+    },
+    handleEdit(row){
+      this.type = 'edit';
+      this.formData = { ...row };
+      console.log(this.formData );
+      this.addDialogShow = !this.addDialogShow;
+
+    },
+    sizeChange(v) {
+      this.pageSize = v <= 0 ? 10 : v;
+      console.log(this.pageSize);
+      this.init({
+          campusId: this.$route.query.id,
+        limit: this.pageSize,
+        page: this.currentPage,
+        queryMode: "page",
+        organizationName: this.input
+      });
+    },
+    currentChange(v) {
+      this.currentPage = v <= 0 ? 1 : v;
+      this.init({
+          campusId: this.$route.query.id,
+          limit: this.pageSize,
+          page: this.currentPage,
+          queryMode: "page",
+          organizationName: this.input
+      });
+    }
+    
+  },
+  created() {
+    this.init({
         campusId: this.$route.query.id,
         limit: 10,
         page: 1,
         queryMode: "page",
-        organizationName: ""
-      },
-      addDialogShow: false
-    };
-  },
-  components: { AddEdit },
-
-  methods: {
-    init() {
-      console.log(this.formData);
-      getMechanismList(this.formData).then(res => {
-        if (res.code === "200") this.tableData = res.data;
-      });
-    },
-    queryClick() {
-      this.formData.organizationName = this.input;
-      this.init();
-    },
-    addOrEdit(val) {
-      this.formData = {};
-      this.type = val;
-      this.addDialogShow = !this.addDialogShow;
-    }
-  },
-  created() {
-    this.init();
+        organizationName: this.input
+    });
   }
 };
 </script>

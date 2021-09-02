@@ -34,3 +34,4 @@ export function checkPhone (rule, value, callback) {
     callback()
   }
 }
+

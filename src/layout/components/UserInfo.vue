@@ -80,13 +80,17 @@ export default {
       uploadImage:process.env.VUE_APP_BASE_API+'/api/v1/admin/account/profile',
       myHeaders:{Authorization:getToken()},
       genderOpaction:[
+           {
+            label:'保密',
+            value:0
+          },
           {
             label:'男',
             value:1
           },
            {
             label:'女',
-            value:0
+            value:2
           } 
       ],
        rules: {
@@ -150,7 +154,9 @@ export default {
       }
     },
     created() {
+      console.log(this.form);
        getParkSelect({ queryMode: "list", dictCode: "gender" }).then( res => {
+
           // this.genderOpaction = res.data;
         }
       );

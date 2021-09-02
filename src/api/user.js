@@ -50,4 +50,13 @@ export function setUserInfo(data) {
     data
   })
 }
+// 修改密码
+export function setPassword(data) {
+  return request({
+    url: '/campus-admin/api/v1/admin/account/change/password',
+    method: 'post',
+    // noQS: true,
+    data
+  })
+}
 

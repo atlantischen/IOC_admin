@@ -36,7 +36,7 @@ export const constantRoutes = [{
         children: [
           {
             path: '/parkManage/index',
-            name: '园区管理',
+            name: '',
             meta: {
               title: '',
               activeMenu:'/parkManage'

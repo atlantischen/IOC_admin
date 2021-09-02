@@ -8,7 +8,7 @@
   >
     <div style=" text-align:center;font-size:20px">
       <svg-icon icon-class="gantan"  style="font-size:20px;color:#FFA800"/>
-     确认删除该园区</div>
+     确认删除该机构</div>
   <span slot="footer" class="dialog-footer">
         <button class="max_bt_gy"  @click="$emit('update:DeletedialogShow',false)">取消</button>
       <button class="max_bt_df" @click="handleClick">确认</button>
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {deleteParkManage} from "@/api/basicServices.js";
+import {deleteOrganization} from "@/api/basicServices.js";
 
 export default {
     props:{
@@ -36,10 +36,20 @@ export default {
 
     methods: {
         handleClick(){
-          deleteParkManage({ids:this.id}).then(res=>{
+            console.log(this.id);
+
+            // let res= JSON.stringify(this.id)
+          deleteOrganization(this.id).then(res=>{
             if(res.code=="200"){
+                console.log(res);
               this.$message({ message: res.msg, type: 'success',})
-              this.$emit('init',{limit:'10',page:'1',queryMode:'page'})
+              this.$emit('initData',{
+                  campusId: this.$route.query.id,
+                  limit: 10,
+                  page: 1,
+                  queryMode: "page",
+                  organizationName: ""
+                })
               this.$emit('update:DeletedialogShow',false)
             }
           })

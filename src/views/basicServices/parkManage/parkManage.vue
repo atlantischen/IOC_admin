@@ -10,7 +10,9 @@
               :clearable="false"
               format="yyyy-MM-dd hh:mm"
               value-format="yyyy-MM-dd hh:mm:ss"
-              placeholder="选择日期时间"
+              placeholder="选择开始日期时间"
+              :picker-options="startTime"
+              
             >
             </el-date-picker>
             <i></i> 至 <i></i>
@@ -19,10 +21,10 @@
               v-model="searchData.endTime"
               type="datetime"
               :clearable="false"
-
               format="yyyy-MM-dd hh:mm"
               value-format="yyyy-MM-dd hh:mm:ss"
-              placeholder="选择日期时间"
+              placeholder="选择结束日期时间"
+              :picker-options="endTime"
             >
             </el-date-picker>
       </div>
@@ -159,7 +161,7 @@
       :id="id"
       @init="init"
     ></Deletedialog>
-    <Permission :permissionShow.sync="permissionShow"></Permission>
+    <Permission ref="rolePowerRef" :roleInfo="roleInfo" :power="power" :permissionShow.sync="permissionShow"></Permission>
   </div>
 </template>
 
@@ -167,8 +169,10 @@
 import {
   getParkManageList,
   getParkSelect,
-  defaultParkManage
+  defaultParkManage,
+  getMenuApp
 } from "@/api/basicServices.js";
+
 import Pagination from "@/components/pagination.vue";
 import Parkmangedialog from "@/components/parkmangedialog.vue";
 import Deletedialog from "@/components/deletedialog.vue";
@@ -176,12 +180,36 @@ import Permission from "./permission.vue";
 export default {
   data() {
     return {
+        // 时间判断
+        startTime: {
+          disabledDate: time => {
+            if (this.searchData.endTime) {
+              return (
+                time.getTime() >  new Date(this.searchData.endTime).getTime()
+              )
+            } else {
+              // 不能小于当前日期
+              return time.getTime() > Date.now() - 8.64e7// 加- 8.64e7则表示包当天
+            }
+          }
+        },
+        endTime: {
+         disabledDate: time => {
+            if (this.searchData.startTime) {
+              return (
+                time.getTime() < new Date(this.searchData.startTime).getTime()
+              )
+            } else {
+              return time.getTime() > Date.now()- 8.64e7// 加- 8.64e7则表示包当天
+            }
+          }
+        },
       options: [],
       tableData: [],
       typeOptions: [],
       searchData: {
-        startTime:'',
-        endTime:'',
+        startTime:'', 
+        endTime: '',
         input: "",
         parkType: "",
         status: ""
@@ -205,6 +233,9 @@ export default {
       currentPage: 1,
       pageSize:10,
       total: 0,
+      power:null,
+      PowerIds: null,
+      roleInfo: null
     };
   },
   components: { Pagination, Deletedialog, Parkmangedialog, Permission },
@@ -223,6 +254,13 @@ export default {
     // 权限分配
     handleDistribution(row) {
       this.permissionShow = true;
+      this.roleInfo = row;
+      getMenuApp({campusId:row.id}).then(res=>{
+         if (res.code == '200') {
+              this.power=res.data
+            }
+      })
+
     },
     // 新增信息
     addClick() {
@@ -302,6 +340,8 @@ export default {
     },
     Reset() {
       this.searchData = {};
+        this.currentPage= 1,
+      this.pageSize=10,
       this.init({  limit: this.pageSize,
           page: this.currentPage, queryMode: "page" });
     },
@@ -368,5 +408,8 @@ export default {
   .input {
     width: 200px;
   }
+}
+.el-button+.el-button {
+    margin-left: 25px;
 }
 </style>

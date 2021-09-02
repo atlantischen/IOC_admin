@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { roleMenuApi } from "@/api/role";
+import { roleMenuApi } from "@/api/parkRole";
 export default {
   name: "selectRolePower",
   props: {
@@ -68,6 +68,39 @@ export default {
       Visible: false,
       checkStrictly: false,
       menuDatas: [
+        // {
+        //   id: 1,
+        //   label: "111",
+        //   mLevel: 1,
+        //   children: [
+        //     {
+        //       id: 2,
+        //       label: "2222",
+        //       mLevel: 2,
+        //       children: [
+        //         {
+        //           id: 3,
+        //           label: "3333",
+        //           mLevel: 3,
+        //           children: [
+        //             {
+        //               id: 4,
+        //               label: "44444",
+        //               mLevel: 4,
+        //               children: [
+        //                 {
+        //                   id: 5,
+        //                   label: "55555",
+        //                   mLevel: 5
+        //                 }
+        //               ]
+        //             }
+        //           ]
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // }
       ],
       defaultKeys: [],
       defaultProps: {
@@ -86,14 +119,13 @@ export default {
     },
     _datas: {
       handler: function(n, o) {
+        this.defaultKeys = [];
         this.defaultKeys = this._datas;
       },
       deep: true
     }
   },
-  created() {
-  
-  },
+  created() {},
   methods: {
     close() {
       this.Visible = false;
@@ -127,6 +159,7 @@ export default {
         .catch(_ => {});
     },
     handleChange(obj, keys) {
+      // console.log(obj, keys);
       let _a = keys.halfCheckedKeys;
       this.checkStrictly = false;
       let _i = _a.indexOf("all");

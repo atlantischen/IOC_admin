@@ -13,32 +13,6 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
-<<<<<<< HEAD
-  // start progress bar
-  NProgress.start()
-  // set page title
- 
-  document.title = getPageTitle(to.meta.title)
-  // determine whether the user has logged in
-  const hasToken = getToken()
-  if (hasToken) {
-    if (to.path === '/login') {
-      next()
-      NProgress.done()
-    } else {
-      const hasGetUserInfo = store.getters.name
-      // 判断是否获取到菜单
-      // if (store.getters.menus && store.getters.menus.length > 0) {
-      if (hasGetUserInfo) {
-        next()
-      } else {
-        try {
-          // get user info
-          await store.dispatch('user/getInfo')
-          next()
-          if (store.getters.menus.length < 1) {
-            global.antRouter = []
-=======
     // start progress bar
     NProgress.start()
         // set page title
@@ -47,7 +21,6 @@ router.beforeEach(async(to, from, next) => {
     const hasToken = getToken()
     if (hasToken) {
         if (to.path === '/login') {
->>>>>>> aa3067699e8942b78b23f7ef374c9ace82bdbfec
             next()
             NProgress.done()
         } else {

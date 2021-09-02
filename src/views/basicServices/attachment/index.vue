@@ -13,7 +13,7 @@
         v-loading="dLoading"
         :data="dataList"
         element-loading-text="Loading"
-        height=""
+        
         stripe
         fit
       >

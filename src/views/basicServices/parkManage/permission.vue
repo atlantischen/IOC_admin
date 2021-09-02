@@ -16,8 +16,10 @@
       </div>
       <div class="box">
         <div class="radio_i">
-          <el-radio v-model="radio" label="1">菜单</el-radio>
-          <el-radio v-model="radio" label="2">服务</el-radio>
+          <el-radio-group v-model="radio" @change="selectRadio">
+            <el-radio v-model="radio" label="1">服务</el-radio>
+            <el-radio v-model="radio" label="2">菜单</el-radio>
+          </el-radio-group>
         </div>
         <div class="radios_tree mBar">
           <el-tree
@@ -33,15 +35,6 @@
           >
           </el-tree>
         </div>
-        <!-- <el-tree
-            :data="data"
-            show-checkbox
-            node-key="id"
-            :default-expand-all="true"
-            :default-expanded-keys="[2, 3]"
-            :default-checked-keys="[5]"
-           >
-            </el-tree> -->
       </div>
       <span slot="footer" class="dialog-footer">
         <button
@@ -50,92 +43,151 @@
         >
           取消
         </button>
-        <button class="max_bt_df">确认</button>
+        <button class="max_bt_df" @click="sure">确认</button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+import { getTrue, addLevel } from "@/utils/method";
+import { saveMenuApp } from "@/api/basicServices.js";
 export default {
   props: {
     permissionShow: {
       type: Boolean
+    },
+    power: {
+      typeof: Object,
+      default: () => {}
+    },
+    roleInfo: {
+      type: Object
     }
   },
   data() {
     return {
       radio: "1",
-      data: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2",
-                  children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ]
+      checkStrictly: false,
+      menuDatas: [],
+      defaultProps: {
+        children: "children",
+        label: "title"
+      },
+      resetKeys: null,
+      defaultKeys: [],
+      data: [],
+      appIds: null,
+      menuIds: null
     };
   },
+  watch: {
+    power: {
+      handler: function(n, o) {
+        if (n) {
+          this.radio = "1";
+          this.initData(this.power.app);
+          this.appIds = getTrue(this.power.app, "choice");
+          this.menuIds = getTrue(this.power.menu, "choice");
+        }
+      },
+      immediate: true
+    }
+  },
 
-  methods: {}
+  methods: {
+    handleChange(obj, keys) {
+      let _a = keys.checkedKeys;
+      this.checkStrictly = false;
+      let _i = _a.indexOf("all");
+      if (_i > -1) {
+        _a.splice(_i, 1);
+      }
+      this.resetKeys = keys.checkedKeys;
+    },
+    initData(val) {
+      this.data = [
+        {
+          name: "全部",
+          title: "全部",
+          id: "all",
+          children: addLevel(val)
+        }
+      ];
+      this.defaultKeys = getTrue(val, "choice");
+      this.resetKeys = this.defaultKeys;
+      console.log(this.defaultKeys);
+    },
+    selectRadio(v) {
+      switch (v) {
+        case "1":
+          if (this.power.app && this.power.app.length != 0) {
+            this.initData(this.power.app);
+          } else {
+            this.data = [];
+          }
+          break;
+        case "2":
+          if (this.power.menu && this.power.menu.length != 0) {
+            this.initData(this.power.menu);
+          } else {
+            this.data = [];
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    sure() {
+      this.$confirm(
+        "确认修改“" + this.roleInfo.campusName + "”园区权限？",
+        "操作确认",
+        {
+          type: "warning"
+        }
+      )
+        .then(_ => {
+          switch (this.radio) {
+            case "1":
+              // console.log(this.resetKeys,this.menuIds,'defaultKeys' );
+              saveMenuApp({
+                appIds: this.resetKeys.join(","),
+                menuIds: this.menuIds.join(","),
+                campusId: this.roleInfo.id
+              }).then(r => {
+                if (r.code == "200") {
+                  this.$message.success(r.msg);
+                } else {
+                  this.$message.error(r.msg);
+                }
+              });
+              break;
+            case "2":
+              saveMenuApp({
+                menuIds: this.resetKeys.join(","),
+                appIds: this.appIds.join(","),
+                campusId: this.roleInfo.id
+              }).then(r => {
+                if (r.code == "200") {
+                  this.$message.success(r.msg);
+                } else {
+                  this.$message.error(r.msg);
+                }
+              });
+              break;
+
+            default:
+              break;
+          }
+          this.$emit("update:permissionShow", false);
+        })
+        .catch(_ => {});
+    }
+  },
+  created() {
+    // console.log('wwwwww',this.power);
+    //  this.initData(this.power.app);
+  }
 };
 </script>
 
@@ -149,20 +201,19 @@ export default {
       background: #f9f9f9;
       line-height: 47px;
       .el-radio__input.is-checked .el-radio__inner {
-      background: transparent;
+        background: transparent;
+      }
+      .el-radio__inner {
+        width: 18px;
+        height: 18px;
+        border-color: #409eff;
+      }
+      .el-radio__inner::after {
+        width: 8px;
+        height: 8px;
+        background: #409eff;
+      }
     }
-        .el-radio__inner {
-      width: 18px ;
-      height: 18px ;
-      border-color: #409eff;
-    }
-    .el-radio__inner::after {
-      width: 8px;
-      height: 8px;
-      background: #409eff;
-    }
-    }
-   
 
     .radios_tree {
       height: 400px;

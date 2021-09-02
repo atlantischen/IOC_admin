@@ -98,11 +98,48 @@ export function getRoom(params) {
   })
 }
 // 机构管理新增
-export function getOrganization(params) {
+export function getOrganization(data) {
+  return request({
+    url: '/campus-admin/api/v1/admin/organization/save',
+    method: 'post',
+    noQS: true,
+    data
+    
+  })
+}
+// 机构管理编辑
+export function editOrganization(data) {
   return request({
     url: '/campus-admin/api/v1/admin/organization',
-    method: 'get',
-    params
+    method: 'put',
+    data
     
+  })
+}
+// 机构管理删除
+export function deleteOrganization(id) {
+  return request({
+    url: `/campus-admin/api/v1/admin/organization?ids=${id}`,
+    method: 'delete',
+ 
+  
+    
+  })
+}
+// 园区管理权限分配查询
+export function getMenuApp(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/campus/menu-app',
+    method: 'get',
+
+    params
+  })
+}
+// 园区管理权限分配查询
+export function saveMenuApp(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/campus/menu-app',
+    method: 'put',
+    params
   })
 }

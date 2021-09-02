@@ -105,7 +105,7 @@
         ><el-form-item label="状态">
           <el-select
             v-model="formData.campusStatus"
-            placeholder="请选择活动区域"
+            placeholder="请选择园区状态"
           >
             <el-option
               v-for="item in typeOptions"

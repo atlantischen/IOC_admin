@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import { getToken } from '@/utils/auth'
+// import { getToken } from '@/utils/auth'
 import {
-  setUserInfo
+  setPassword
 } from "@/api/user.js";
 export default {
       props:{
@@ -47,7 +47,7 @@ export default {
       },
      data() {
       var validatePass = (rule, value, callback) => {
-   
+        console.log(rule, value);
         if (value === '') {
           callback(new Error('请输入确认密码!'));
         } else if (value !== this.form.newPassword) {
@@ -62,6 +62,7 @@ export default {
           newPassword:'',
           confirmPassword:'',
         },
+
     rules: {
           oldPassword: [
              { required: true, message: '请输入原始密码!', trigger: 'blur' },
@@ -82,7 +83,16 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
+            console.log(this.form);
+            setPassword(this.form).then(res=>{
+              if(res.code==='200'){
+               this.$message.success(res.msg);
+               this.$emit('update:passwordDialogVisible', false)
+               this.$refs[formName].resetFields();
 
+              }
+
+            })
           } else {
             console.log('error submit!!');
             return false;
