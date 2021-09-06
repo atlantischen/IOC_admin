@@ -125,7 +125,7 @@ export default {
             
       },
       handleAvatarSuccess(res, file) {
-        // console.log(file);
+        console.log(file);
         this.multipartFile=file
         this.form.avatar = URL.createObjectURL(file.raw);
       },

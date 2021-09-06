@@ -210,7 +210,7 @@ export default {
                   children: addLevel(r.data)
                 }
               ];
-              this.PowerIds = getTrue(r.data, "choice");
+              // this.PowerIds = getTrue(r.data, "choice");
             }
           });
           break;

@@ -18,7 +18,7 @@
       <div class="Peripheral mt20">
         <div class="ovhi bosa-98ABC2 Peripheral_box">
           <div class="fr Peripheral_line mgr3">
-            <button class="md_bt_df" @click="increase()" v-if="form.parentId==4?false:true">
+            <button class="md_bt_df" @click="increase()" v-if="form.type==4?false:true">
               添加
             </button>
             <i></i>
@@ -61,6 +61,9 @@
                 <el-form-item label="排序">
                   <el-input v-model="form.sort"></el-input>
                 </el-form-item>
+                <el-form-item label="图标">
+                  <el-input v-model="form.icon"></el-input>
+                </el-form-item>
                 <el-form-item label="权限状态">
                   <el-radio-group v-model="form.status">
                     <el-radio :label="1">启用</el-radio>
@@ -72,22 +75,6 @@
                     <el-radio :label="1">启用</el-radio>
                     <el-radio :label="0">禁用</el-radio>
                   </el-radio-group>
-                </el-form-item>
-                <el-form-item label="图标">
-                  <el-upload
-                    class="upload-demo"
-                    action=""
-                    list-type="picture-card"
-                    :on-preview="handlePictureCardPreview"
-                    :on-remove="handleRemove"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload">
-                    <img src="@img/IMG.png" alt="" srcset=""
-                    :limit="1">
-                  </el-upload>
-                  <el-dialog :visible.sync="dialogVisible">
-                    <img width="100%" :src="dialogImageUrl" alt="">
-                  </el-dialog>
                 </el-form-item>
               </el-form>
             </div>
@@ -112,8 +99,9 @@
 <script>
 import {
   MenuManagement,
-  MenuroleApi,
-  MenuModification
+  MenuRoleApi,
+  MenuModification,
+  MenuDelete
 } from "@/api/menu";
 export default {
   name: "DeveloPer",
@@ -129,6 +117,7 @@ export default {
       website1:false,
       website2:false,
       website3:false,
+      Increase:false,
       certain:'',
       layer1:'',
       layer2:'',
@@ -163,28 +152,24 @@ export default {
       MenuManagement({
         queryMode: "list",
       }).then(r => {
-        console.log(r,'返回的是')
+        // console.log(r,'返回的是')
         if (r.code == 200) {
           this.purview = r.data;
         }
       });
     },
     initD(val){
-      console.log(val,'查看')
+      // console.log(val,'查看')
       this.$refs.treeu.filter(val);
     },
     increase(val){
+      this.Increase=true
        console.log(this.certain,'添加')
       if(this.certain==''){
        return this.$message.error('请先勾选需要添加的层级');
       }
-      this.form={name: '',component:'',sort:'',status:'',visible:'',desc: ''},
+      this.form={name: '',component:'',sort:'',status:'',visible:'',icon: ''},
       this.lopersta=false;
-    },
-    handleAvatarSuccess(res, file) {
-      // console.log(file);
-      this.multipartFile=file
-      this.form.icon = URL.createObjectURL(file.raw);
     },
     onRemove(){
       console.log(this.certain,'查看删除')
@@ -196,46 +181,62 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
+          // console.log('删除')
+          var parse={ids:this.certain.id}
+          MenuDelete(parse).then(r => {
+            // console.log(r,'修改返回的是')
+            if (r.code == 200) {
+              this.$message({ type: 'success',  message: '删除成功!'});
+              this.initial()
+            }
           });
         }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });  
+           this.$message.error('删除失败');
         });  
       }else if (this.certain.children.length!=0){
-        
         this.$message.error('请先删除子级菜单');
       }
 
     },
     ondefine(){
-      console.log(this.certain,'确认',this.form,this.multipartFile)
-      MenuroleApi({
+      var parse={
+        parentId:this.certain.parentId,
         component: this.form.component,
         icon: this.form.icon,     
         name: this.form.name,     
-        path: this.form.component,     
-        redirect: "", 
+        // path: this.form.component,     
+        // redirect: "", 
         sort: this.form.sort,      
         status: this.form.status,    
-        title:this.form.name,    
-        type: this.certain.type,     
+        title:this.form.name,     
         url: this.form.url,     
-        visible: this.form.sort,    
-        parentId: this.certain.id,
-       }).then(r => {
-        console.log(r,'新增返回的是')
-        if (r.code == 200) {
-          this.initial()
-        }
-      });
+        visible: this.form.visible,    
+      }
+      if (this.Increase==true) {
+        parse.parentId=this.certain.id
+        parse.type=parseInt(this.certain.type)+1
+        MenuRoleApi(parse).then(r => {
+          // console.log(r,'新增返回的是')
+          if (r.code == 200) {
+            this.initial()
+            this.form={name: '',component:'',sort:'',status:'',visible:'',icon: ''}
+          }
+        });
+      }else{
+        parse.id=this.certain.id
+        MenuModification(parse).then(r => {
+          // console.log(r,'修改返回的是')
+          if (r.code == 200) {
+            this.$message({ type: 'success',  message: '修改成功!'});
+            this.initial()
+          }
+        });
+      }
+
     },
     onCancel(){
-
+      this.form={name: '',component:'',sort:'',status:'',visible:'',icon: ''};
+      this.initial()
     },
     filterNode(value, purview,node) {
       // console.log(value, purview,'156465****',node)
@@ -245,98 +246,42 @@ export default {
     handleNodeClick(data) {
       this.form=data
       this.certain=data
-      console.log(data,'点击',this.form);
+      this.Increase=false
+      // console.log(data,'点击',this.form);
       switch (data.type) {
         case '1':
           this.first='目录'
+          this.lopersta=false
           break;
         case '2':
           this.first='菜单'
+          this.lopersta=true
+          this.website1=true
+          this.website2=false
+          this.website3=false
+          this.layer1=data.name
           break;
         case '3':
-          this.first='目录'
+          this.first='页面'
+          this.lopersta=true
+          this.website1=true
+          this.website2=true
+          this.website3=false
+          this.layer2=data.name
           break;
         case '4':
-          this.first='目录'
+          this.first='按钮'
+          this.lopersta=true
+          this.website1=true
+          this.website2=true
+          this.website3=true
+          this.layer3=data.name
           break;
         default:
           this.first=''
           break;
       }
-      switch (data.parentId) {
-        case '1':
-          this.lopersta=true
-          this.website1=true
-          this.layer1='基础服务'
-          break;
-        case '2':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='用户管理'
-          break;
-        case '3':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='角色管理'
-          break;
-        case '4':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='菜单管理'
-          break;
-          case '5':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='数据字典'
-          break;
-          case '26':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='园区管理'
-          break;
-          case '27':
-          this.lopersta=true
-          this.website1=true
-          this.website2=true
-          this.layer1='基础服务'
-          this.layer1='APP用户'
-          break;
-        default:
-          this.lopersta=false
-          break;
-      }
     },
-    handleRemove(file, fileList) {
-      console.log(file, fileList,'第一');
-    },
-    handlePictureCardPreview(file) {
-      console.log(file, fileList,'第二');
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
-    },
-    beforeAvatarUpload(file) {
-      console.log(file,'图标')
-      // const isJPG = file.type === 'image/jpeg';
-      // const isLt2M = file.size / 1024 / 1024 < 2;
-
-      // if (!isJPG) {
-      //   this.$message.error('上传头像图片只能是 JPG 格式!');
-      // }
-      // if (!isLt2M) {
-      //   this.$message.error('上传头像图片大小不能超过 2MB!');
-      // }
-      // return isJPG && isLt2M;
-    }
   }
 };
 </script>
@@ -368,10 +313,6 @@ export default {
   .upload-demo{
     border: none;
     background-color: #FFFFFF;
-    .el-upload--picture-card{
-      width: 0;
-      height: 0;
-    }
   }
 </style>
 <style  lang="scss" scoped>
