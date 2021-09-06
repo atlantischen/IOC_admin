@@ -246,7 +246,6 @@ export default {
       this.$forceUpdate();
     },
     roomChange(v) {
-      console.log(v);
       this.$forceUpdate();
     }
   },

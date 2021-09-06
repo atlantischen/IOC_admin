@@ -5,7 +5,8 @@
   width="50%"
   custom-class="el_dialog my_dialog"
     :destroy-on-close="true"
-    @close="$emit('update:dialogVisible', false)"
+    @close="close"
+    @open="openDialog"
   >
    <div slot="title" class="header-title">
         <span class="svg-container">
@@ -18,17 +19,15 @@
   
     <el-col :span="24"> <el-input v-model="form.username"></el-input></el-col>
   </el-form-item>
-  <el-form-item label="性别">
+  <el-form-item label="性别" prop="gender">
      <el-col :span="24">
-    <el-select v-model="form.gender" placeholder="请选择活动区域">
+    <el-select  v-model="form.gender" placeholder="请选择活动区域">
       <el-option 
         v-for="item in genderOpaction"
       :key="item.value"
       :label="item.label"
       :value="item.value">
-      
       </el-option>
-   
     </el-select>
     </el-col>
   </el-form-item>
@@ -113,6 +112,19 @@ export default {
         
     },
     methods: {
+      openDialog(){
+        // this.$forceUpdate()
+        // console.log(this.form);
+        console.log('打开');
+
+      },
+    close() {
+      this.$refs.form.resetFields();
+        console.log(this.form);
+
+      this.$emit("update:dialogVisible", false);
+    },
+
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {

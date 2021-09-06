@@ -71,6 +71,7 @@
       @initData="init"
     ></AddEdit>
     <Delete :DeletedialogShow.sync='DeletedialogShow' :id="id" @initData="init"></Delete>
+    <Permission ref="rolePowerRef" :idType="idType"  :roleInfo="roleInfo" :power="power" @save="save" :permissionShow.sync="permissionShow"></Permission>
      <PageT
         :between="true"
         :_currentPage="currentPage"
@@ -83,9 +84,10 @@
 </template>
 
 <script>
-import { getMechanismList } from "@/api/basicServices";
+import { getMechanismList,getMechanismMenuApp,saveMechanismMenuApp } from "@/api/basicServices";
 import AddEdit from "./addEdit.vue";
 import Delete from "./delete.vue";
+import Permission from "../permission.vue";
 export default {
   data() {
     return {
@@ -95,25 +97,23 @@ export default {
       initData: {},
       addDialogShow: false,
       DeletedialogShow:false,
+      permissionShow:false,
+      power:null,
+      roleInfo:null,
+      idType:'organizationId',
       id:null,
       formData:{},
       currentPage: 1,
       pageSize:10,
       total: 0,
+
     };
   },
-  components: { AddEdit,Delete },
+  components: { AddEdit,Delete,Permission },
 
   methods: {
     init(data) {
-      // this.initData={
-      //   campusId: this.$route.query.id,
-      //   limit: this.pageSize,
-      //   page: this.currentPage,
-      //   queryMode: "page",
-      //   organizationName: this.input
-      // }
-      console.log(this.initData);
+  
       getMechanismList(data).then(res => {
         if (res.code === "200") {
           this.tableData = res.data;
@@ -159,6 +159,29 @@ export default {
       console.log(this.formData );
       this.addDialogShow = !this.addDialogShow;
 
+    },
+    handleDistribution(row){
+       this.permissionShow = true;
+      this.roleInfo = row;
+      console.log(this.roleInfo);
+      getMechanismMenuApp({organizationId:row.id}).then(res=>{
+         if (res.code == '200') {
+
+              this.power=res.data
+
+              console.log(this.power,'this.power');
+            }
+      })
+    },
+     save(data){
+      saveMechanismMenuApp(data).then(res=>{
+             if (res.code == "200") {
+               console.log(res);
+                  this.$message.success(res.msg);
+                } else {
+                  this.$message.error(res.msg);
+                }
+      })
     },
     sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;

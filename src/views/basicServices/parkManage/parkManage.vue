@@ -161,7 +161,7 @@
       :id="id"
       @init="init"
     ></Deletedialog>
-    <Permission ref="rolePowerRef" :roleInfo="roleInfo" :power="power" :permissionShow.sync="permissionShow"></Permission>
+    <Permission ref="rolePowerRef" :idType="idType"  :roleInfo="roleInfo" :power="power" @save="save" :permissionShow.sync="permissionShow"></Permission>
   </div>
 </template>
 
@@ -170,10 +170,10 @@ import {
   getParkManageList,
   getParkSelect,
   defaultParkManage,
-  getMenuApp
+  getMenuApp,
+  saveMenuApp
 } from "@/api/basicServices.js";
 
-import Pagination from "@/components/pagination.vue";
 import Parkmangedialog from "@/components/parkmangedialog.vue";
 import Deletedialog from "@/components/deletedialog.vue";
 import Permission from "./permission.vue";
@@ -235,10 +235,11 @@ export default {
       total: 0,
       power:null,
       PowerIds: null,
-      roleInfo: null
+      roleInfo: null,
+      idType:'campusId'
     };
   },
-  components: { Pagination, Deletedialog, Parkmangedialog, Permission },
+  components: { Deletedialog, Parkmangedialog, Permission },
   methods: {
     // 删除
     handleDelete(row) {
@@ -255,9 +256,13 @@ export default {
     handleDistribution(row) {
       this.permissionShow = true;
       this.roleInfo = row;
+      console.log(row);
       getMenuApp({campusId:row.id}).then(res=>{
          if (res.code == '200') {
-              this.power=res.data
+            this.power=res.data
+            console.log(this.power,'this.power');
+
+
             }
       })
 
@@ -340,7 +345,7 @@ export default {
     },
     Reset() {
       this.searchData = {};
-        this.currentPage= 1,
+      this.currentPage= 1,
       this.pageSize=10,
       this.init({  limit: this.pageSize,
           page: this.currentPage, queryMode: "page" });
@@ -358,12 +363,10 @@ export default {
     },
     // 列表详情
     handleDetails(row) {
-      console.log(row.id);
       this.$router.push({  path: '/parkManage/listdetails',  query: {id: row.id }});
     },
        sizeChange(v) {
       this.pageSize = v <= 0 ? 10 : v;
-      console.log(this.pageSize);
       this.init({  limit: this.pageSize,
           page: this.currentPage, queryMode: "page" });
     },
@@ -371,6 +374,17 @@ export default {
       this.currentPage = v <= 0 ? 1 : v;
       this.init({  limit: this.pageSize,
           page: this.currentPage, queryMode: "page" });
+    },
+    save(data){
+      console.log(data);
+      saveMenuApp(data).then(res=>{
+             if (res.code == "200") {
+               console.log(res);
+                  this.$message.success(res.msg);
+                } else {
+                  this.$message.error(res.msg);
+                }
+      })
     }
   },
   created() {

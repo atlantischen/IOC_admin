@@ -12,7 +12,7 @@
         <span class="svg-container">
           <svg-icon icon-class="quanxian" />
         </span>
-        <span>园区权限分配</span>
+        <span>{{idType==='campusId'?'园区':'机构'}}权限分配</span>
       </div>
       <div class="box">
         <div class="radio_i">
@@ -63,7 +63,11 @@ export default {
     },
     roleInfo: {
       type: Object
+    },
+     idType: {
+      type: String
     }
+
   },
   data() {
     return {
@@ -87,8 +91,26 @@ export default {
         if (n) {
           this.radio = "1";
           this.initData(this.power.app);
-          this.appIds = getTrue(this.power.app, "choice");
-          this.menuIds = getTrue(this.power.menu, "choice");
+          console.log(this.power.app,this.power.menu);
+          if(this.power.app){
+           this.appIds = getTrue(this.power.app, "choice").join(",");
+            this.menuIds = '';
+
+          }else if(this.power.menu){
+          this.menuIds = getTrue(this.power.menu, "choice").join(",");
+           this.appIds = '';
+
+          }else if(this.power.app && his.power.app){
+            this.appIds = getTrue(this.power.app, "choice").join(",");
+            this.menuIds = getTrue(this.power.menu, "choice").join(",");
+          } else{
+              this.appIds =''
+              this.menuIds =''
+          }
+            // this.appIds = getTrue(this.power.app, "choice");
+            // this.menuIds = getTrue(this.power.menu, "choice");
+            
+         
         }
       },
       immediate: true
@@ -114,11 +136,12 @@ export default {
           children: addLevel(val)
         }
       ];
+      console.log(val,'val');
       this.defaultKeys = getTrue(val, "choice");
       this.resetKeys = this.defaultKeys;
-      console.log(this.defaultKeys);
     },
     selectRadio(v) {
+
       switch (v) {
         case "1":
           if (this.power.app && this.power.app.length != 0) {
@@ -140,40 +163,32 @@ export default {
     },
     sure() {
       this.$confirm(
-        "确认修改“" + this.roleInfo.campusName + "”园区权限？",
+        "确认修改“" +(this.idType==='campusId'?this.roleInfo.campusName:this.roleInfo.name ) + "”园区权限？",
         "操作确认",
         {
           type: "warning"
         }
       )
         .then(_ => {
+          console.log(this.radio);
+          console.log(this.resetKeys,this.menuIds);
+
           switch (this.radio) {
+         
+
             case "1":
-              // console.log(this.resetKeys,this.menuIds,'defaultKeys' );
-              saveMenuApp({
-                appIds: this.resetKeys.join(","),
-                menuIds: this.menuIds.join(","),
-                campusId: this.roleInfo.id
-              }).then(r => {
-                if (r.code == "200") {
-                  this.$message.success(r.msg);
-                } else {
-                  this.$message.error(r.msg);
-                }
-              });
+              this.$emit('save',{
+                  appIds: this.resetKeys.join(","),
+                  menuIds: this.menuIds,
+                  [this.idType]: this.roleInfo.id
+              })
               break;
             case "2":
-              saveMenuApp({
-                menuIds: this.resetKeys.join(","),
-                appIds: this.appIds.join(","),
-                campusId: this.roleInfo.id
-              }).then(r => {
-                if (r.code == "200") {
-                  this.$message.success(r.msg);
-                } else {
-                  this.$message.error(r.msg);
-                }
-              });
+                this.$emit('save',{
+                  menuIds: this.resetKeys.join(","),
+                  appIds: this.appIds,
+                  [this.idType]: this.roleInfo.id
+              })
               break;
 
             default:

@@ -143,3 +143,20 @@ export function saveMenuApp(params) {
     params
   })
 }
+// 机构管理权限分配查询
+export function getMechanismMenuApp(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/organization/menu-ids',
+    method: 'get',
+
+    params
+  })
+}
+// 机构管理权限分配查询
+export function saveMechanismMenuApp(params) {
+  return request({
+    url: '/campus-admin/api/v1/admin/organization/menu-ids',
+    method: 'put',
+    params
+  })
+}

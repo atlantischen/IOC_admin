@@ -36,9 +36,6 @@ export default {
 
     methods: {
         handleClick(){
-            console.log(this.id);
-
-            // let res= JSON.stringify(this.id)
           deleteOrganization(this.id).then(res=>{
             if(res.code=="200"){
                 console.log(res);
