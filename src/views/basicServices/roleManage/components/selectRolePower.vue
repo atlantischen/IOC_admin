@@ -145,7 +145,7 @@ export default {
       )
         .then(_ => {
           roleMenuApi(
-            { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
+            { menuIds: this.resetKeys, roleId: this.roleInfo.id },
             "put"
           ).then(r => {
             if (r.code == 200) {
@@ -160,7 +160,7 @@ export default {
     },
     handleChange(obj, keys) {
       // console.log(obj, keys);
-      console.log("111111");
+      console.log("111111",keys);
       let _a = keys.halfCheckedKeys;
       this.checkStrictly = false;
       let _i = _a.indexOf("all");
