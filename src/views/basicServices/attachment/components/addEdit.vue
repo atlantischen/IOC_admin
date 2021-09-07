@@ -43,6 +43,7 @@
             action="https://jsonplaceholder.typicode.com/posts/"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
+             :on-change="handleFileChange" 
             :before-remove="beforeRemove"
             multiple
             :limit="1"
@@ -84,6 +85,7 @@
 </template>
 
 <script>
+import {adminDictApi2} from '@/api/dict'
 export default {
   name: "addEditDicType",
   props: {
@@ -108,7 +110,7 @@ export default {
         // {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
       ],
       rules: {
-        file: [{ required: true, message: "请选择文件", trigger: "blur" }]
+        file: [{ required: true, message: "请选择文件", trigger: "change" }]
       }
     };
   },
@@ -138,27 +140,33 @@ export default {
     sure() {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
-          if (this._type === "add") {
-            adminDictApi2({ ...this.ruleForm }).then(r => {
-              if (r.code == 200) {
-                this.$message.success("新增成功！");
-                this.$emit("refresh");
-                this.close();
-              } else {
-                this.$message.error("新增失败！");
-              }
-            });
-          } else {
-            adminDictApi2({ ...this.ruleForm }, "put").then(r => {
-              if (r.code == 200) {
-                this.$message.success("修改成功！");
-                this.$emit("refresh");
-                this.close();
-              } else {
-                this.$message.error("修改失败！");
-              }
-            });
-          }
+            console.log(this.ruleForm);
+          let fd = new FormData();//通过form数据格式来传
+        console.log(fd);
+
+        fd.append("multipartFile", this.ruleForm.file); //传文件
+        console.log(fd.get('multipartFile'));
+          // if (this._type === "add") {
+          //   adminDictApi2({ ...this.ruleForm }).then(r => {
+          //     if (r.code == 200) {
+          //       this.$message.success("新增成功！");
+          //       this.$emit("refresh");
+          //       this.close();
+          //     } else {
+          //       this.$message.error("新增失败！");
+          //     }
+          //   });
+          // } else {
+          //   adminDictApi2({ ...this.ruleForm }, "put").then(r => {
+          //     if (r.code == 200) {
+          //       this.$message.success("修改成功！");
+          //       this.$emit("refresh");
+          //       this.close();
+          //     } else {
+          //       this.$message.error("修改失败！");
+          //     }
+          //   });
+          // }
         }
       });
     },
@@ -168,6 +176,16 @@ export default {
     },
     handlePreview(file) {
       console.log(file);
+    },
+    handleFileChange(file, fileList){
+      if(fileList.length>0){
+          this.ruleForm.file=file
+          this.$refs.ruleForm.clearValidate() //清除图片文字校验
+
+        // this.$refs.ruleForm.clearValidate() //清除图片文字校验
+      }
+      console.log(file, fileList);
+
     },
     handleExceed(files, fileList) {
       this.$message.warning(

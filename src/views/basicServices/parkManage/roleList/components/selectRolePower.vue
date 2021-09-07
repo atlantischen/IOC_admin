@@ -166,7 +166,9 @@ export default {
       if (_i > -1) {
         _a.splice(_i, 1);
       }
+      console.log(_a, 'is怕是大苏打');
       this.resetKeys = keys.checkedKeys.concat(_a);
+      console.log(this.resetKeys, '看看');
     },
     selectR(val) {
       // console.log(val);

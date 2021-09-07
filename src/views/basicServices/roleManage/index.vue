@@ -186,6 +186,7 @@ export default {
       });
     },
     handleFun(t, val) {
+      console.log(t,val,'权限')
       switch (t) {
         case "add":
           this.showD = true;

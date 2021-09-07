@@ -386,7 +386,6 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-
   overflow: hidden;
   display: flex;
   align-items: center;

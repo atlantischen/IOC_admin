@@ -71,7 +71,7 @@
         </el-table-column>
         <el-table-column label="姓名" prop="username" width="180">
         </el-table-column>
-        <el-table-column label="性别" width="180" prop="campusTypeCh">
+        <el-table-column label="性别" width="180" prop="genderCh">
         </el-table-column>
         <el-table-column label="联系电话" width="180" prop="phone">
         </el-table-column>

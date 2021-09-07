@@ -128,7 +128,18 @@ export default {
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            setUserInfo({userVO:this.form,multipartFile:this.multipartFile}).then(res=>{
+            let fd = new FormData();//通过form数据格式来传
+            fd.append("multipartFile",this.multipartFile); 
+            fd.append("username",this.form.username); 
+            fd.append("phone",this.form.phone); 
+            fd.append("gender",this.form.gender); 
+            fd.append("id",this.form.id); 
+            setUserInfo(fd).then(res=>{
+              if(res.code==="200"){
+                this.$message.success(res.msg)
+              this.$emit("update:dialogVisible", false);
+              
+              }
             })
           } else {
             console.log('error submit!!');
@@ -137,12 +148,14 @@ export default {
         });
       },
       handleUpload(f){
-        let formdata = new FormData()
-            formdata.append('image', f.file)
+        // let formdata = new FormData()
+        //     formdata.append('image', f.file)
             
       },
       handleAvatarSuccess(res, file) {
-        this.multipartFile=file
+        console.log(file,'file');
+        this.multipartFile=file.raw
+
         this.form.avatar = URL.createObjectURL(file.raw);
       },
       beforeAvatarUpload(file) {
@@ -156,9 +169,7 @@ export default {
         if (!isLt2M) {
           this.$message.error('上传头像图片大小不能超过300k!');
         }
-        // let fd = new FormData();//通过form数据格式来传
-        // fd.append("picFile", file); //传文件
-        // console.log(fd.get('picFile'));
+       
         return isPG  && isLt2M;
       },
       handleAvatarError(e){

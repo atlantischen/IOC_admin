@@ -6,7 +6,13 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  watch:{
+  $route(to,from){
+    console.log(to);
+  }
+  
+},
 }
 </script>
 <style lang="scss">

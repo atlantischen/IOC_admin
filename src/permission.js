@@ -73,28 +73,6 @@ router.afterEach(() => {
 })
 
 function filterAsyncRouter(asyncRouterMap) {
-    // let newRouters = asyncRouterMap.map((r) => {
-    //   console.log(r.component);
-    //   let routes = {
-    //     path: r.path,
-    //     redirect:r.redirect,
-    //     name: r.name,
-    //     meta:r.meta,
-    //     component:null
-    //   }
-    //   if(r.component){
-    //     if(r.component==='Layout'){
-    //       routes.component = Layout
-    //     } else {
-    //       routes.component =_import(r.component) // 导入组件
-    //     }
-    //   }
-    //   if (r.children && r.children.length) {
-    //     routes.children = filterAsyncRouter(r.children);
-    //   }
-    //   return routes;
-    // });
-    // return newRouters;
     const accessedRouters = asyncRouterMap.filter(route => {
         if (route.component) {
             if (route.component === 'Layout') {
