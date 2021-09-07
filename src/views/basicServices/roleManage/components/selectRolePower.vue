@@ -113,7 +113,7 @@ export default {
       )
         .then(_ => {
           roleMenuApi(
-            { menuIds: this.resetKeys.join(","), roleId: this.roleInfo.id },
+            { menuIds: this.resetKeys, roleId: this.roleInfo.id },
             "put"
           ).then(r => {
             if (r.code == 200) {

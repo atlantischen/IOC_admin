@@ -152,19 +152,16 @@ export default {
       MenuManagement({
         queryMode: "list",
       }).then(r => {
-        // console.log(r,'返回的是')
         if (r.code == 200) {
           this.purview = r.data;
         }
       });
     },
     initD(val){
-      // console.log(val,'查看')
       this.$refs.treeu.filter(val);
     },
     increase(val){
       this.Increase=true
-       console.log(this.certain,'添加')
       if(this.certain==''){
        return this.$message.error('请先勾选需要添加的层级');
       }
@@ -172,7 +169,6 @@ export default {
       this.lopersta=false;
     },
     onRemove(){
-      console.log(this.certain,'查看删除')
       if(this.certain==''){
         this.$message.error('请先勾选需要删除的层级');
       }else if(!this.certain.children ){
@@ -204,8 +200,6 @@ export default {
         component: this.form.component,
         icon: this.form.icon,     
         name: this.form.name,     
-        // path: this.form.component,     
-        // redirect: "", 
         sort: this.form.sort,      
         status: this.form.status,    
         title:this.form.name,     
@@ -216,7 +210,6 @@ export default {
         parse.parentId=this.certain.id
         parse.type=parseInt(this.certain.type)+1
         MenuRoleApi(parse).then(r => {
-          // console.log(r,'新增返回的是')
           if (r.code == 200) {
             this.initial()
             this.form={name: '',component:'',sort:'',status:'',visible:'',icon: ''}
@@ -225,7 +218,6 @@ export default {
       }else{
         parse.id=this.certain.id
         MenuModification(parse).then(r => {
-          // console.log(r,'修改返回的是')
           if (r.code == 200) {
             this.$message({ type: 'success',  message: '修改成功!'});
             this.initial()
@@ -239,7 +231,6 @@ export default {
       this.initial()
     },
     filterNode(value, purview,node) {
-      // console.log(value, purview,'156465****',node)
       if (!value) return true;
       return node.label.indexOf(value) !== -1;
     },
@@ -247,7 +238,6 @@ export default {
       this.form=data
       this.certain=data
       this.Increase=false
-      // console.log(data,'点击',this.form);
       switch (data.type) {
         case '1':
           this.first='目录'

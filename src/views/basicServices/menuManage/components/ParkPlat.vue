@@ -152,19 +152,16 @@ export default {
       ParkManagement({
         queryMode: "list",
       }).then(r => {
-        // console.log(r,'返回的是')
         if (r.code == 200) {
           this.purview = r.data;
         }
       });
     },
     initD(val){
-      // console.log(val,'查看')
       this.$refs.treeu.filter(val);
     },
     increase(val){
       this.Increase=true
-      //  console.log(this.certain,'添加')
       if(this.certain==''){
        return this.$message.error('请先勾选需要添加的层级');
       }
@@ -181,9 +178,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          // console.log('删除')
           ParkDelete({ids:this.certain.id}).then(r => {
-            // console.log(r,'修改返回的是')
             if (r.code == 200) {
               this.$message({ type: 'success', message: '删除成功!'});
               this.initial()
@@ -215,7 +210,6 @@ export default {
       if (this.Increase==true) {
         parse.parentId=this.certain.id
         ParkRoleApi(parse).then(r => {
-          // console.log(r,'新增返回的是')
           if (r.code == 200) {
             this.initial()
             this.form={name: '',component:'',sort:'',status:'',visible:'',icon: ''}
@@ -224,7 +218,6 @@ export default {
       }else{
         parse.id=this.certain.id
         ParkModification(parse).then(r => {
-          // console.log(r,'修改返回的是')
           if (r.code == 200) {
             this.$message({ type: 'success',  message: '修改成功!'});
             this.initial()
@@ -238,7 +231,6 @@ export default {
       this.initial()
     },
     filterNode(value, purview,node) {
-      // console.log(value, purview,'156465****',node)
       if (!value) return true;
       return node.label.indexOf(value) !== -1;
     },
@@ -246,7 +238,6 @@ export default {
       this.form=data
       this.certain=data
       this.Increase=false
-      console.log(data,'点击',this.form);
       switch (data.type) {
         case '1':
           this.first='目录'

@@ -109,7 +109,7 @@
           show-overflow-tooltip
         >
           <template slot-scope="scope">
-            {{ scope.row.gmtCreate || "-" }}
+            {{ scope.row.ip || "-" }}
           </template>
         </el-table-column>
         <el-table-column
@@ -170,7 +170,6 @@ export default {
   },
   methods: {
     initD(val) {
-      // console.log(this.campusName,'798q7weqw')
       this.dLoading = true;
       LogManagement({
         campusName:this.campusName,
@@ -183,7 +182,6 @@ export default {
         queryMode: "page",
         username: this.username
       }).then(r => {
-        // console.log(r,'列表返回参数')
         if (r.code == 200) {
           this.dataList = r.data;
           this.total = r.total;
@@ -197,11 +195,8 @@ export default {
         page: 1,
         queryMode: "page",
       }).then(r => {
-        // console.log(r,'列表返回参数1')
         if (r.code == 200) {
           this.allStatus = r.data;
-          // this.total = r.total;
-          // this.dLoading = false;
         }
       });
     },
