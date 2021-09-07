@@ -48,7 +48,7 @@
           />
         </span>
       </el-form-item>
-      <p class="forget_p">忘记密码了吗?</p>
+      <p class="forget_p"></p>
       <el-button
         :loading="loading"
         type="primary"
