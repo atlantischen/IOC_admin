@@ -228,7 +228,7 @@ export default {
   }
   .btn{
     position: absolute;
-    right: 0;     
+    right: 0;
   }
 }
 </style>
