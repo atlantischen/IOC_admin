@@ -216,6 +216,8 @@ export default {
 .header {
   display: flex;
   position: relative;
+  // justify-content: space-around;
+  // flex-wrap: wrap;
   margin-bottom: 10px;
   i {
       padding: 0 5px;
