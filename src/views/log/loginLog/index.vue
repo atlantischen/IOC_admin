@@ -215,9 +215,7 @@ export default {
 <style lang="scss" scoped>
 .header {
   display: flex;
-  position: relative;
-  // justify-content: space-around;
-  // flex-wrap: wrap;
+  position: relative;   
   margin-bottom: 10px;
   i {
       padding: 0 5px;
