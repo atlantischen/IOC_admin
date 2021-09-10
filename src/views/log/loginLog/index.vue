@@ -217,7 +217,7 @@ export default {
   display: flex;
   position: relative;
   // justify-content: space-around;
-  // flex-wrap: wrap;
+  // flex-wrap: wrap; 12312    
   margin-bottom: 10px;
   i {
       padding: 0 5px;

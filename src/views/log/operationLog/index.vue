@@ -223,7 +223,7 @@ export default {
         page: this.currentPage,
         campusName: this.campusName,
         queryMode: "page",
-        username: this.username
+        username: this.username  
       }).then(r => {
         if (r.code == 200) {
           this.dataList = r.data;
