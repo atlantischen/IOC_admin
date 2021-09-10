@@ -40,8 +40,12 @@
         :on-error="handleAvatarError"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
+         <!-- <div slot="file" v-if="form.avatar" >
+           <img :src="form.avatar" class="avatar el-upload-list__item-thumbnail">
+
+         </div> -->
         <img v-if="form.avatar" :src="form.avatar" class="avatar">
-        <el-avatar v-else  :size="100" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
+        <el-avatar ref="uploadImg" v-else  :size="100" src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
         <div slot="tip"  class="el-uploads">上传图片</div>
 
         <div slot="tip" style="color:red" class="el-upload__tip">（建议选择尺寸大小不超过300K的JPG/PNG图片）</div>
@@ -101,27 +105,27 @@ export default {
           ],
          
         },
-      multipartFile:null
+      multipartFile:null,
+      form:{...this.$store.state.user.userInfo}
+      
 
       };
     },
-    computed:{
-      form(){
-         return this.$store.state.user.userInfo;
-      }
+    // computed:{
+    //   form(){
+    //      return this.$store.state.user.userInfo;
+    //   }
         
-    },
+    // },
     methods: {
       openDialog(){
-        // this.$forceUpdate()
-        // console.log(this.form);
-        console.log('打开');
+       
 
       },
-    close() {
-      this.$refs.form.resetFields();
-        console.log(this.form);
 
+    close() {
+      this.form={...this.$store.state.user.userInfo}
+      this.$refs.form.resetFields();
       this.$emit("update:dialogVisible", false);
     },
 
@@ -137,7 +141,7 @@ export default {
             setUserInfo(fd).then(res=>{
               if(res.code==="200"){
                 this.$message.success(res.msg)
-              this.$emit("update:dialogVisible", false);
+                this.$emit("update:dialogVisible", false);
               
               }
             })
@@ -155,7 +159,6 @@ export default {
       handleAvatarSuccess(res, file) {
         console.log(file,'file');
         this.multipartFile=file.raw
-
         this.form.avatar = URL.createObjectURL(file.raw);
       },
       beforeAvatarUpload(file) {
@@ -171,6 +174,9 @@ export default {
         }
        
         return isPG  && isLt2M;
+      },
+      change(){
+
       },
       handleAvatarError(e){
         console.log(e);

@@ -156,7 +156,7 @@ export default {
     handleEdit(row){
       this.type = 'edit';
       this.formData = { ...row };
-      console.log(this.formData );
+   
       this.addDialogShow = !this.addDialogShow;
 
     },

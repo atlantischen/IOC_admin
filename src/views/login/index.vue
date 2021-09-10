@@ -189,6 +189,7 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(res => {
+
               switch (res.code) {
                 case "A0203":
                   this.centerDialogVisible = true;
@@ -209,17 +210,18 @@ export default {
       });
     },
     sendcode() {
-      this.time = 5;
+      this.time = 60;
       if (this.ruleForm.phone != "") {
         this.timer();
         getCode({ phone: this.ruleForm.phone }).then(res => {
-          console.log(res, "res");
+   
           if (res.code === "200") {
             this.$message({
               message: res.data,
               type: "success",
               duration: 1 * 1000
             });
+
           }
         });
       }
@@ -241,7 +243,6 @@ export default {
       this.$refs.ruleForm.validate(valid => {
         if (valid) {
           const { phone, code } = this.ruleForm;
-          console.log(phone, code);
           getActivateAccount({ phone: phone, vCode: code }).then(res => {
             if (res.code == "200") {
               this.$message({
@@ -249,6 +250,7 @@ export default {
                 type: "success",
                 duration: 1 * 1000
               });
+              this.centerDialogVisible=false
               this.$router.push({ path: "/" });
             }
           });
@@ -321,11 +323,12 @@ $cursor: #fff;
       }
     }
 
+    .el-form-item__content {
+            display: flex;
+            align-items: center;
+          }
     .el_form {
-      .el-form-item__content {
-        display: flex;
-        align-items: center;
-      }
+     
       .el-input__inner:focus {
         outline: none;
         border-color: #409eff;
@@ -445,7 +448,7 @@ $light_gray: #eee;
   .forget_p {
     font-size: 0.15rem /* 12/80 */;
     text-align: right;
-    margin-bottom: 42px;
+    margin-bottom: 70px;
     cursor: pointer;
   }
   .btn {

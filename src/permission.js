@@ -13,6 +13,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login'] // no redirect whitelist
 
 router.beforeEach(async(to, from, next) => {
+  
+
     // start progress bar
     NProgress.start()
         // set page title
@@ -24,6 +26,7 @@ router.beforeEach(async(to, from, next) => {
             next()
             NProgress.done()
         } else {
+            console.log(to,from);
             const hasGetUserInfo = store.getters.name
                 // 判断是否获取到菜单
                 // if (store.getters.menus && store.getters.menus.length > 0) {

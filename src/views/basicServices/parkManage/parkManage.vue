@@ -256,13 +256,9 @@ export default {
     handleDistribution(row) {
       this.permissionShow = true;
       this.roleInfo = row;
-      console.log(row);
       getMenuApp({campusId:row.id}).then(res=>{
          if (res.code == '200') {
             this.power=res.data
-            console.log(this.power,'this.power');
-
-
             }
       })
 
